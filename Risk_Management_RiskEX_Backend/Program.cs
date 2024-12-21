@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Risk_Management_RiskEX_Backend.Data;
+
+//Loading Env file
 DotNetEnv.Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,6 +13,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+//Getting Connection String from Env file adding to db context
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
            options.UseNpgsql(connectionString));
