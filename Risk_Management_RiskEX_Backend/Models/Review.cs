@@ -19,5 +19,7 @@ namespace RiskManagement_Department_API.Models
 
         [ForeignKey("ExternalReviewerId")]
         public virtual ExternalReviewer ExternalReviewer { get; set; }
+
+        public ICollection<RiskAssessment> RiskAssessments { get; set; }
     }
 }

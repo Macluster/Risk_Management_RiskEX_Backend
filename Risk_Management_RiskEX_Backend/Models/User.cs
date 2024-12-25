@@ -19,5 +19,39 @@ namespace RiskManagement_Department_API.Models
 
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
+
+
+        public ICollection<Risk> ResponsibleRisks { get; set; }
+
+        public ICollection<Risk> CreatedRisks { get; set; }
+        public ICollection<Risk> UpdatedRisks { get; set; }
+
+        public ICollection<Project> CreatedProjects { get; set; }
+        public ICollection<Project> UpdatedProjects { get; set; }
+        public ICollection<Department> CreatedDepartments { get; set; }
+        public ICollection<Department> UpdatedDepartments { get; set; }
+
+        public ICollection<RiskAssessment> CreatedRiskAssessments { get; set; }
+        public ICollection<RiskAssessment> UpdatedRiskAssessments { get; set; }
+
+
+        public ICollection<AssessmentBasis> CreatedAssessmentBasis { get; set; }
+        public ICollection<AssessmentBasis> UpdatedAssessmentBasis { get; set; }
+
+        public ICollection<AssessmentMatrixLikelihood> CreatedLikeliHoodMatrix { get; set; }
+        public ICollection<AssessmentMatrixLikelihood> UpdatedLikeliHoodMatrix{ get; set; }
+        public ICollection<AssessmentMatrixImpact> CreatedImpactMatrix { get; set; }
+        public ICollection<AssessmentMatrixImpact> UpdatedImpactMatrix{ get; set; }
+
+        public ICollection<ExternalReviewer> CreatedExternalReviewers { get; set; }
+        public ICollection<ExternalReviewer> UpdatedExternalReviewers { get; set; }
+
+        public ICollection<Review> CreatedReviews { get; set; }
+        public ICollection<Review> UpdatedReviews { get; set; }
+
+        public ICollection<User> CreatedBy {  get; set; }
+        public ICollection<User> UpdatedBy { get; set; }
+        public ICollection<Project> Projects { get; set; }
+        public ICollection<Review> Reviews { get; set; }
     }
 }

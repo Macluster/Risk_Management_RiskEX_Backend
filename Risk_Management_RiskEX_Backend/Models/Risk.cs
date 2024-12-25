@@ -46,5 +46,8 @@ namespace RiskManagement_Department_API.Models
 
         [ForeignKey("ProjectId")]
         public virtual Project Project { get; set; }
+
+
+        public ICollection<RiskAssessment> RiskAssessments { get; set; }
     }
 }
