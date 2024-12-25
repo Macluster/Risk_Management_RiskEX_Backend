@@ -23,6 +23,8 @@ namespace RiskManagement_Department_API.Models
 
         public ICollection<Risk> ResponsibleRisks { get; set; }
 
+
+        // For CreatedBy and edited By
         public ICollection<Risk> CreatedRisks { get; set; }
         public ICollection<Risk> UpdatedRisks { get; set; }
 
@@ -49,8 +51,8 @@ namespace RiskManagement_Department_API.Models
         public ICollection<Review> CreatedReviews { get; set; }
         public ICollection<Review> UpdatedReviews { get; set; }
 
-        public ICollection<User> CreatedBy {  get; set; }
-        public ICollection<User> UpdatedBy { get; set; }
+        public ICollection<User> CreatedUsers {  get; set; }
+        public ICollection<User> UpdatedUsers { get; set; }
         public ICollection<Project> Projects { get; set; }
         public ICollection<Review> Reviews { get; set; }
     }

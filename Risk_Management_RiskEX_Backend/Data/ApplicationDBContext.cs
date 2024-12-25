@@ -29,13 +29,13 @@ namespace Risk_Management_RiskEX_Backend.Data
         {
 
             base.OnModelCreating(modelBuilder);
-            // User - Department (Many-to-One)
+            // User - Department 
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Department)
                 .WithMany(d =>d.Users )
                 .HasForeignKey(u => u.DepartmentId);
 
-            // User - Project (Many-to-One)
+            // User - Project
             modelBuilder.Entity<User>()
             .HasMany(u => u.Projects)
             .WithOne(u=>u.User)
@@ -50,8 +50,14 @@ namespace Risk_Management_RiskEX_Backend.Data
              .HasForeignKey(f => f.ResponsibleUserId);
 
 
+            // User - User Created and Updated 
+            modelBuilder.Entity<User>()
+                .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedUsers);
+            modelBuilder.Entity<User>()
+                  .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedUsers);
 
-            // User - Project Created and Updated (Many-to-One)
+
+            // User - Project Created and Updated 
             modelBuilder.Entity<Project>()
                 .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedProjects);
             modelBuilder.Entity<Project>()

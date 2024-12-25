@@ -275,6 +275,18 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         principalTable: "departments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_users_users_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_users_users_UpdatedById",
+                        column: x => x.UpdatedById,
+                        principalTable: "users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -352,30 +364,6 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     table.ForeignKey(
                         name: "FK_projects_users_UserId",
                         column: x => x.UserId,
-                        principalTable: "users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserUser",
-                columns: table => new
-                {
-                    CreatedById = table.Column<int>(type: "integer", nullable: false),
-                    UpdatedById = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserUser", x => new { x.CreatedById, x.UpdatedById });
-                    table.ForeignKey(
-                        name: "FK_UserUser_users_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserUser_users_UpdatedById",
-                        column: x => x.UpdatedById,
                         principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -680,13 +668,18 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
+                name: "IX_users_CreatedById",
+                table: "users",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_users_DepartmentId",
                 table: "users",
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserUser_UpdatedById",
-                table: "UserUser",
+                name: "IX_users_UpdatedById",
+                table: "users",
                 column: "UpdatedById");
 
             migrationBuilder.AddForeignKey(
@@ -838,9 +831,6 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "assessments");
-
-            migrationBuilder.DropTable(
-                name: "UserUser");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

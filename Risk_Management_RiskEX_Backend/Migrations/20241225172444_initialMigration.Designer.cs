@@ -12,7 +12,7 @@ using Risk_Management_RiskEX_Backend.Data;
 namespace Risk_Management_RiskEX_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241225130619_initialMigration")]
+    [Migration("20241225172444_initialMigration")]
     partial class initialMigration
     {
         /// <inheritdoc />
@@ -689,24 +689,13 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedById");
+
                     b.HasIndex("DepartmentId");
-
-                    b.ToTable("users");
-                });
-
-            modelBuilder.Entity("UserUser", b =>
-                {
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UpdatedById")
-                        .HasColumnType("integer");
-
-                    b.HasKey("CreatedById", "UpdatedById");
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("UserUser");
+                    b.ToTable("users");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1037,28 +1026,29 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
             modelBuilder.Entity("RiskManagement_Department_API.Models.User", b =>
                 {
+                    b.HasOne("RiskManagement_Department_API.Models.User", "CreatedBy")
+                        .WithMany("CreatedUsers")
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("RiskManagement_Department_API.Models.Department", "Department")
                         .WithMany("Users")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Department");
-                });
-
-            modelBuilder.Entity("UserUser", b =>
-                {
-                    b.HasOne("RiskManagement_Department_API.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RiskManagement_Department_API.Models.User", null)
-                        .WithMany()
+                    b.HasOne("RiskManagement_Department_API.Models.User", "UpdatedBy")
+                        .WithMany("UpdatedUsers")
                         .HasForeignKey("UpdatedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("UpdatedBy");
                 });
 
             modelBuilder.Entity("RiskManagement_Department_API.Models.AssessmentBasis", b =>
@@ -1127,6 +1117,8 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.Navigation("CreatedRisks");
 
+                    b.Navigation("CreatedUsers");
+
                     b.Navigation("Projects");
 
                     b.Navigation("ResponsibleRisks");
@@ -1150,6 +1142,8 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Navigation("UpdatedRiskAssessments");
 
                     b.Navigation("UpdatedRisks");
+
+                    b.Navigation("UpdatedUsers");
                 });
 #pragma warning restore 612, 618
         }
