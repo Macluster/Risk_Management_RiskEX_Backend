@@ -12,18 +12,18 @@ namespace Risk_Management_RiskEX_Backend.Data
 
         }
 
-        DbSet<Risk> risks {  get; set; }
-        DbSet<Department> departments { get; set; }
+       public  DbSet<Risk> Risks {  get; set; }
+       public  DbSet<Department> Departments { get; set; }
 
-        DbSet<User> users { get; set; }
-        DbSet<RiskAssessment> assessments { get; set; }
-        DbSet<Project> projects { get; set; }
+       public  DbSet<User> Users { get; set; }
+       public  DbSet<RiskAssessment> Assessments { get; set; }
+       public DbSet<Project> Projects { get; set; }
 
-        DbSet<Review> reviews { get; set; }
-        DbSet<ExternalReviewer> externalReviewers { get; set; }
-        DbSet<AssessmentBasis> assessmentsBasis { get; set; }
-        DbSet<AssessmentMatrixImpact> assessmentsMatrixImpact { get; set; }
-        DbSet<AssessmentMatrixLikelihood> assessmentsMatrixLikelihood { get; set; }
+       public DbSet<Review> Reviews { get; set; }
+       public DbSet<ExternalReviewer> ExternalReviewers { get; set; }
+       public DbSet<AssessmentBasis> AssessmentsBasis { get; set; }
+       public DbSet<AssessmentMatrixImpact> AssessmentsMatrixImpact { get; set; }
+       public DbSet<AssessmentMatrixLikelihood> AssessmentsMatrixLikelihood { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

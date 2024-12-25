@@ -248,7 +248,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("assessmentsBasis");
+                    b.ToTable("AssessmentsBasis");
                 });
 
             modelBuilder.Entity("RiskManagement_Department_API.Models.AssessmentMatrixImpact", b =>
@@ -284,7 +284,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("assessmentsMatrixImpact");
+                    b.ToTable("AssessmentsMatrixImpact");
                 });
 
             modelBuilder.Entity("RiskManagement_Department_API.Models.AssessmentMatrixLikelihood", b =>
@@ -320,7 +320,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("assessmentsMatrixLikelihood");
+                    b.ToTable("AssessmentsMatrixLikelihood");
                 });
 
             modelBuilder.Entity("RiskManagement_Department_API.Models.Department", b =>
@@ -353,7 +353,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("departments");
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("RiskManagement_Department_API.Models.ExternalReviewer", b =>
@@ -395,7 +395,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("externalReviewers");
+                    b.ToTable("ExternalReviewers");
                 });
 
             modelBuilder.Entity("RiskManagement_Department_API.Models.Project", b =>
@@ -438,7 +438,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("projects");
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("RiskManagement_Department_API.Models.Review", b =>
@@ -485,7 +485,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("reviews");
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("RiskManagement_Department_API.Models.Risk", b =>
@@ -581,7 +581,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("risks");
+                    b.ToTable("Risks");
                 });
 
             modelBuilder.Entity("RiskManagement_Department_API.Models.RiskAssessment", b =>
@@ -641,7 +641,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("assessments");
+                    b.ToTable("Assessments");
                 });
 
             modelBuilder.Entity("RiskManagement_Department_API.Models.User", b =>
@@ -692,7 +692,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("users");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

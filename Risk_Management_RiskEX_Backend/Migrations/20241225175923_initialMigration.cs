@@ -158,7 +158,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "assessments",
+                name: "Assessments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -177,11 +177,11 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_assessments", x => x.Id);
+                    table.PrimaryKey("PK_Assessments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "assessmentsBasis",
+                name: "AssessmentsBasis",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -194,11 +194,11 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_assessmentsBasis", x => x.Id);
+                    table.PrimaryKey("PK_AssessmentsBasis", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "assessmentsMatrixImpact",
+                name: "AssessmentsMatrixImpact",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -212,11 +212,11 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_assessmentsMatrixImpact", x => x.Id);
+                    table.PrimaryKey("PK_AssessmentsMatrixImpact", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "assessmentsMatrixLikelihood",
+                name: "AssessmentsMatrixLikelihood",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -230,11 +230,11 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_assessmentsMatrixLikelihood", x => x.Id);
+                    table.PrimaryKey("PK_AssessmentsMatrixLikelihood", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "departments",
+                name: "Departments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -247,11 +247,11 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_departments", x => x.Id);
+                    table.PrimaryKey("PK_Departments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "users",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -268,29 +268,29 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_users", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_users_departments_DepartmentId",
+                        name: "FK_Users_Departments_DepartmentId",
                         column: x => x.DepartmentId,
-                        principalTable: "departments",
+                        principalTable: "Departments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_users_users_CreatedById",
+                        name: "FK_Users_Users_CreatedById",
                         column: x => x.CreatedById,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_users_users_UpdatedById",
+                        name: "FK_Users_Users_UpdatedById",
                         column: x => x.UpdatedById,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "externalReviewers",
+                name: "ExternalReviewers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -305,29 +305,29 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_externalReviewers", x => x.Id);
+                    table.PrimaryKey("PK_ExternalReviewers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_externalReviewers_departments_DepartmentId",
+                        name: "FK_ExternalReviewers_Departments_DepartmentId",
                         column: x => x.DepartmentId,
-                        principalTable: "departments",
+                        principalTable: "Departments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_externalReviewers_users_CreatedById",
+                        name: "FK_ExternalReviewers_Users_CreatedById",
                         column: x => x.CreatedById,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_externalReviewers_users_UpdatedById",
+                        name: "FK_ExternalReviewers_Users_UpdatedById",
                         column: x => x.UpdatedById,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "projects",
+                name: "Projects",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -342,35 +342,35 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_projects", x => x.Id);
+                    table.PrimaryKey("PK_Projects", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_projects_departments_DepartmentId",
+                        name: "FK_Projects_Departments_DepartmentId",
                         column: x => x.DepartmentId,
-                        principalTable: "departments",
+                        principalTable: "Departments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_projects_users_CreatedById",
+                        name: "FK_Projects_Users_CreatedById",
                         column: x => x.CreatedById,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_projects_users_UpdatedById",
+                        name: "FK_Projects_Users_UpdatedById",
                         column: x => x.UpdatedById,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_projects_users_UserId",
+                        name: "FK_Projects_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "reviews",
+                name: "Reviews",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -386,35 +386,35 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_reviews", x => x.Id);
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_reviews_externalReviewers_ExternalReviewerId",
+                        name: "FK_Reviews_ExternalReviewers_ExternalReviewerId",
                         column: x => x.ExternalReviewerId,
-                        principalTable: "externalReviewers",
+                        principalTable: "ExternalReviewers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_reviews_users_CreatedById",
+                        name: "FK_Reviews_Users_CreatedById",
                         column: x => x.CreatedById,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_reviews_users_UpdatedById",
+                        name: "FK_Reviews_Users_UpdatedById",
                         column: x => x.UpdatedById,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_reviews_users_UserId",
+                        name: "FK_Reviews_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "risks",
+                name: "Risks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -442,35 +442,35 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_risks", x => x.Id);
+                    table.PrimaryKey("PK_Risks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_risks_departments_DepartmentId",
+                        name: "FK_Risks_Departments_DepartmentId",
                         column: x => x.DepartmentId,
-                        principalTable: "departments",
+                        principalTable: "Departments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_risks_projects_ProjectId",
+                        name: "FK_Risks_Projects_ProjectId",
                         column: x => x.ProjectId,
-                        principalTable: "projects",
+                        principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_risks_users_CreatedById",
+                        name: "FK_Risks_Users_CreatedById",
                         column: x => x.CreatedById,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_risks_users_ResponsibleUserId",
+                        name: "FK_Risks_Users_ResponsibleUserId",
                         column: x => x.ResponsibleUserId,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_risks_users_UpdatedById",
+                        name: "FK_Risks_Users_UpdatedById",
                         column: x => x.UpdatedById,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -513,292 +513,292 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_assessments_AssessmentBasisId",
-                table: "assessments",
+                name: "IX_Assessments_AssessmentBasisId",
+                table: "Assessments",
                 column: "AssessmentBasisId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_assessments_CreatedById",
-                table: "assessments",
+                name: "IX_Assessments_CreatedById",
+                table: "Assessments",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_assessments_Impact",
-                table: "assessments",
+                name: "IX_Assessments_Impact",
+                table: "Assessments",
                 column: "Impact");
 
             migrationBuilder.CreateIndex(
-                name: "IX_assessments_Likelihood",
-                table: "assessments",
+                name: "IX_Assessments_Likelihood",
+                table: "Assessments",
                 column: "Likelihood");
 
             migrationBuilder.CreateIndex(
-                name: "IX_assessments_ReviewId",
-                table: "assessments",
+                name: "IX_Assessments_ReviewId",
+                table: "Assessments",
                 column: "ReviewId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_assessments_RiskId",
-                table: "assessments",
+                name: "IX_Assessments_RiskId",
+                table: "Assessments",
                 column: "RiskId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_assessments_UpdatedById",
-                table: "assessments",
+                name: "IX_Assessments_UpdatedById",
+                table: "Assessments",
                 column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_assessmentsBasis_CreatedById",
-                table: "assessmentsBasis",
+                name: "IX_AssessmentsBasis_CreatedById",
+                table: "AssessmentsBasis",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_assessmentsBasis_UpdatedById",
-                table: "assessmentsBasis",
+                name: "IX_AssessmentsBasis_UpdatedById",
+                table: "AssessmentsBasis",
                 column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_assessmentsMatrixImpact_CreatedById",
-                table: "assessmentsMatrixImpact",
+                name: "IX_AssessmentsMatrixImpact_CreatedById",
+                table: "AssessmentsMatrixImpact",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_assessmentsMatrixImpact_UpdatedById",
-                table: "assessmentsMatrixImpact",
+                name: "IX_AssessmentsMatrixImpact_UpdatedById",
+                table: "AssessmentsMatrixImpact",
                 column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_assessmentsMatrixLikelihood_CreatedById",
-                table: "assessmentsMatrixLikelihood",
+                name: "IX_AssessmentsMatrixLikelihood_CreatedById",
+                table: "AssessmentsMatrixLikelihood",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_assessmentsMatrixLikelihood_UpdatedById",
-                table: "assessmentsMatrixLikelihood",
+                name: "IX_AssessmentsMatrixLikelihood_UpdatedById",
+                table: "AssessmentsMatrixLikelihood",
                 column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_departments_CreatedById",
-                table: "departments",
+                name: "IX_Departments_CreatedById",
+                table: "Departments",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_departments_UpdatedById",
-                table: "departments",
+                name: "IX_Departments_UpdatedById",
+                table: "Departments",
                 column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_externalReviewers_CreatedById",
-                table: "externalReviewers",
+                name: "IX_ExternalReviewers_CreatedById",
+                table: "ExternalReviewers",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_externalReviewers_DepartmentId",
-                table: "externalReviewers",
+                name: "IX_ExternalReviewers_DepartmentId",
+                table: "ExternalReviewers",
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_externalReviewers_UpdatedById",
-                table: "externalReviewers",
+                name: "IX_ExternalReviewers_UpdatedById",
+                table: "ExternalReviewers",
                 column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_projects_CreatedById",
-                table: "projects",
+                name: "IX_Projects_CreatedById",
+                table: "Projects",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_projects_DepartmentId",
-                table: "projects",
+                name: "IX_Projects_DepartmentId",
+                table: "Projects",
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_projects_UpdatedById",
-                table: "projects",
+                name: "IX_Projects_UpdatedById",
+                table: "Projects",
                 column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_projects_UserId",
-                table: "projects",
+                name: "IX_Projects_UserId",
+                table: "Projects",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_reviews_CreatedById",
-                table: "reviews",
+                name: "IX_Reviews_CreatedById",
+                table: "Reviews",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_reviews_ExternalReviewerId",
-                table: "reviews",
+                name: "IX_Reviews_ExternalReviewerId",
+                table: "Reviews",
                 column: "ExternalReviewerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_reviews_UpdatedById",
-                table: "reviews",
+                name: "IX_Reviews_UpdatedById",
+                table: "Reviews",
                 column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_reviews_UserId",
-                table: "reviews",
+                name: "IX_Reviews_UserId",
+                table: "Reviews",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_risks_CreatedById",
-                table: "risks",
+                name: "IX_Risks_CreatedById",
+                table: "Risks",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_risks_DepartmentId",
-                table: "risks",
+                name: "IX_Risks_DepartmentId",
+                table: "Risks",
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_risks_ProjectId",
-                table: "risks",
+                name: "IX_Risks_ProjectId",
+                table: "Risks",
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_risks_ResponsibleUserId",
-                table: "risks",
+                name: "IX_Risks_ResponsibleUserId",
+                table: "Risks",
                 column: "ResponsibleUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_risks_UpdatedById",
-                table: "risks",
+                name: "IX_Risks_UpdatedById",
+                table: "Risks",
                 column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_users_CreatedById",
-                table: "users",
+                name: "IX_Users_CreatedById",
+                table: "Users",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_users_DepartmentId",
-                table: "users",
+                name: "IX_Users_DepartmentId",
+                table: "Users",
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_users_UpdatedById",
-                table: "users",
+                name: "IX_Users_UpdatedById",
+                table: "Users",
                 column: "UpdatedById");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_assessments_assessmentsBasis_AssessmentBasisId",
-                table: "assessments",
+                name: "FK_Assessments_AssessmentsBasis_AssessmentBasisId",
+                table: "Assessments",
                 column: "AssessmentBasisId",
-                principalTable: "assessmentsBasis",
+                principalTable: "AssessmentsBasis",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_assessments_assessmentsMatrixImpact_Impact",
-                table: "assessments",
+                name: "FK_Assessments_AssessmentsMatrixImpact_Impact",
+                table: "Assessments",
                 column: "Impact",
-                principalTable: "assessmentsMatrixImpact",
+                principalTable: "AssessmentsMatrixImpact",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_assessments_assessmentsMatrixLikelihood_Likelihood",
-                table: "assessments",
+                name: "FK_Assessments_AssessmentsMatrixLikelihood_Likelihood",
+                table: "Assessments",
                 column: "Likelihood",
-                principalTable: "assessmentsMatrixLikelihood",
+                principalTable: "AssessmentsMatrixLikelihood",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_assessments_reviews_ReviewId",
-                table: "assessments",
+                name: "FK_Assessments_Reviews_ReviewId",
+                table: "Assessments",
                 column: "ReviewId",
-                principalTable: "reviews",
+                principalTable: "Reviews",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_assessments_risks_RiskId",
-                table: "assessments",
+                name: "FK_Assessments_Risks_RiskId",
+                table: "Assessments",
                 column: "RiskId",
-                principalTable: "risks",
+                principalTable: "Risks",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_assessments_users_CreatedById",
-                table: "assessments",
+                name: "FK_Assessments_Users_CreatedById",
+                table: "Assessments",
                 column: "CreatedById",
-                principalTable: "users",
+                principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_assessments_users_UpdatedById",
-                table: "assessments",
+                name: "FK_Assessments_Users_UpdatedById",
+                table: "Assessments",
                 column: "UpdatedById",
-                principalTable: "users",
+                principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_assessmentsBasis_users_CreatedById",
-                table: "assessmentsBasis",
+                name: "FK_AssessmentsBasis_Users_CreatedById",
+                table: "AssessmentsBasis",
                 column: "CreatedById",
-                principalTable: "users",
+                principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_assessmentsBasis_users_UpdatedById",
-                table: "assessmentsBasis",
+                name: "FK_AssessmentsBasis_Users_UpdatedById",
+                table: "AssessmentsBasis",
                 column: "UpdatedById",
-                principalTable: "users",
+                principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_assessmentsMatrixImpact_users_CreatedById",
-                table: "assessmentsMatrixImpact",
+                name: "FK_AssessmentsMatrixImpact_Users_CreatedById",
+                table: "AssessmentsMatrixImpact",
                 column: "CreatedById",
-                principalTable: "users",
+                principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_assessmentsMatrixImpact_users_UpdatedById",
-                table: "assessmentsMatrixImpact",
+                name: "FK_AssessmentsMatrixImpact_Users_UpdatedById",
+                table: "AssessmentsMatrixImpact",
                 column: "UpdatedById",
-                principalTable: "users",
+                principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_assessmentsMatrixLikelihood_users_CreatedById",
-                table: "assessmentsMatrixLikelihood",
+                name: "FK_AssessmentsMatrixLikelihood_Users_CreatedById",
+                table: "AssessmentsMatrixLikelihood",
                 column: "CreatedById",
-                principalTable: "users",
+                principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_assessmentsMatrixLikelihood_users_UpdatedById",
-                table: "assessmentsMatrixLikelihood",
+                name: "FK_AssessmentsMatrixLikelihood_Users_UpdatedById",
+                table: "AssessmentsMatrixLikelihood",
                 column: "UpdatedById",
-                principalTable: "users",
+                principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_departments_users_CreatedById",
-                table: "departments",
+                name: "FK_Departments_Users_CreatedById",
+                table: "Departments",
                 column: "CreatedById",
-                principalTable: "users",
+                principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_departments_users_UpdatedById",
-                table: "departments",
+                name: "FK_Departments_Users_UpdatedById",
+                table: "Departments",
                 column: "UpdatedById",
-                principalTable: "users",
+                principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }
@@ -807,12 +807,12 @@ namespace Risk_Management_RiskEX_Backend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_departments_users_CreatedById",
-                table: "departments");
+                name: "FK_Departments_Users_CreatedById",
+                table: "Departments");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_departments_users_UpdatedById",
-                table: "departments");
+                name: "FK_Departments_Users_UpdatedById",
+                table: "Departments");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -830,7 +830,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "assessments");
+                name: "Assessments");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -839,31 +839,31 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "assessmentsBasis");
+                name: "AssessmentsBasis");
 
             migrationBuilder.DropTable(
-                name: "assessmentsMatrixImpact");
+                name: "AssessmentsMatrixImpact");
 
             migrationBuilder.DropTable(
-                name: "assessmentsMatrixLikelihood");
+                name: "AssessmentsMatrixLikelihood");
 
             migrationBuilder.DropTable(
-                name: "reviews");
+                name: "Reviews");
 
             migrationBuilder.DropTable(
-                name: "risks");
+                name: "Risks");
 
             migrationBuilder.DropTable(
-                name: "externalReviewers");
+                name: "ExternalReviewers");
 
             migrationBuilder.DropTable(
-                name: "projects");
+                name: "Projects");
 
             migrationBuilder.DropTable(
-                name: "users");
+                name: "Users");
 
             migrationBuilder.DropTable(
-                name: "departments");
+                name: "Departments");
         }
     }
 }
