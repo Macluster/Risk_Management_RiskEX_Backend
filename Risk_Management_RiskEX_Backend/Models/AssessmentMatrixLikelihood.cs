@@ -2,7 +2,7 @@
 
 namespace Risk_Management_RiskEX_Backend.Models
 {
-    public class AssessmentMatrixLikelihood : BaseEntity
+    public class AssessmentMatrixLikelihood : TimeStamps
     {
         [Key]
         public int Id { get; set; }

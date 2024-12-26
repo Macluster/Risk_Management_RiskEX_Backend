@@ -11,7 +11,7 @@ namespace Risk_Management_RiskEX_Backend.Models
         public int ExternalReviewerId { get; set; }
 
         [StringLength(250)]
-        public string Comments { get; set; }
+        public string? Comments { get; set; }
         public ReviewStatus ReviewStatus { get; set; }
 
         [ForeignKey("UserId")]

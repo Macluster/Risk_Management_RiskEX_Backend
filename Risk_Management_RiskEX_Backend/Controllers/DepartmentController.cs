@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models;
+using Risk_Management_RiskEX_Backend.Models.DTO;
 
 
 namespace RiskManagement_Department_API.Controllers
@@ -17,7 +18,7 @@ namespace RiskManagement_Department_API.Controllers
 
         }
 
-        [HttpGet("GetAllDepartments")]
+        [HttpGet("Departments")]
         public async Task<IActionResult> GetAllDepartments()
         {
             var departments = await _departmentRepository.GetAllDepartments();
@@ -28,19 +29,20 @@ namespace RiskManagement_Department_API.Controllers
             return NotFound("No departments found.");
         }
 
-        [HttpPost("AddDepartment")]
-        public async Task<IActionResult> AddDepartment([FromBody] Department department)
+        [HttpPost("Department")]
+        public async Task<IActionResult> AddDepartment(IDepartmentRepository _departmentRepository,[FromBody] DepartmentDTO departmentDto)
         {
-            if (string.IsNullOrEmpty(department.DepartmentName))
+            if (string.IsNullOrEmpty(departmentDto.Name))
             {
                 return BadRequest(new { message = "Department name is required." });
             }
 
-            var result = await _departmentRepository.AddDepartment(department);
+            var result = await _departmentRepository.AddDepartment(departmentDto);
             if (result)
             {
                 return Ok(new { message = "Department added successfully." });
             }
+            return StatusCode(500);
             return StatusCode(500, new { message = "An error occurred while adding the department." });
         }
 

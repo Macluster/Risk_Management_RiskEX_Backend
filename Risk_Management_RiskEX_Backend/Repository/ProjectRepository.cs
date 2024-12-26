@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models;
@@ -10,10 +11,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
     public class ProjectRepository : IProjectRepository
     {
         private readonly ApplicationDBContext _db;
+        private readonly IMapper _mapper;  // Injecting AutoMapper
 
-        public ProjectRepository(ApplicationDBContext db)
+        public ProjectRepository(ApplicationDBContext db, IMapper mapper)
         {
             _db = db;
+            _mapper = mapper; // Assigning AutoMapper to the field
         }
 
 
@@ -44,22 +47,23 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     throw new Exception("Department does not exist.");
                 }
 
-                var project = new Project
-                {
-                    Name = projectDto.ProjectName,
-                    DepartmentId = department.Id,
-                    UserId = projectDto.UserId
-                };
+                // Use AutoMapper to map ProjectDTO to Project
+                var project = _mapper.Map<Project>(projectDto);
+                project.DepartmentId = department.Id;  // Set the DepartmentId manually
 
-                _db.Projects.Add(project);
+                _db.Projects.AddAsync(project);
                 await _db.SaveChangesAsync();
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                // Log error (optional)
+                // _logger.LogError(ex, "An error occurred while adding the project.");
+
                 return false;
             }
         }
+
 
     }
 }
