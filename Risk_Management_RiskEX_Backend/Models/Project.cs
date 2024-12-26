@@ -16,5 +16,9 @@ namespace RiskManagement_Department_API.Models
 
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
+
+     
+
+        public ICollection<Risk> Risks { get; set; }
     }
 }
