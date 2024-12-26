@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace RiskManagement_Department_API.Models
+namespace Risk_Management_RiskEX_Backend.Models
 {
     public class Risk : BaseEntity
     {

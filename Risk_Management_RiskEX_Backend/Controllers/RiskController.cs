@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using RiskManagement_Department_API.Models;
+using Risk_Management_RiskEX_Backend.Models;
 
 namespace Risk_Management_RiskEX_Backend.Controllers
 {
