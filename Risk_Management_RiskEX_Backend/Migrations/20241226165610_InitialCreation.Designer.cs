@@ -12,8 +12,8 @@ using Risk_Management_RiskEX_Backend.Data;
 namespace Risk_Management_RiskEX_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241226114322_newConfiguration")]
-    partial class newConfiguration
+    [Migration("20241226165610_InitialCreation")]
+    partial class InitialCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -248,29 +248,29 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         {
                             Id = 1,
                             Basis = "Confidentiality",
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4726),
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4726)
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7177),
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7177)
                         },
                         new
                         {
                             Id = 2,
                             Basis = "Integrity",
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4729),
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4729)
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7179),
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7179)
                         },
                         new
                         {
                             Id = 3,
                             Basis = "Privacy",
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4731),
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4732)
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7180),
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7181)
                         },
                         new
                         {
                             Id = 4,
                             Basis = "Quality",
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4733),
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4734)
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7182),
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7182)
                         });
                 });
 
@@ -289,6 +289,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Definition")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<double>("Impact")
                         .HasColumnType("double precision");
 
@@ -304,33 +308,37 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         {
                             Id = 1,
                             AssessmentFactor = "Low",
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4805),
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7238),
+                            Definition = "No/slight effect on business",
                             Impact = 10.0,
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4806)
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7238)
                         },
                         new
                         {
                             Id = 2,
                             AssessmentFactor = "Medium",
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4808),
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7240),
+                            Definition = "business objectives affected",
                             Impact = 20.0,
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4809)
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7240)
                         },
                         new
                         {
                             Id = 3,
                             AssessmentFactor = "High",
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4811),
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7241),
+                            Definition = "business objectives undermined",
                             Impact = 40.0,
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4812)
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7242)
                         },
                         new
                         {
                             Id = 4,
                             AssessmentFactor = "Critical",
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4814),
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7243),
+                            Definition = "business objectives not accomplished",
                             Impact = 60.0,
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4814)
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7244)
                         });
                 });
 
@@ -349,6 +357,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Definition")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<double>("Likelihood")
                         .HasColumnType("double precision");
 
@@ -364,33 +376,37 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         {
                             Id = 1,
                             AssessmentFactor = "Low",
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4912),
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7266),
+                            Definition = "1-24% chance of occurrence",
                             Likelihood = 0.10000000000000001,
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4913)
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7267)
                         },
                         new
                         {
                             Id = 2,
                             AssessmentFactor = "Medium",
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4915),
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7268),
+                            Definition = "25-49% chance of occurrence",
                             Likelihood = 0.20000000000000001,
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4916)
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7269)
                         },
                         new
                         {
                             Id = 3,
                             AssessmentFactor = "High",
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4919),
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7270),
+                            Definition = "50-74% chance of occurrence",
                             Likelihood = 0.40000000000000002,
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4920)
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7271)
                         },
                         new
                         {
                             Id = 4,
                             AssessmentFactor = "Critical",
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4921),
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7272),
+                            Definition = "75-99% chance of occurrence",
                             Likelihood = 0.59999999999999998,
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4922)
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7272)
                         });
                 });
 
@@ -420,23 +436,23 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4416),
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(6934),
                             DepartmentName = "SFM",
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4420)
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(6940)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4423),
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(6942),
                             DepartmentName = "HR",
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4426)
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(6942)
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4428),
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(6944),
                             DepartmentName = "Finance",
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4429)
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(6944)
                         });
                 });
 
@@ -528,22 +544,22 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4772),
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7209),
                             CreatedById = 1,
                             DepartmentId = 1,
                             Name = "Data Center Migration",
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4773),
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7210),
                             UpdatedById = 1,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4777),
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7212),
                             CreatedById = 1,
                             DepartmentId = 2,
                             Name = "HR Inventory",
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4778),
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7213),
                             UpdatedById = 1,
                             UserId = 2
                         });
@@ -751,6 +767,61 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.ToTable("Assessments");
                 });
 
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.RiskResponseData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Example")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RiskResponseDatas");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "This strategy aims to eliminate the risk entirely by taking actions that prevent the risk from occurring. It involves altering project plans or processes to steer clear of the risk's potential impact.",
+                            Example = "Changing a project scope to exclude a high-risk feature that could lead to technical challenges.",
+                            Name = "Avoid"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Mitigation involves taking proactive steps to reduce the likelihood or impact of a risk. It focuses on minimizing the risk's negative effects while still allowing the project or function to move forward.",
+                            Example = "Developing a backup system to reduce the impact of potential server failures.",
+                            Name = "Mitigate"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Transferring the risk involves shifting the responsibility for managing the risk to another party. This could be achieved through insurance, outsourcing, partnerships, or contracts.",
+                            Example = "Purchasing insurance to cover financial losses due to unforeseen events.",
+                            Name = "Transfer"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Accepting the risk means acknowledging its existence and choosing not to take specific actions to mitigate or avoid it.",
+                            Example = "Deciding not to invest in additional security for a low-value system because the cost of mitigation exceeds the potential impact of the risk.",
+                            Name = "Accept"
+                        });
+                });
+
             modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -805,24 +876,24 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4685),
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7146),
                             DepartmentId = 1,
                             Email = "admin@riskex.com",
                             FullName = "System Admin",
                             IsActive = true,
                             Password = "Admin@123",
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4686)
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7147)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4689),
+                            CreatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7149),
                             DepartmentId = 1,
                             Email = "risk.manager@riskex.com",
                             FullName = "Risk Manager",
                             IsActive = true,
                             Password = "Risk@123",
-                            UpdatedAt = new DateTime(2024, 12, 26, 11, 43, 21, 452, DateTimeKind.Utc).AddTicks(4690)
+                            UpdatedAt = new DateTime(2024, 12, 26, 16, 56, 9, 720, DateTimeKind.Utc).AddTicks(7150)
                         });
                 });
 

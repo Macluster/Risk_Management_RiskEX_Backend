@@ -7,7 +7,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 {
     public class RiskRepository : IRiskRepository
     {
-        ApplicationDBContext _db;
+        private readonly ApplicationDBContext _db;
         public RiskRepository(ApplicationDBContext db)
         {
             _db = db;

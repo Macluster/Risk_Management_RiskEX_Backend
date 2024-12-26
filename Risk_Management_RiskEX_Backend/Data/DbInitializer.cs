@@ -113,7 +113,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 1,
                     AssessmentFactor = "Low",
                     Impact = 10.0,  // Updated value
-
+                    Definition = "No/slight effect on business",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -122,6 +122,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 2,
                     AssessmentFactor = "Medium",
                     Impact = 20.0,  // Updated value
+                    Definition = "business objectives affected",
 
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
@@ -131,7 +132,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 3,
                     AssessmentFactor = "High",
                     Impact = 40.0,  // Updated value
-
+                    Definition= "business objectives undermined",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -140,7 +141,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 4,
                     AssessmentFactor = "Critical",
                     Impact = 60.0,  // Updated value
-
+                    Definition = "business objectives not accomplished",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
@@ -153,7 +154,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 1,
                     AssessmentFactor = "Low",
                     Likelihood = 0.1,  // Updated value
-
+                    Definition = "1-24% chance of occurrence",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -162,7 +163,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 2,
                     AssessmentFactor = "Medium",
                     Likelihood = 0.2,  // Updated value
-
+                    Definition = "25-49% chance of occurrence",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -171,7 +172,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 3,
                     AssessmentFactor = "High",
                     Likelihood = 0.4,  // Updated value
-
+                    Definition= "50-74% chance of occurrence",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -180,12 +181,46 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 4,
                     AssessmentFactor = "Critical",
                     Likelihood = 0.6,  // Updated value
-
+                    Definition = "75-99% chance of occurrence",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
             );
-          
+            modelBuilder.Entity<RiskResponseData>().HasData(
+               new RiskResponseData
+               {
+                   Id = 1,
+                   Name = "Avoid",
+                   Description = "This strategy aims to eliminate the risk entirely by taking actions that prevent the risk from occurring. It involves altering project plans or processes to steer clear of the risk's potential impact.",
+                   Example = "Changing a project scope to exclude a high-risk feature that could lead to technical challenges."
+               },
+               new RiskResponseData
+               {
+                   Id = 2,
+                   Name = "Mitigate",
+                   Description = "Mitigation involves taking proactive steps to reduce the likelihood or impact of a risk. It focuses on minimizing the risk's negative effects while still allowing the project or function to move forward.",
+                   Example =  "Developing a backup system to reduce the impact of potential server failures."
+               },
+                new RiskResponseData
+                {
+                    Id = 3,
+                    Name = "Transfer",
+                    Description =  "Transferring the risk involves shifting the responsibility for managing the risk to another party. This could be achieved through insurance, outsourcing, partnerships, or contracts.",
+                    Example =  "Purchasing insurance to cover financial losses due to unforeseen events."
+
+                },
+                new RiskResponseData
+                {
+                    Id = 4,
+                    Name = "Accept",
+                    Description =  "Accepting the risk means acknowledging its existence and choosing not to take specific actions to mitigate or avoid it.",
+                    Example =  "Deciding not to invest in additional security for a low-value system because the cost of mitigation exceeds the potential impact of the risk."
+                }
+             
+        
+               );
+
+
         }
     }
 }

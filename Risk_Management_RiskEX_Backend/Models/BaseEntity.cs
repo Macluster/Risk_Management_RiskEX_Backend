@@ -24,7 +24,7 @@ namespace Risk_Management_RiskEX_Backend.Models
             Quality
         }
 
-        public enum RiskResponse
+        public enum RiskResponses
         {
             Accept,
             Mitigate,
