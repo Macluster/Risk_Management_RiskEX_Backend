@@ -2,7 +2,7 @@
 
 namespace Risk_Management_RiskEX_Backend.Models
 {
-    public class AssessmentBasis : BaseEntity
+    public class AssessmentBasis : TimeStamps
     {
         [Key]
         public int Id { get; set; }

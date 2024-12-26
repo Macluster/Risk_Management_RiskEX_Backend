@@ -12,8 +12,8 @@ using Risk_Management_RiskEX_Backend.Data;
 namespace Risk_Management_RiskEX_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241226045817_RiskManagement")]
-    partial class RiskManagement
+    [Migration("20241226111439_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -221,7 +221,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.AssessmentBasis", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.AssessmentBasis", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -236,25 +236,15 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UpdatedById")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("UpdatedById");
 
                     b.ToTable("AssessmentsBasis");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.AssessmentMatrixImpact", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.AssessmentMatrixImpact", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -268,9 +258,6 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("integer");
 
                     b.Property<double>("Impact")
                         .HasColumnType("double precision");
@@ -278,19 +265,12 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UpdatedById")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("UpdatedById");
 
                     b.ToTable("AssessmentsMatrixImpact");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.AssessmentMatrixLikelihood", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.AssessmentMatrixLikelihood", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -305,28 +285,18 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("integer");
-
                     b.Property<double>("Likelihood")
                         .HasColumnType("double precision");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UpdatedById")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("UpdatedById");
 
                     b.ToTable("AssessmentsMatrixLikelihood");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.Department", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.Department", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -336,9 +306,6 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("integer");
 
                     b.Property<string>("DepartmentName")
                         .IsRequired()
@@ -347,19 +314,12 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UpdatedById")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("UpdatedById");
 
                     b.ToTable("Departments");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.ExternalReviewer", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.ExternalReviewer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -370,7 +330,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedById")
+                    b.Property<int?>("CreatedById")
                         .HasColumnType("integer");
 
                     b.Property<int>("DepartmentId")
@@ -387,7 +347,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UpdatedById")
+                    b.Property<int?>("UpdatedById")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -401,7 +361,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.ToTable("ExternalReviewers");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.Project", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.Project", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -412,7 +372,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedById")
+                    b.Property<int?>("CreatedById")
                         .HasColumnType("integer");
 
                     b.Property<int>("DepartmentId")
@@ -425,10 +385,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UpdatedById")
+                    b.Property<int?>("UpdatedById")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -444,7 +404,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.Review", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.Review", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -453,14 +413,13 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Comments")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedById")
+                    b.Property<int?>("CreatedById")
                         .HasColumnType("integer");
 
                     b.Property<int>("ExternalReviewerId")
@@ -472,7 +431,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UpdatedById")
+                    b.Property<int?>("UpdatedById")
                         .HasColumnType("integer");
 
                     b.Property<int>("UserId")
@@ -491,7 +450,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.Risk", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.Risk", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -510,7 +469,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedById")
+                    b.Property<int?>("CreatedById")
                         .HasColumnType("integer");
 
                     b.Property<int>("DepartmentId")
@@ -537,7 +496,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime?>("PlannedActionDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("ProjectId")
+                    b.Property<int?>("ProjectId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Remarks")
@@ -569,7 +528,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UpdatedById")
+                    b.Property<int?>("UpdatedById")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -587,7 +546,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.ToTable("Risks");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.RiskAssessment", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.RiskAssessment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -595,13 +554,13 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AssessmentBasisId")
+                    b.Property<int?>("AssessmentBasisId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedById")
+                    b.Property<int?>("CreatedById")
                         .HasColumnType("integer");
 
                     b.Property<int>("Impact")
@@ -625,7 +584,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UpdatedById")
+                    b.Property<int?>("UpdatedById")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -647,7 +606,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.ToTable("Assessments");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.User", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -658,7 +617,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedById")
+                    b.Property<int?>("CreatedById")
                         .HasColumnType("integer");
 
                     b.Property<int>("DepartmentId")
@@ -684,7 +643,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UpdatedById")
+                    b.Property<int?>("UpdatedById")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -749,101 +708,21 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.AssessmentBasis", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.ExternalReviewer", b =>
                 {
-                    b.HasOne("RiskManagement_Department_API.Models.User", "CreatedBy")
-                        .WithMany("CreatedAssessmentBasis")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RiskManagement_Department_API.Models.User", "UpdatedBy")
-                        .WithMany("UpdatedAssessmentBasis")
-                        .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("UpdatedBy");
-                });
-
-            modelBuilder.Entity("RiskManagement_Department_API.Models.AssessmentMatrixImpact", b =>
-                {
-                    b.HasOne("RiskManagement_Department_API.Models.User", "CreatedBy")
-                        .WithMany("CreatedImpactMatrix")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RiskManagement_Department_API.Models.User", "UpdatedBy")
-                        .WithMany("UpdatedImpactMatrix")
-                        .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("UpdatedBy");
-                });
-
-            modelBuilder.Entity("RiskManagement_Department_API.Models.AssessmentMatrixLikelihood", b =>
-                {
-                    b.HasOne("RiskManagement_Department_API.Models.User", "CreatedBy")
-                        .WithMany("CreatedLikeliHoodMatrix")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RiskManagement_Department_API.Models.User", "UpdatedBy")
-                        .WithMany("UpdatedLikeliHoodMatrix")
-                        .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("UpdatedBy");
-                });
-
-            modelBuilder.Entity("RiskManagement_Department_API.Models.Department", b =>
-                {
-                    b.HasOne("RiskManagement_Department_API.Models.User", "CreatedBy")
-                        .WithMany("CreatedDepartments")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RiskManagement_Department_API.Models.User", "UpdatedBy")
-                        .WithMany("UpdatedDepartments")
-                        .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("UpdatedBy");
-                });
-
-            modelBuilder.Entity("RiskManagement_Department_API.Models.ExternalReviewer", b =>
-                {
-                    b.HasOne("RiskManagement_Department_API.Models.User", "CreatedBy")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "CreatedBy")
                         .WithMany("CreatedExternalReviewers")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatedById");
 
-                    b.HasOne("RiskManagement_Department_API.Models.Department", "Department")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.Department", "Department")
                         .WithMany("ExternalReviewers")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RiskManagement_Department_API.Models.User", "UpdatedBy")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "UpdatedBy")
                         .WithMany("UpdatedExternalReviewers")
-                        .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UpdatedById");
 
                     b.Navigation("CreatedBy");
 
@@ -852,31 +731,25 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.Project", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.Project", b =>
                 {
-                    b.HasOne("RiskManagement_Department_API.Models.User", "CreatedBy")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "CreatedBy")
                         .WithMany("CreatedProjects")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatedById");
 
-                    b.HasOne("RiskManagement_Department_API.Models.Department", "Department")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.Department", "Department")
                         .WithMany("Projects")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RiskManagement_Department_API.Models.User", "UpdatedBy")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "UpdatedBy")
                         .WithMany("UpdatedProjects")
-                        .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UpdatedById");
 
-                    b.HasOne("RiskManagement_Department_API.Models.User", "User")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "User")
                         .WithMany("Projects")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("CreatedBy");
 
@@ -887,27 +760,23 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.Review", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.Review", b =>
                 {
-                    b.HasOne("RiskManagement_Department_API.Models.User", "CreatedBy")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "CreatedBy")
                         .WithMany("CreatedReviews")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatedById");
 
-                    b.HasOne("RiskManagement_Department_API.Models.ExternalReviewer", "ExternalReviewer")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.ExternalReviewer", "ExternalReviewer")
                         .WithMany("Reviews")
                         .HasForeignKey("ExternalReviewerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RiskManagement_Department_API.Models.User", "UpdatedBy")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "UpdatedBy")
                         .WithMany("UpdatedReviews")
-                        .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UpdatedById");
 
-                    b.HasOne("RiskManagement_Department_API.Models.User", "User")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "User")
                         .WithMany("Reviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -922,37 +791,31 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.Risk", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.Risk", b =>
                 {
-                    b.HasOne("RiskManagement_Department_API.Models.User", "CreatedBy")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "CreatedBy")
                         .WithMany("CreatedRisks")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatedById");
 
-                    b.HasOne("RiskManagement_Department_API.Models.Department", "Department")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.Department", "Department")
                         .WithMany("Risks")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RiskManagement_Department_API.Models.Project", "Project")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.Project", "Project")
                         .WithMany("Risks")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProjectId");
 
-                    b.HasOne("RiskManagement_Department_API.Models.User", "ResponsibleUser")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "ResponsibleUser")
                         .WithMany("ResponsibleRisks")
                         .HasForeignKey("ResponsibleUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RiskManagement_Department_API.Models.User", "UpdatedBy")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "UpdatedBy")
                         .WithMany("UpdatedRisks")
-                        .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UpdatedById");
 
                     b.Navigation("CreatedBy");
 
@@ -965,49 +828,43 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.RiskAssessment", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.RiskAssessment", b =>
                 {
-                    b.HasOne("RiskManagement_Department_API.Models.AssessmentBasis", "AssessmentBasis")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.AssessmentBasis", "AssessmentBasis")
                         .WithMany("RiskAssessments")
-                        .HasForeignKey("AssessmentBasisId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AssessmentBasisId");
 
-                    b.HasOne("RiskManagement_Department_API.Models.User", "CreatedBy")
-                        .WithMany("CreatedRiskAssessments")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
 
-                    b.HasOne("RiskManagement_Department_API.Models.AssessmentMatrixImpact", "MatrixImpact")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.AssessmentMatrixImpact", "MatrixImpact")
                         .WithMany("RiskAssessments")
                         .HasForeignKey("Impact")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RiskManagement_Department_API.Models.AssessmentMatrixLikelihood", "MatrixLikelihood")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.AssessmentMatrixLikelihood", "MatrixLikelihood")
                         .WithMany("RiskAssessments")
                         .HasForeignKey("Likelihood")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RiskManagement_Department_API.Models.Review", "Review")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.Review", "Review")
                         .WithMany("RiskAssessments")
                         .HasForeignKey("ReviewId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RiskManagement_Department_API.Models.Risk", "Risk")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.Risk", "Risk")
                         .WithMany("RiskAssessments")
                         .HasForeignKey("RiskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RiskManagement_Department_API.Models.User", "UpdatedBy")
-                        .WithMany("UpdatedRiskAssessments")
-                        .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById");
 
                     b.Navigation("AssessmentBasis");
 
@@ -1024,25 +881,21 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.User", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.User", b =>
                 {
-                    b.HasOne("RiskManagement_Department_API.Models.User", "CreatedBy")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "CreatedBy")
                         .WithMany("CreatedUsers")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatedById");
 
-                    b.HasOne("RiskManagement_Department_API.Models.Department", "Department")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.Department", "Department")
                         .WithMany("Users")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RiskManagement_Department_API.Models.User", "UpdatedBy")
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "UpdatedBy")
                         .WithMany("UpdatedUsers")
-                        .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UpdatedById");
 
                     b.Navigation("CreatedBy");
 
@@ -1051,22 +904,22 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.AssessmentBasis", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.AssessmentBasis", b =>
                 {
                     b.Navigation("RiskAssessments");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.AssessmentMatrixImpact", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.AssessmentMatrixImpact", b =>
                 {
                     b.Navigation("RiskAssessments");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.AssessmentMatrixLikelihood", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.AssessmentMatrixLikelihood", b =>
                 {
                     b.Navigation("RiskAssessments");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.Department", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.Department", b =>
                 {
                     b.Navigation("ExternalReviewers");
 
@@ -1077,43 +930,33 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.ExternalReviewer", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.ExternalReviewer", b =>
                 {
                     b.Navigation("Reviews");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.Project", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.Project", b =>
                 {
                     b.Navigation("Risks");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.Review", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.Review", b =>
                 {
                     b.Navigation("RiskAssessments");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.Risk", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.Risk", b =>
                 {
                     b.Navigation("RiskAssessments");
                 });
 
-            modelBuilder.Entity("RiskManagement_Department_API.Models.User", b =>
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.User", b =>
                 {
-                    b.Navigation("CreatedAssessmentBasis");
-
-                    b.Navigation("CreatedDepartments");
-
                     b.Navigation("CreatedExternalReviewers");
-
-                    b.Navigation("CreatedImpactMatrix");
-
-                    b.Navigation("CreatedLikeliHoodMatrix");
 
                     b.Navigation("CreatedProjects");
 
                     b.Navigation("CreatedReviews");
-
-                    b.Navigation("CreatedRiskAssessments");
 
                     b.Navigation("CreatedRisks");
 
@@ -1125,21 +968,11 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.Navigation("Reviews");
 
-                    b.Navigation("UpdatedAssessmentBasis");
-
-                    b.Navigation("UpdatedDepartments");
-
                     b.Navigation("UpdatedExternalReviewers");
-
-                    b.Navigation("UpdatedImpactMatrix");
-
-                    b.Navigation("UpdatedLikeliHoodMatrix");
 
                     b.Navigation("UpdatedProjects");
 
                     b.Navigation("UpdatedReviews");
-
-                    b.Navigation("UpdatedRiskAssessments");
 
                     b.Navigation("UpdatedRisks");
 

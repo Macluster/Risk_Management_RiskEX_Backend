@@ -4,25 +4,20 @@ using System.Text.Json.Serialization;
 
 namespace Risk_Management_RiskEX_Backend.Models
 {
- 
-        public abstract class BaseEntity
-        {
-            public DateTime CreatedAt { get; set; }
-            public int CreatedById { get; set; }
-            public DateTime UpdatedAt { get; set; }
-            public int UpdatedById { get; set; }
 
-            [ForeignKey("CreatedById")]
-            [JsonIgnore] 
-            public virtual User? CreatedBy { get; set; }
+    public abstract class BaseEntity:TimeStamps
+    {
+        public int? CreatedById { get; set; }
+        [ForeignKey("CreatedById")]
+        public virtual User CreatedBy { get; set; }
 
-        [JsonIgnore]
-
+        public int? UpdatedById { get; set; }
         [ForeignKey("UpdatedById")]
-            public virtual User? UpdatedBy { get; set; }
-        }
+        public virtual User UpdatedBy { get; set; }
+    }
 
-        public enum RiskType
+
+    public enum RiskType
         {
             Security,
             Privacy,

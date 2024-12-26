@@ -18,7 +18,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
-        [HttpGet("GetProjectsByDepartment/{departmentName}")]
+        [HttpGet("ProjectsBy/{departmentName}")]
         public async Task<IActionResult> GetProjectsByDepartment(string departmentName)
         {
             var projects = await _projectRepository.GetProjectsByDepartment(departmentName);
@@ -28,8 +28,8 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
             return NotFound("No projects found for the specified department.");
         }
-        [HttpPost("AddProject")]
-        public async Task<IActionResult> AddProject([FromBody] ProjectDTO projectDto)
+        [HttpPost("Project")]
+        public async Task<IActionResult> AddProject(IProjectRepository _projectRepository,[FromBody] ProjectDTO projectDto)
         {
             if (string.IsNullOrEmpty(projectDto.ProjectName))
             {

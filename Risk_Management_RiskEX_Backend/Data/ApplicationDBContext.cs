@@ -25,157 +25,348 @@ namespace Risk_Management_RiskEX_Backend.Data
        public DbSet<AssessmentMatrixImpact> AssessmentsMatrixImpact { get; set; }
        public DbSet<AssessmentMatrixLikelihood> AssessmentsMatrixLikelihood { get; set; }
 
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+
+
+
+        //    base.OnModelCreating(modelBuilder);
+        //    // User - Department 
+        //    modelBuilder.Entity<User>()
+        //        .HasOne(u => u.Department)
+        //        .WithMany(d =>d.Users )
+        //        .HasForeignKey(u => u.DepartmentId);
+
+        //    // User - Project
+        //    modelBuilder.Entity<User>()
+        //    .HasMany(u => u.Projects)
+        //    .WithOne(u=>u.User)
+        //    .HasForeignKey(u => u.UserId);
+
+
+
+        //    //User -Risk  responsible user
+        //    modelBuilder.Entity<Risk>()
+        //     .HasOne(r => r.ResponsibleUser)
+        //     .WithMany(u => u.ResponsibleRisks)
+        //     .HasForeignKey(f => f.ResponsibleUserId);
+
+
+        //    // User - User Created and Updated 
+        //    modelBuilder.Entity<User>()
+        //        .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedUsers);
+        //    modelBuilder.Entity<User>()
+        //          .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedUsers);
+
+
+        //    // User - Project Created and Updated 
+        //    modelBuilder.Entity<Project>()
+        //        .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedProjects);
+        //    modelBuilder.Entity<Project>()
+        //          .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedProjects);
+
+
+
+
+        //    //User-Risk Created and Updated
+        //    modelBuilder.Entity<Risk>()
+        //      .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedRisks);
+        //    modelBuilder.Entity<Risk>()
+        //          .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedRisks);
+
+        //    //User-ExternalReviewer Created and Updated
+        //    modelBuilder.Entity<ExternalReviewer>()
+        // .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedExternalReviewers);
+        //    modelBuilder.Entity<ExternalReviewer>()
+        //          .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedExternalReviewers);
+
+
+        //    //User-ExternalReviewer Created and Updated
+        //    modelBuilder.Entity<Review>()
+        // .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedReviews);
+        //    modelBuilder.Entity<Review>()
+        //          .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedReviews);
+
+
+
+
+
+
+
+
+        //    //Risk-Projects
+        //    modelBuilder.Entity<Risk>()
+        //    .HasOne(r => r.Project).WithMany(u => u.Risks).HasForeignKey(u=>u.ProjectId);
+
+        //    //Risk- Department
+        //    modelBuilder.Entity<Risk>()
+        //    .HasOne(r => r.Department).WithMany(u => u.Risks).HasForeignKey(u => u.DepartmentId);
+
+
+
+
+        //    //RiskAssesssment-Assessment Basis
+        //    modelBuilder.Entity<RiskAssessment>().HasOne(a=>a.AssessmentBasis).WithMany(a=>a.RiskAssessments);
+
+        //    //RiskAssessment- Risk
+        //    modelBuilder.Entity<RiskAssessment>().HasOne(a => a.Risk).WithMany(r => r.RiskAssessments).HasForeignKey(f=>f.RiskId);
+        //    modelBuilder.Entity<RiskAssessment>().HasOne(ra => ra.MatrixImpact).WithMany(ma => ma.RiskAssessments).HasForeignKey(f => f.Impact);
+        //    modelBuilder.Entity<RiskAssessment>().HasOne(ra => ra.MatrixLikelihood).WithMany(ma => ma.RiskAssessments).HasForeignKey(f => f.Likelihood);
+
+        //    //RiskAssessment-Review
+
+        //    modelBuilder.Entity<RiskAssessment>().HasOne(ra => ra.Review).WithMany(ma => ma.RiskAssessments).HasForeignKey(r => r.ReviewId);
+
+
+
+
+        //    //Projects -Department
+        //    modelBuilder.Entity<Project>().HasOne(p=>p.Department).WithMany(r=>r.Projects).HasForeignKey(d=>d.DepartmentId);
+
+
+
+        //    //Review-user
+
+        //    modelBuilder.Entity<Review>().HasOne(ra=>ra.User).WithMany(u=>u.Reviews).HasForeignKey(f=>f.UserId);
+
+        //    //Review-ExternalReviewer
+
+        //    modelBuilder.Entity<Review>().HasOne(ra => ra.ExternalReviewer).WithMany(eu => eu.Reviews).HasForeignKey(f => f.ExternalReviewerId);
+
+
+
+        //    //ExternalReviewer-department
+        //    modelBuilder.Entity<ExternalReviewer>().HasOne(ra => ra.Department).WithMany(eu => eu.ExternalReviewers).HasForeignKey(f => f.DepartmentId);
+
+
+        //    DbInitializer.SeedData(modelBuilder);
+
+
+
+
+
+        //}
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             base.OnModelCreating(modelBuilder);
-            // User - Department 
+
+            // Configure TimeStamps properties as nullable
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(TimeStamps).IsAssignableFrom(entityType.ClrType))
+                {
+                    modelBuilder.Entity(entityType.ClrType)
+                        .Property(nameof(TimeStamps.CreatedAt))
+                        .IsRequired(false);
+
+                    modelBuilder.Entity(entityType.ClrType)
+                        .Property(nameof(TimeStamps.UpdatedAt))
+                        .IsRequired(false);
+                }
+            }
+
+            // Configure BaseEntity properties as nullable
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
+                {
+                    modelBuilder.Entity(entityType.ClrType)
+                        .Property("CreatedById")
+                        .IsRequired(false);
+
+                    modelBuilder.Entity(entityType.ClrType)
+                        .Property("UpdatedById")
+                        .IsRequired(false);
+                }
+            }
+
+            ConfigureUserRelationships(modelBuilder);
+            ConfigureRiskRelationships(modelBuilder);
+            ConfigureProjectRelationships(modelBuilder);
+            ConfigureReviewRelationships(modelBuilder);
+            ConfigureRiskAssessmentRelationships(modelBuilder);
+            ConfigureExternalReviewerRelationships(modelBuilder);
+
+            DbInitializer.SeedData(modelBuilder);
+        }
+
+        private void ConfigureUserRelationships(ModelBuilder modelBuilder)
+        {
+            // User - Department
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Department)
-                .WithMany(d =>d.Users )
+                .WithMany(d => d.Users)
                 .HasForeignKey(u => u.DepartmentId);
 
             // User - Project
             modelBuilder.Entity<User>()
-            .HasMany(u => u.Projects)
-            .WithOne(u=>u.User)
-            .HasForeignKey(u => u.UserId);
+                .HasMany(u => u.Projects)
+                .WithOne(u => u.User)
+                .HasForeignKey(u => u.UserId);
 
-      
-
-            //User -Risk  responsible user
-            modelBuilder.Entity<Risk>()
-             .HasOne(r => r.ResponsibleUser)
-             .WithMany(u => u.ResponsibleRisks)
-             .HasForeignKey(f => f.ResponsibleUserId);
-
-
-            // User - User Created and Updated 
+            // User - User Created and Updated
             modelBuilder.Entity<User>()
-                .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedUsers);
+                .HasOne(r => r.CreatedBy)
+                .WithMany(u => u.CreatedUsers);
+
             modelBuilder.Entity<User>()
-                  .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedUsers);
-
-
-            // User - Project Created and Updated 
-            modelBuilder.Entity<Project>()
-                .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedProjects);
-            modelBuilder.Entity<Project>()
-                  .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedProjects);
-
-            //User-Department Created and Updated
-            modelBuilder.Entity<Department>()
-              .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedDepartments);
-            modelBuilder.Entity<Department>()
-                  .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedDepartments);
-
-
-            //User-Risk Created and Updated
-            modelBuilder.Entity<Risk>()
-              .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedRisks);
-            modelBuilder.Entity<Risk>()
-                  .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedRisks);
-
-            //User-RiskAssessment Created and Updated
-            modelBuilder.Entity<RiskAssessment>()
-              .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedRiskAssessments);
-            modelBuilder.Entity<RiskAssessment>()
-                  .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedRiskAssessments);
-
-
-            //User-AssessmentaBasis Created and Updated
-            modelBuilder.Entity<AssessmentBasis>()
-              .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedAssessmentBasis);
-            modelBuilder.Entity<AssessmentBasis>()
-                  .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedAssessmentBasis);
-
-            //User-AssessmentMatrixImpact Created and Updated
-            modelBuilder.Entity<AssessmentMatrixImpact>()
-              .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedImpactMatrix);
-            modelBuilder.Entity<AssessmentMatrixImpact>()
-                  .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedImpactMatrix);
-
-            //User-AssessmentMatrixLikelihood Created and Updated
-            modelBuilder.Entity<AssessmentMatrixLikelihood>()
-         .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedLikeliHoodMatrix);
-            modelBuilder.Entity<AssessmentMatrixLikelihood>()
-                  .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedLikeliHoodMatrix);
-
-
-
-            //User-ExternalReviewer Created and Updated
-            modelBuilder.Entity<ExternalReviewer>()
-         .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedExternalReviewers);
-            modelBuilder.Entity<ExternalReviewer>()
-                  .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedExternalReviewers);
-
-
-            //User-ExternalReviewer Created and Updated
-            modelBuilder.Entity<Review>()
-         .HasOne(r => r.CreatedBy).WithMany(u => u.CreatedReviews);
-            modelBuilder.Entity<Review>()
-                  .HasOne(r => r.UpdatedBy).WithMany(u => u.UpdatedReviews);
-
-
-
-
-
-
-
-
-            //Risk-Projects
-            modelBuilder.Entity<Risk>()
-            .HasOne(r => r.Project).WithMany(u => u.Risks).HasForeignKey(u=>u.ProjectId);
-
-            //Risk- Department
-            modelBuilder.Entity<Risk>()
-            .HasOne(r => r.Department).WithMany(u => u.Risks).HasForeignKey(u => u.DepartmentId);
-
-            
-
-
-            //RiskAssesssment-Assessment Basis
-            modelBuilder.Entity<RiskAssessment>().HasOne(a=>a.AssessmentBasis).WithMany(a=>a.RiskAssessments);
-
-            //RiskAssessment- Risk
-            modelBuilder.Entity<RiskAssessment>().HasOne(a => a.Risk).WithMany(r => r.RiskAssessments).HasForeignKey(f=>f.RiskId);
-            modelBuilder.Entity<RiskAssessment>().HasOne(ra => ra.MatrixImpact).WithMany(ma => ma.RiskAssessments).HasForeignKey(f => f.Impact);
-            modelBuilder.Entity<RiskAssessment>().HasOne(ra => ra.MatrixLikelihood).WithMany(ma => ma.RiskAssessments).HasForeignKey(f => f.Likelihood);
-
-            //RiskAssessment-Review
-
-            modelBuilder.Entity<RiskAssessment>().HasOne(ra => ra.Review).WithMany(ma => ma.RiskAssessments).HasForeignKey(r => r.ReviewId);
-
-
-
-
-            //Projects -Department
-            modelBuilder.Entity<Project>().HasOne(p=>p.Department).WithMany(r=>r.Projects).HasForeignKey(d=>d.DepartmentId);
-
-
-
-            //Review-user
-
-            modelBuilder.Entity<Review>().HasOne(ra=>ra.User).WithMany(u=>u.Reviews).HasForeignKey(f=>f.UserId);
-
-            //Review-ExternalReviewer
-
-            modelBuilder.Entity<Review>().HasOne(ra => ra.ExternalReviewer).WithMany(eu => eu.Reviews).HasForeignKey(f => f.ExternalReviewerId);
-
-
-
-            //ExternalReviewer-department
-            modelBuilder.Entity<ExternalReviewer>().HasOne(ra => ra.Department).WithMany(eu => eu.ExternalReviewers).HasForeignKey(f => f.DepartmentId);
-
-
-
-
-
-
-
+                .HasOne(r => r.UpdatedBy)
+                .WithMany(u => u.UpdatedUsers);
         }
 
+        private void ConfigureRiskRelationships(ModelBuilder modelBuilder)
+        {
+            // User - Risk responsible user
+            modelBuilder.Entity<Risk>()
+                .HasOne(r => r.ResponsibleUser)
+                .WithMany(u => u.ResponsibleRisks)
+                .HasForeignKey(f => f.ResponsibleUserId);
 
+            // User - Risk Created and Updated
+            modelBuilder.Entity<Risk>()
+                .HasOne(r => r.CreatedBy)
+                .WithMany(u => u.CreatedRisks);
 
+            modelBuilder.Entity<Risk>()
+                .HasOne(r => r.UpdatedBy)
+                .WithMany(u => u.UpdatedRisks);
+
+            // Risk - Projects
+            modelBuilder.Entity<Risk>()
+                .HasOne(r => r.Project)
+                .WithMany(u => u.Risks)
+                .HasForeignKey(u => u.ProjectId);
+
+            // Risk - Department
+            modelBuilder.Entity<Risk>()
+                .HasOne(r => r.Department)
+                .WithMany(u => u.Risks)
+                .HasForeignKey(u => u.DepartmentId);
+        }
+
+        private void ConfigureProjectRelationships(ModelBuilder modelBuilder)
+        {
+            // User - Project Created and Updated
+            modelBuilder.Entity<Project>()
+                .HasOne(r => r.CreatedBy)
+                .WithMany(u => u.CreatedProjects);
+
+            modelBuilder.Entity<Project>()
+                .HasOne(r => r.UpdatedBy)
+                .WithMany(u => u.UpdatedProjects);
+
+            // Projects - Department
+            modelBuilder.Entity<Project>()
+                .HasOne(p => p.Department)
+                .WithMany(r => r.Projects)
+                .HasForeignKey(d => d.DepartmentId);
+        }
+
+        private void ConfigureReviewRelationships(ModelBuilder modelBuilder)
+        {
+            // User - Review Created and Updated
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.CreatedBy)
+                .WithMany(u => u.CreatedReviews);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.UpdatedBy)
+                .WithMany(u => u.UpdatedReviews);
+
+            // Review - User
+            modelBuilder.Entity<Review>()
+                .HasOne(ra => ra.User)
+                .WithMany(u => u.Reviews)
+                .HasForeignKey(f => f.UserId);
+
+            // Review - ExternalReviewer
+            modelBuilder.Entity<Review>()
+                .HasOne(ra => ra.ExternalReviewer)
+                .WithMany(eu => eu.Reviews)
+                .HasForeignKey(f => f.ExternalReviewerId);
+        }
+
+        private void ConfigureRiskAssessmentRelationships(ModelBuilder modelBuilder)
+        {
+            // RiskAssessment - Assessment Basis
+            modelBuilder.Entity<RiskAssessment>()
+                .HasOne(a => a.AssessmentBasis)
+                .WithMany(a => a.RiskAssessments);
+
+            // RiskAssessment - Risk
+            modelBuilder.Entity<RiskAssessment>()
+                .HasOne(a => a.Risk)
+                .WithMany(r => r.RiskAssessments)
+                .HasForeignKey(f => f.RiskId);
+
+            modelBuilder.Entity<RiskAssessment>()
+                .HasOne(ra => ra.MatrixImpact)
+                .WithMany(ma => ma.RiskAssessments)
+                .HasForeignKey(f => f.Impact);
+
+            modelBuilder.Entity<RiskAssessment>()
+                .HasOne(ra => ra.MatrixLikelihood)
+                .WithMany(ma => ma.RiskAssessments)
+                .HasForeignKey(f => f.Likelihood);
+
+            // RiskAssessment - Review
+            modelBuilder.Entity<RiskAssessment>()
+                .HasOne(ra => ra.Review)
+                .WithMany(ma => ma.RiskAssessments)
+                .HasForeignKey(r => r.ReviewId);
+        }
+
+        private void ConfigureExternalReviewerRelationships(ModelBuilder modelBuilder)
+        {
+            // User - ExternalReviewer Created and Updated
+            modelBuilder.Entity<ExternalReviewer>()
+                .HasOne(r => r.CreatedBy)
+                .WithMany(u => u.CreatedExternalReviewers);
+
+            modelBuilder.Entity<ExternalReviewer>()
+                .HasOne(r => r.UpdatedBy)
+                .WithMany(u => u.UpdatedExternalReviewers);
+
+            // ExternalReviewer - Department
+            modelBuilder.Entity<ExternalReviewer>()
+                .HasOne(ra => ra.Department)
+                .WithMany(eu => eu.ExternalReviewers)
+                .HasForeignKey(f => f.DepartmentId);
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            UpdateTimestamps();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override int SaveChanges()
+        {
+            UpdateTimestamps();
+            return base.SaveChanges();
+        }
+
+        private void UpdateTimestamps()
+        {
+            var entries = ChangeTracker
+                .Entries()
+                .Where(e => e.Entity is TimeStamps && (
+                    e.State == EntityState.Added ||
+                    e.State == EntityState.Modified));
+
+            foreach (var entityEntry in entries)
+            {
+                var entity = (TimeStamps)entityEntry.Entity;
+
+                if (entityEntry.State == EntityState.Added)
+                {
+                    entity.CreatedAt = DateTime.UtcNow;
+                }
+                entity.UpdatedAt = DateTime.UtcNow;
+            }
+        }
     }
 }
+
+    
