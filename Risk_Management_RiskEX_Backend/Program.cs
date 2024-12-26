@@ -15,6 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IRiskRepository, RiskRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
 

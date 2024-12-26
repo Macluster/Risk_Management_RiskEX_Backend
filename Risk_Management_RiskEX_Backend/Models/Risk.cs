@@ -39,6 +39,8 @@ namespace Risk_Management_RiskEX_Backend.Models
         public int DepartmentId { get; set; }
         public int ProjectId { get; set; }
 
+
+
         [JsonIgnore]
         [ForeignKey("ResponsibleUserId")]
         public virtual User ResponsibleUser { get; set; }
