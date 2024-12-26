@@ -13,5 +13,7 @@ namespace RiskManagement_Department_API.Models
 
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
+
+        public ICollection<Review> Reviews { get; set; }
     }
 }

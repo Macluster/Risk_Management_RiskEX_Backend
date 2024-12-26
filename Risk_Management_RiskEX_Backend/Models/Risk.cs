@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace RiskManagement_Department_API.Models
 {
@@ -38,13 +39,20 @@ namespace RiskManagement_Department_API.Models
         public int DepartmentId { get; set; }
         public int ProjectId { get; set; }
 
+        [JsonIgnore]
         [ForeignKey("ResponsibleUserId")]
         public virtual User ResponsibleUser { get; set; }
 
+        [JsonIgnore]
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
 
+        [JsonIgnore]
         [ForeignKey("ProjectId")]
         public virtual Project Project { get; set; }
+
+        [JsonIgnore]
+
+        public ICollection<RiskAssessment> RiskAssessments { get; set; }
     }
 }

@@ -11,5 +11,9 @@ namespace RiskManagement_Department_API.Models
         
         [JsonIgnore]
         public ICollection<Project>? Projects { get; set; }
+        public ICollection<User>? Users { get; set; }
+        public ICollection<ExternalReviewer>? ExternalReviewers { get; set; }
+
+        public ICollection<Risk> Risks { get; set; }
     }
 }

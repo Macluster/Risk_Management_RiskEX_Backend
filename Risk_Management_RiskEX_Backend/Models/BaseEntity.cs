@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace RiskManagement_Department_API.Models
 {
@@ -12,10 +13,13 @@ namespace RiskManagement_Department_API.Models
             public int UpdatedById { get; set; }
 
             [ForeignKey("CreatedById")]
-            public virtual User CreatedBy { get; set; }
+            [JsonIgnore] 
+            public virtual User? CreatedBy { get; set; }
 
-            [ForeignKey("UpdatedById")]
-            public virtual User UpdatedBy { get; set; }
+        [JsonIgnore]
+
+        [ForeignKey("UpdatedById")]
+            public virtual User? UpdatedBy { get; set; }
         }
 
         public enum RiskType
