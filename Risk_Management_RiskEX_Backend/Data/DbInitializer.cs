@@ -12,7 +12,19 @@ namespace Risk_Management_RiskEX_Backend.Data
             modelBuilder.Entity<Department>().HasData(
                 new Department { Id = 1, DepartmentName = "SFM", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
                 new Department {Id = 2, DepartmentName = "HR", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department {Id = 3, DepartmentName = "Finance", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+                new Department {Id = 3, DepartmentName = "Finance", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 4, DepartmentName = "IT", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+new Department { Id = 5, DepartmentName = "Marketing", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+new Department { Id = 6, DepartmentName = "Sales", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+new Department { Id = 7, DepartmentName = "Customer Support", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+new Department { Id = 8, DepartmentName = "Operations", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+new Department { Id = 9, DepartmentName = "Legal", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+new Department { Id = 10, DepartmentName = "Research & Development", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+new Department { Id = 11, DepartmentName = "Procurement", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+new Department { Id = 12, DepartmentName = "Quality Assurance", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+new Department { Id = 13, DepartmentName = "Training", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+new Department { Id = 14, DepartmentName = "Public Relations", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+
             );
 
             // Seed Users

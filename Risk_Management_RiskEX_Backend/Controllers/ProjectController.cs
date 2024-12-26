@@ -28,8 +28,9 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
             return NotFound("No projects found for the specified department.");
         }
+
         [HttpPost("Project")]
-        public async Task<IActionResult> AddProject(IProjectRepository _projectRepository,[FromBody] ProjectDTO projectDto)
+        public async Task<IActionResult> AddProject( [FromServices] IProjectRepository _projectRepository,[FromBody] ProjectDTO projectDto)
         {
             if (string.IsNullOrEmpty(projectDto.ProjectName))
             {
@@ -42,6 +43,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
 
             var result = await _projectRepository.AddProjectToDepartment(projectDto);
+
             if (result)
             {
                 return Ok(new { message = "Project added successfully." });
@@ -49,7 +51,6 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
             return StatusCode(500, new { message = "An error occurred while adding the project." });
         }
-
 
     }
 }
