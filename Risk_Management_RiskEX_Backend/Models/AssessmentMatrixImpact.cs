@@ -9,5 +9,7 @@ namespace RiskManagement_Department_API.Models
         public int Id { get; set; }
         public string AssessmentFactor { get; set; }
         public double Impact { get; set; }
+
+        public ICollection<RiskAssessment> RiskAssessments { get; set; }
     }
 }
