@@ -2,8 +2,8 @@
 
 namespace Risk_Management_RiskEX_Backend.Interfaces
 {
-    public interface IRiskRepository
+    public interface IRiskResponseRepository
     {
-        Task<ICollection<Risk>> GetRisksByType(string type);
+        Task<ICollection<RiskResponseData>> GedtAllRiskResponse();
     }
 }
