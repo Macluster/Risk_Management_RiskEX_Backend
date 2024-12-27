@@ -20,11 +20,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
-        public async Task<IEnumerable<Project>> GetProjectsByDepartment(string departmentName)
+        public async Task<IEnumerable<object>> GetProjectsByDepartment(string departmentName)
         {
             var department = await _db.Departments
-                                      .FirstOrDefaultAsync(d => d.DepartmentName == departmentName);
-
+                                    .FirstOrDefaultAsync(d => d.DepartmentName == departmentName);
             if (department == null)
             {
                 throw new Exception("Department does not exist.");
@@ -32,34 +31,56 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             return await _db.Projects
                             .Where(p => p.DepartmentId == department.Id)
-            .ToListAsync();
+                            .Select(p => new { p.Id, p.Name })
+                            .ToListAsync();
         }
 
         public async Task<bool> AddProjectToDepartment(ProjectDTO projectDto)
         {
             try
             {
+                // Check if department exists
                 var department = await _db.Departments
-                                          .FirstOrDefaultAsync(d => d.DepartmentName == projectDto.DepartmentName);
+                    .FirstOrDefaultAsync(d => d.DepartmentName == projectDto.DepartmentName);
 
                 if (department == null)
                 {
-                    throw new Exception("Department does not exist.");
+                    return false;
                 }
 
-                // Use AutoMapper to map ProjectDTO to Project
-                var project = _mapper.Map<Project>(projectDto);
-                project.DepartmentId = department.Id;  // Set the DepartmentId manually
+                // Check if project name already exists in the department
+                var existingProject = await _db.Projects
+                    .AnyAsync(p => p.Name == projectDto.ProjectName &&
+                                  p.DepartmentId == department.Id);
 
-                _db.Projects.AddAsync(project);
+                if (existingProject)
+                {
+                    return false;
+                }
+
+                //// Check if user exists
+                //var userExists = await _db.Users
+                //    .AnyAsync(u => u.Id == projectDto.UserId);
+
+                //if (!userExists)
+                //{
+                //    return false;
+                //}
+
+                // Map and set up the project
+                var project = _mapper.Map<Project>(projectDto);
+                project.DepartmentId = department.Id;
+                project.Name = projectDto.ProjectName;
+                project.CreatedAt = DateTime.UtcNow;
+                project.UpdatedAt = DateTime.UtcNow;
+
+                await _db.Projects.AddAsync(project);
                 await _db.SaveChangesAsync();
+
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
-                // Log error (optional)
-                // _logger.LogError(ex, "An error occurred while adding the project.");
-
                 return false;
             }
         }

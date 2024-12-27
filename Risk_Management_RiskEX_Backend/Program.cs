@@ -48,7 +48,20 @@ builder.Services.AddCors(options =>
 });
 
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+
 var app = builder.Build();
+app.UseCors("AllowAll");
+
 app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.

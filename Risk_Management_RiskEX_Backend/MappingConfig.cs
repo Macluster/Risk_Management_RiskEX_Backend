@@ -8,8 +8,12 @@ namespace Risk_Management_RiskEX_Backend
     {
         public MappingConfig()
         {
-            CreateMap<Department, DepartmentDTO>().ReverseMap();
-            CreateMap<Project, ProjectDTO>().ReverseMap();
+            CreateMap<DepartmentDTO, Department>()
+            .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Name));
+
+            CreateMap<ProjectDTO, Project>()
+                       .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ProjectName))
+                       .ForMember(dest => dest.DepartmentId, opt => opt.Ignore());
         }
     }
 }

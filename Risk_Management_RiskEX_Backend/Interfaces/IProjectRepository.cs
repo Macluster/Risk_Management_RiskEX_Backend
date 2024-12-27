@@ -5,7 +5,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
 {
     public interface IProjectRepository
     {
-        Task<IEnumerable<Project>> GetProjectsByDepartment(string departmentName);
+        Task<IEnumerable<object>> GetProjectsByDepartment(string departmentName);
         Task<bool> AddProjectToDepartment(ProjectDTO projectDto);
 
 

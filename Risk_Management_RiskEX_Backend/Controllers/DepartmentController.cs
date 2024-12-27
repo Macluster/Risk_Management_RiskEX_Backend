@@ -28,22 +28,29 @@ namespace RiskManagement_Department_API.Controllers
             }
             return NotFound("No departments found.");
         }
-
         [HttpPost("Department")]
-        public async Task<IActionResult> AddDepartment(IDepartmentRepository _departmentRepository,[FromBody] DepartmentDTO departmentDto)
+        public async Task<IActionResult> AddDepartment([FromServices] IDepartmentRepository _departmentRepository, [FromBody] DepartmentDTO departmentDto)
         {
-            if (string.IsNullOrEmpty(departmentDto.Name))
+            try
             {
-                return BadRequest(new { message = "Department name is required." });
-            }
+                if (string.IsNullOrEmpty(departmentDto.Name))
+                {
+                    return BadRequest(new { message = "Department name is required." });
+                }
 
-            var result = await _departmentRepository.AddDepartment(departmentDto);
-            if (result)
-            {
-                return Ok(new { message = "Department added successfully." });
+                var result = await _departmentRepository.AddDepartment(departmentDto);
+                if (result)
+                {
+                    return Ok(new { message = "Department added successfully." });
+                }
+
+                return BadRequest(new { message = "Department already exists." });
             }
-            return StatusCode(500);
-            return StatusCode(500, new { message = "An error occurred while adding the department." });
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, new { message = "An error occurred while adding the department." });
+            }
         }
 
     }

@@ -29,18 +29,29 @@ namespace Risk_Management_RiskEX_Backend.Repository
         {
             try
             {
+                // Check if department already exists
+                var existingDepartment = await _db.Departments
+                    .FirstOrDefaultAsync(d => d.DepartmentName.ToLower() == departmentDto.Name.ToLower());
+
+                if (existingDepartment != null)
+                {
+                    return false;
+                }
+
                 // Map the DTO to the entity
                 var department = _mapper.Map<Department>(departmentDto);
+                department.DepartmentName = departmentDto.Name; // Match the property name from your model
 
                 // Add the entity to the database
                 await _db.Departments.AddAsync(department);
                 await _db.SaveChangesAsync();
-
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                // Log the exception here
+                Console.WriteLine($"Error adding department: {ex.Message}");
+                throw; // Rethrow to handle in controller
             }
         }
 

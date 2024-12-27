@@ -12,7 +12,10 @@ namespace Risk_Management_RiskEX_Backend.Data
             modelBuilder.Entity<Department>().HasData(
                 new Department { Id = 1, DepartmentName = "SFM", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
                 new Department {Id = 2, DepartmentName = "HR", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department {Id = 3, DepartmentName = "Finance", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+                new Department {Id = 3, DepartmentName = "Finance", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 4, DepartmentName = "IT", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+
+
             );
 
             // Seed Users
