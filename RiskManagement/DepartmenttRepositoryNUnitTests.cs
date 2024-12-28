@@ -114,13 +114,13 @@ namespace Risk_Management_RiskEX_Backend.Tests
         [Test]
         public void AddDepartment_ShouldThrowException_WhenErrorOccurs()
         {
-            // Arrange: Create an invalid department DTO with a null name
+            // Arrange
             var invalidDepartmentDto = new DepartmentDTO { Name = null };
 
-            // Act & Assert: Verify that the exception is thrown
+            // Act & Assert
             var exception = Assert.ThrowsAsync<ArgumentException>(async () => await _repository.AddDepartment(invalidDepartmentDto));
 
-            // Assert that the exception message is correct (optional)
+            // Assert
             Assert.AreEqual("Department name cannot be null or empty.", exception.Message);
         }
     }
