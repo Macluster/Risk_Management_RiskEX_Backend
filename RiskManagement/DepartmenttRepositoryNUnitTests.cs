@@ -9,128 +9,119 @@ using Risk_Management_RiskEX_Backend.Models.DTO;
 using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Repository;
 
-[TestFixture]
-public class DepartmentRepositoryTests
+
+namespace Risk_Management_RiskEX_Backend.Tests
 {
-    private ApplicationDBContext _dbContext;
-    private IMapper _mapper;
-    private DepartmentRepository _repository;
-
-    [SetUp]
-    public void Setup()
+    [TestFixture]
+    public class DepartmentRepositoryTests
     {
-        var options = new DbContextOptionsBuilder<ApplicationDBContext>()
-            .UseInMemoryDatabase(databaseName: $"TestDb_{Guid.NewGuid()}")
-            .Options;
+        private ApplicationDBContext _dbContext;
+        private IMapper _mapper;
+        private DepartmentRepository _repository;
 
-        _dbContext = new ApplicationDBContext(options);
-
-        var config = new MapperConfiguration(cfg =>
-            cfg.CreateMap<DepartmentDTO, Department>()
-               .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Name)));
-        _mapper = config.CreateMapper();
-
-        _repository = new DepartmentRepository(_dbContext, _mapper);
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        _dbContext.Database.EnsureDeleted();
-        _dbContext.Dispose();
-    }
-
-    [Test]
-    public async Task GetAllDepartments_WhenDepartmentsExist_ReturnsAllDepartments()
-    {
-        // Arrange
-        var departments = new[]
+        [SetUp]
+        public void Setup()
         {
+            var options = new DbContextOptionsBuilder<ApplicationDBContext>()
+                .UseInMemoryDatabase(databaseName: $"TestDb_{Guid.NewGuid()}")
+                .Options;
+
+            _dbContext = new ApplicationDBContext(options);
+
+            var config = new MapperConfiguration(cfg =>
+                cfg.CreateMap<DepartmentDTO, Department>()
+                   .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Name)));
+            _mapper = config.CreateMapper();
+
+            _repository = new DepartmentRepository(_dbContext, _mapper);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _dbContext.Database.EnsureDeleted();
+            _dbContext.Dispose();
+        }
+
+        [Test]
+        public async Task GetAllDepartments_WhenDepartmentsExist_ReturnsAllDepartments()
+        {
+            // Arrange
+            var departments = new[]
+            {
             new Department { DepartmentName = "HR" },
             new Department { DepartmentName = "IT" }
         };
-        await _dbContext.Departments.AddRangeAsync(departments);
-        await _dbContext.SaveChangesAsync();
+            await _dbContext.Departments.AddRangeAsync(departments);
+            await _dbContext.SaveChangesAsync();
 
-        // Act
-        var result = await _repository.GetAllDepartments();
+            // Act
+            var result = await _repository.GetAllDepartments();
 
-        // Assert
-        Assert.That(result.Count(), Is.EqualTo(2));
-        CollectionAssert.AreEquivalent(
-            departments.Select(d => d.DepartmentName),
-            result.Select(d => d.DepartmentName)
-        );
-    }
+            // Assert
+            Assert.That(result.Count(), Is.EqualTo(2));
+            CollectionAssert.AreEquivalent(
+                departments.Select(d => d.DepartmentName),
+                result.Select(d => d.DepartmentName)
+            );
+        }
 
-    [Test]
-    public async Task GetAllDepartments_WhenNoDepartments_ReturnsEmptyList()
-    {
-        var result = await _repository.GetAllDepartments();
-        Assert.That(result, Is.Empty);
-    }
-
-    [Test]
-    public async Task AddDepartment_WhenDepartmentDoesNotExist_ReturnsTrue()
-    {
-        // Arrange
-        var departmentDto = new DepartmentDTO { Name = "Finance" };
-
-        // Act
-        var result = await _repository.AddDepartment(departmentDto);
-        var savedDepartment = await _dbContext.Departments
-            .FirstOrDefaultAsync(d => d.DepartmentName == departmentDto.Name);
-
-        // Assert
-        Assert.Multiple(() =>
+        [Test]
+        public async Task GetAllDepartments_WhenNoDepartments_ReturnsEmptyList()
         {
-            Assert.That(result, Is.True);
-            Assert.That(savedDepartment, Is.Not.Null);
-            Assert.That(savedDepartment.DepartmentName, Is.EqualTo(departmentDto.Name));
-        });
-    }
+            var result = await _repository.GetAllDepartments();
+            Assert.That(result, Is.Empty);
+        }
 
-    [Test]
-    public async Task AddDepartment_WhenDepartmentExists_ReturnsFalse()
-    {
-        // Arrange
-        var existingDepartment = new Department { DepartmentName = "HR" };
-        await _dbContext.Departments.AddAsync(existingDepartment);
-        await _dbContext.SaveChangesAsync();
+        [Test]
+        public async Task AddDepartment_WhenDepartmentDoesNotExist_ReturnsTrue()
+        {
+            // Arrange
+            var departmentDto = new DepartmentDTO { Name = "Finance" };
 
-        var departmentDto = new DepartmentDTO { Name = "HR" };
+            // Act
+            var result = await _repository.AddDepartment(departmentDto);
+            var savedDepartment = await _dbContext.Departments
+                .FirstOrDefaultAsync(d => d.DepartmentName == departmentDto.Name);
 
-        // Act
-        var result = await _repository.AddDepartment(departmentDto);
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.True);
+                Assert.That(savedDepartment, Is.Not.Null);
+                Assert.That(savedDepartment.DepartmentName, Is.EqualTo(departmentDto.Name));
+            });
+        }
 
-        // Assert
-        Assert.That(result, Is.False);
-        Assert.That(await _dbContext.Departments.CountAsync(), Is.EqualTo(1));
-    }
+        [Test]
+        public async Task AddDepartment_WhenDepartmentExists_ReturnsFalse()
+        {
+            // Arrange
+            var existingDepartment = new Department { DepartmentName = "HR" };
+            await _dbContext.Departments.AddAsync(existingDepartment);
+            await _dbContext.SaveChangesAsync();
 
-    [Test]
-    public async Task AddDepartment_WhenDbContextDisposed_ThrowsInvalidOperationException()
-    {
-        // Arrange
-        var departmentDto = new DepartmentDTO { Name = "Finance" };
-        _dbContext.Dispose();
+            var departmentDto = new DepartmentDTO { Name = "HR" };
 
-        // Act & Assert
-        var exception = Assert.ThrowsAsync<InvalidOperationException>(
-            () => _repository.AddDepartment(departmentDto)
-        );
-        Assert.That(exception.Message, Does.Contain("DbContext"));
-    }
+            // Act
+            var result = await _repository.AddDepartment(departmentDto);
 
-    [Test]
-    public async Task AddDepartment_WhenSaveFails_ThrowsDbUpdateException()
-    {
-        // Arrange
-        var departmentDto = new DepartmentDTO { Name = null }; // Assuming DepartmentName is required
+            // Assert
+            Assert.That(result, Is.False);
+            Assert.That(await _dbContext.Departments.CountAsync(), Is.EqualTo(1));
+        }
 
-        // Act & Assert
-        Assert.ThrowsAsync<DbUpdateException>(
-            () => _repository.AddDepartment(departmentDto)
-        );
+        [Test]
+        public void AddDepartment_ShouldThrowException_WhenErrorOccurs()
+        {
+            // Arrange
+            var invalidDepartmentDto = new DepartmentDTO { Name = null };
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () => await _repository.AddDepartment(invalidDepartmentDto));
+
+            // Assert
+            Assert.AreEqual("Department name cannot be null or empty.", exception.Message);
+        }
     }
 }

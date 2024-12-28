@@ -8,8 +8,8 @@ namespace Risk_Management_RiskEX_Backend.Models
     {
         [Key]
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public int ExternalReviewerId { get; set; }
+        public int? UserId { get; set; }
+        public int? ExternalReviewerId { get; set; }
 
         [StringLength(250)]
         public string? Comments { get; set; }
