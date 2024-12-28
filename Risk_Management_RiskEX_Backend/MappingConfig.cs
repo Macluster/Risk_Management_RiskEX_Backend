@@ -6,6 +6,8 @@ namespace Risk_Management_RiskEX_Backend
 {
     public class MappingConfig : Profile
     {
+        private const string DEFAULT_PASSWORD = "experion@123";
+
         public MappingConfig()
         {
             CreateMap<DepartmentDTO, Department>()
@@ -15,7 +17,43 @@ namespace Risk_Management_RiskEX_Backend
                        .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ProjectName))
                        .ForMember(dest => dest.DepartmentId, opt => opt.Ignore());
 
+            CreateMap<UsersDTO, User>()
+                    // Map basic fields
+                    .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                    .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+
+                     // Set default password
+                    .ForMember(dest => dest.Password, opt => opt.MapFrom(src => DEFAULT_PASSWORD))
+                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true))
+
+                     // Handle nullable properties (Department & Projects)
+                     .ForMember(dest => dest.DepartmentId, opt => opt.Ignore()) // Set in repository based on validation
+                     .ForMember(dest => dest.Projects, opt => opt.Ignore())     // Set dynamically in the repository
+
+                     // Audit fields
+                     .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
+                      .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
+                     .ForMember(dest => dest.CreatedBy, opt => opt.Ignore()) // Optional: handled in repository
+                     .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore()) // Optional: handled in repository
+
+                      // Ignore navigation properties not relevant for this mapping
+                      .ForMember(dest => dest.Department, opt => opt.Ignore())
+                      .ForMember(dest => dest.ResponsibleRisks, opt => opt.Ignore())
+                      .ForMember(dest => dest.CreatedRisks, opt => opt.Ignore())
+                      .ForMember(dest => dest.UpdatedRisks, opt => opt.Ignore())
+                      .ForMember(dest => dest.CreatedProjects, opt => opt.Ignore())
+                      .ForMember(dest => dest.UpdatedProjects, opt => opt.Ignore())
+                      .ForMember(dest => dest.CreatedExternalReviewers, opt => opt.Ignore())
+                      .ForMember(dest => dest.UpdatedExternalReviewers, opt => opt.Ignore())
+                      .ForMember(dest => dest.CreatedReviews, opt => opt.Ignore())
+                      .ForMember(dest => dest.UpdatedReviews, opt => opt.Ignore())
+                      .ForMember(dest => dest.CreatedUsers, opt => opt.Ignore())
+                       .ForMember(dest => dest.UpdatedUsers, opt => opt.Ignore())
+                       .ForMember(dest => dest.Reviews, opt => opt.Ignore());
+
+
             CreateMap<RiskResponseDTO, Risk>().ReverseMap();
+
         }
     }
 }

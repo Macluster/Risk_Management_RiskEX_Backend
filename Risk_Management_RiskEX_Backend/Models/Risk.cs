@@ -27,15 +27,17 @@ namespace Risk_Management_RiskEX_Backend.Models
         public string Mitigation { get; set; }
 
         [StringLength(1000)]
-        public string Contingency { get; set; }
+        public string? Contingency { get; set; }
 
         public int OverallRiskRating { get; set; }
         public int ResponsibleUserId { get; set; }
         public DateTime? PlannedActionDate { get; set; }
         public DateTime? ClosedDate { get; set; }
-        public RiskResponses RiskResponse { get; set; }
-        public RiskStatus RiskStatus { get; set; }
-        public string Remarks { get; set; }
+        //public RiskResponses? RiskResponse { get; set; }
+        public int? RiskResponseId { get; set; }
+
+        public RiskStatus? RiskStatus { get; set; }
+        public string? Remarks { get; set; }
         public int DepartmentId { get; set; }
         public int? ProjectId { get; set; }
 
@@ -53,7 +55,10 @@ namespace Risk_Management_RiskEX_Backend.Models
         [ForeignKey("ProjectId")]
         public virtual Project Project { get; set; }
 
-  
+        [ForeignKey("RiskResponseId")]
+        public virtual RiskResponseData RiskResponseData { get; set; }
+
+
 
         public ICollection<RiskAssessment> RiskAssessments { get; set; }
     }

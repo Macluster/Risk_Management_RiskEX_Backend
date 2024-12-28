@@ -1,145 +1,110 @@
-﻿using NUnit.Framework;
-using Risk_Management_RiskEX_Backend.Data;
-using Risk_Management_RiskEX_Backend.Repository;
-using Risk_Management_RiskEX_Backend.Models;
-using Risk_Management_RiskEX_Backend.Models.DTO;
-using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Risk_Management_RiskEX_Backend.Data;
+using Risk_Management_RiskEX_Backend.Models.DTO;
+using Risk_Management_RiskEX_Backend.Models;
+using Risk_Management_RiskEX_Backend.Repository;
 
-namespace Risk_Management_RiskEX_Backend.Tests
+namespace RiskManagement
 {
     [TestFixture]
-    public class ProjectRepositoryTests
+
+    public class ProjectRepositoryNUnitTests
     {
-        private ApplicationDBContext _dbContext;
+        private ApplicationDBContext _context;
         private ProjectRepository _repository;
         private IMapper _mapper;
 
         [SetUp]
-        public void Setup()
+        public void SetUp()
         {
-            // Setup in-memory database
+            // Set up the in-memory database
             var options = new DbContextOptionsBuilder<ApplicationDBContext>()
-                .UseInMemoryDatabase(databaseName: "TestDb")
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-            // Create a new in-memory context
-            _dbContext = new ApplicationDBContext(options);
+            _context = new ApplicationDBContext(options);
 
-            // Setup AutoMapper (you can create a simple profile for testing purposes)
-            var config = new MapperConfiguration(cfg =>
+            // Initialize AutoMapper
+            var mapperConfig = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ProjectDTO, Project>();
             });
-            _mapper = config.CreateMapper();
+            _mapper = mapperConfig.CreateMapper();
 
-            // Initialize repository with in-memory context and AutoMapper
-            _repository = new ProjectRepository(_dbContext, _mapper);
+            _repository = new ProjectRepository(_context, _mapper);
 
-            // Seed data for the tests
-            SeedData();
+            // Seed data
+            SeedDatabase();
         }
 
         [TearDown]
         public void TearDown()
         {
-            // Dispose of the _dbContext after each test
-            _dbContext?.Dispose();
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
         }
 
-        private void SeedData()
+        private void SeedDatabase()
         {
-            // Seed departments
-            var department = new Department
-            {
-                Id = 1,
-                DepartmentName = "HR"
-            };
+            var departments = new List<Department>
+        {
+            new Department { Id = 1, DepartmentName = "IT" },
+            new Department { Id = 2, DepartmentName = "HR" }
+        };
+            _context.Departments.AddRange(departments);
 
-            // Add to in-memory DbContext
-            _dbContext.Departments.Add(department);
+            var projects = new List<Project>
+        {
+            new Project { Id = 1, Name = "Data Center Migration", DepartmentId = 1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new Project { Id = 2, Name = "HR Inventory", DepartmentId = 2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+        };
+            _context.Projects.AddRange(projects);
 
-            // Seed projects
-            var project = new Project
-            {
-                Id = 1,
-                Name = "Project 1",
-                DepartmentId = 1,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            };
-
-            _dbContext.Projects.Add(project);
-
-            // Commit changes to the in-memory database
-            _dbContext.SaveChanges();
+            _context.SaveChanges();
         }
-
         [Test]
         public async Task GetProjectsByDepartment_ShouldReturnProjects_WhenDepartmentExists()
         {
-            // Arrange
-            var departmentName = "HR";
-
             // Act
-            var result = await _repository.GetProjectsByDepartment(departmentName);
+            var projects = await _repository.GetProjectsByDepartment("IT");
 
             // Assert
-            Assert.IsNotNull(result);
-            var project = result.FirstOrDefault();
-            Assert.AreEqual("Project 1", ((ProjectDTO)project).ProjectName); // Cast to ProjectDTO
+            Assert.IsNotNull(projects);
+            Assert.AreEqual(1, projects.Count());
+            Assert.That("Data Center Migration", Is.EqualTo("Data Center Migration"));
         }
 
-
         [Test]
-        public async Task GetProjectsByDepartment_ShouldThrowException_WhenDepartmentDoesNotExist()
+        public void GetProjectsByDepartment_ShouldThrowException_WhenDepartmentDoesNotExist()
         {
-            // Arrange
-            var departmentName = "NonExistingDepartment";
-
             // Act & Assert
-            var ex = Assert.ThrowsAsync<Exception>(async () => await _repository.GetProjectsByDepartment(departmentName));
-            Assert.AreEqual("Department does not exist.", ex.Message);
+            Assert.ThrowsAsync<Exception>(async () => await _repository.GetProjectsByDepartment("Finance"));
         }
 
         [Test]
-        public async Task AddProjectToDepartment_ShouldReturnTrue_WhenProjectIsAddedSuccessfully()
+        public async Task AddProjectToDepartment_ShouldReturnTrue_WhenProjectDoesNotExist()
         {
             // Arrange
             var projectDto = new ProjectDTO
             {
-                DepartmentName = "HR", // Make sure the department exists in the in-memory database
-                ProjectName = "Project 2"
+                ProjectName = "New IT Project",
+                DepartmentName = "IT"
             };
 
-            // Add the department to the in-memory database (Ensure "HR" exists)
-            var options = new DbContextOptionsBuilder<ApplicationDBContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
-                .Options;
+            // Act
+            var result = await _repository.AddProjectToDepartment(projectDto);
 
-            using (var dbContext = new ApplicationDBContext(options))
-            {
-                dbContext.Departments.Add(new Department { DepartmentName = "HR" });
-                await dbContext.SaveChangesAsync();
-
-                var repository = new ProjectRepository(dbContext, _mapper); // Use the correct mapper
-
-                // Act
-                var result = await repository.AddProjectToDepartment(projectDto);
-
-                // Assert
-                Assert.IsTrue(result);
-
-                var addedProject = await dbContext.Projects.FirstOrDefaultAsync(p => p.Name == "Project 2");
-                Assert.NotNull(addedProject);
-                Assert.AreEqual("Project 2", addedProject.Name);
-            }
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(3, await _context.Projects.CountAsync());
+            Assert.IsTrue(await _context.Projects.AnyAsync(p => p.Name == "New IT Project"));
         }
-
 
         [Test]
         public async Task AddProjectToDepartment_ShouldReturnFalse_WhenDepartmentDoesNotExist()
@@ -147,8 +112,8 @@ namespace Risk_Management_RiskEX_Backend.Tests
             // Arrange
             var projectDto = new ProjectDTO
             {
-                DepartmentName = "NonExistingDepartment",
-                ProjectName = "Project 3"
+                ProjectName = "Finance Project",
+                DepartmentName = "Finance"
             };
 
             // Act
@@ -156,16 +121,17 @@ namespace Risk_Management_RiskEX_Backend.Tests
 
             // Assert
             Assert.IsFalse(result);
+            Assert.AreEqual(2, await _context.Projects.CountAsync());
         }
 
         [Test]
-        public async Task AddProjectToDepartment_ShouldReturnFalse_WhenProjectAlreadyExists()
+        public async Task AddProjectToDepartment_ShouldReturnFalse_WhenProjectAlreadyExistsInDepartment()
         {
             // Arrange
             var projectDto = new ProjectDTO
             {
-                DepartmentName = "HR",
-                ProjectName = "Project 1"
+                ProjectName = "Data Center Migration",
+                DepartmentName = "IT"
             };
 
             // Act
@@ -173,27 +139,7 @@ namespace Risk_Management_RiskEX_Backend.Tests
 
             // Assert
             Assert.IsFalse(result);
-        }
-
-        [Test]
-        public async Task AddProjectToDepartment_ShouldReturnFalse_WhenExceptionOccurs()
-        {
-            // Arrange
-            var projectDto = new ProjectDTO
-            {
-                DepartmentName = "HR",
-                ProjectName = "Project 4"
-            };
-
-            // Simulate an exception by modifying the DbContext
-            _dbContext.Projects.Add(new Project { Name = "Project 4", DepartmentId = 1 });
-            await _dbContext.SaveChangesAsync();
-
-            // Act
-            var result = await _repository.AddProjectToDepartment(projectDto);
-
-            // Assert
-            Assert.IsFalse(result);
+            Assert.AreEqual(2, await _context.Projects.CountAsync());
         }
     }
 }

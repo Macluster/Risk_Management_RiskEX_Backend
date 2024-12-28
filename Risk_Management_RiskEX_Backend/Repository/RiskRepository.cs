@@ -47,7 +47,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 r.PlannedActionDate,
                 r.Remarks,
                 
-                r.RiskResponse,
+                r.RiskResponseId,
                 r.RiskStatus,
                 r.RiskType,
                 
