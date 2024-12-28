@@ -2,10 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Risk_Management_RiskEX_Backend.Models
+namespace Risk_Management_RiskEX_Backend.Models.DTO
 {
-    public class Risk : BaseEntity
+    public class RiskResponseDTO
     {
+
         [Key]
         public int Id { get; set; }
 
@@ -27,38 +28,33 @@ namespace Risk_Management_RiskEX_Backend.Models
         public string Mitigation { get; set; }
 
         [StringLength(1000)]
-        public string? Contingency { get; set; }
+        public string Contingency { get; set; }
 
         public int OverallRiskRating { get; set; }
         public int ResponsibleUserId { get; set; }
         public DateTime? PlannedActionDate { get; set; }
         public DateTime? ClosedDate { get; set; }
-        //public RiskResponses? RiskResponse { get; set; }
-        public int? RiskResponseId { get; set; }
-
-        public RiskStatus? RiskStatus { get; set; }
-        public string? Remarks { get; set; }
+        public RiskResponses RiskResponse { get; set; }
+        public RiskStatus RiskStatus { get; set; }
+        public string Remarks { get; set; }
         public int DepartmentId { get; set; }
         public int? ProjectId { get; set; }
 
 
 
-
-        [ForeignKey("ResponsibleUserId")]
+ 
+  
         public virtual User ResponsibleUser { get; set; }
 
- 
-        [ForeignKey("DepartmentId")]
-        public virtual Department Department { get; set; }
+
+      
+        public virtual DepartmentDTO Department { get; set; }
 
 
-        [ForeignKey("ProjectId")]
-        public virtual Project Project { get; set; }
+   
+        public virtual ProjectDTO Project { get; set; }
 
-        [ForeignKey("RiskResponseId")]
-        public virtual RiskResponseData RiskResponseData { get; set; }
-
-
+     
 
         public ICollection<RiskAssessment> RiskAssessments { get; set; }
     }

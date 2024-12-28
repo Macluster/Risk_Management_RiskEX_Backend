@@ -27,5 +27,19 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpGet("id")]
+        public async Task<IActionResult> GetRisksById(int id)
+        {
+            try
+            {
+                var risks = await _riskRepository.GetRiskById(id);
+                return Ok(risks);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
