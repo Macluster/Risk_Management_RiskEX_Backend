@@ -48,7 +48,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 r.Remarks,
                 
               
-                r.RiskStatus,
+                RiskStatus=r.RiskStatus.Value.ToString(),
                 r.RiskType,
                 
                 RiskAssessments = r.RiskAssessments != null ? r.RiskAssessments.Select(ra => new
@@ -58,7 +58,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     Review = ra.Review != null ? new 
                     { 
                         ra.Review.Id, 
-                        ReviewStatus=ra.Review.ReviewStatus ,
+                        ReviewStatus=ra.Review.ReviewStatus.ToString() ,
                         ra.Review.Comments,
                         reviewerName= ra.Review.ExternalReviewer==null? ra.Review.User.FullName: ra.Review.ExternalReviewer.FullName, 
                     } : null,
