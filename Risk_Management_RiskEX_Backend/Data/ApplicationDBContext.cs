@@ -248,7 +248,7 @@ namespace Risk_Management_RiskEX_Backend.Data
             //Risk - Risk Respomse
             modelBuilder.Entity<Risk>()
                  .HasOne(r => r.RiskResponseData)
-                 .WithMany()
+                 .WithMany(u=>u.risks)
                  .HasForeignKey(r => r.RiskResponseId)
                  .OnDelete(DeleteBehavior.Restrict);
 
