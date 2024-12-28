@@ -122,6 +122,26 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 return false;
             }
         }
+
+        public async Task<bool> ChangeUserActiveStatus(int id,bool isActive)
+        {
+            var user=await _db.Users.FirstOrDefaultAsync(u => u.Id == id);
+            if(user!=null)
+            {
+                user.IsActive = isActive;
+
+                _db.Users.Update(user);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+          
+           
+        }
     }
 }
 
