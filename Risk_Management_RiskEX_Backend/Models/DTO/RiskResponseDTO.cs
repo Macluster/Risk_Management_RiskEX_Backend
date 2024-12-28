@@ -2,10 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Risk_Management_RiskEX_Backend.Models
+namespace Risk_Management_RiskEX_Backend.Models.DTO
 {
-    public class Risk : BaseEntity
+    public class RiskResponseDTO
     {
+
         [Key]
         public int Id { get; set; }
 
@@ -41,19 +42,19 @@ namespace Risk_Management_RiskEX_Backend.Models
 
 
 
-
-        [ForeignKey("ResponsibleUserId")]
+ 
+  
         public virtual User ResponsibleUser { get; set; }
 
- 
-        [ForeignKey("DepartmentId")]
-        public virtual Department Department { get; set; }
+
+      
+        public virtual DepartmentDTO Department { get; set; }
 
 
-        [ForeignKey("ProjectId")]
-        public virtual Project Project { get; set; }
+   
+        public virtual ProjectDTO Project { get; set; }
 
-  
+     
 
         public ICollection<RiskAssessment> RiskAssessments { get; set; }
     }

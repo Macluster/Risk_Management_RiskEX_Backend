@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Risk_Management_RiskEX_Backend.Models
 {
@@ -20,6 +21,7 @@ namespace Risk_Management_RiskEX_Backend.Models
         [ForeignKey("ExternalReviewerId")]
         public virtual ExternalReviewer ExternalReviewer { get; set; }
 
+        [JsonIgnore]
         public ICollection<RiskAssessment> RiskAssessments { get; set; }
     }
 }
