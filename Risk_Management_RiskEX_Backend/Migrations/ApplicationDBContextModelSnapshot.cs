@@ -245,29 +245,29 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         {
                             Id = 1,
                             Basis = "Confidentiality",
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6173),
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6174)
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3405),
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3406)
                         },
                         new
                         {
                             Id = 2,
                             Basis = "Integrity",
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6176),
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6177)
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3408),
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3409)
                         },
                         new
                         {
                             Id = 3,
                             Basis = "Privacy",
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6179),
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6180)
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3411),
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3412)
                         },
                         new
                         {
                             Id = 4,
                             Basis = "Quality",
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6182),
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6183)
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3413),
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3414)
                         });
                 });
 
@@ -287,7 +287,6 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Definition")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<double>("Impact")
@@ -305,37 +304,37 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         {
                             Id = 1,
                             AssessmentFactor = "Low",
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6261),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3501),
                             Definition = "No/slight effect on business",
                             Impact = 10.0,
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6262)
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3502)
                         },
                         new
                         {
                             Id = 2,
                             AssessmentFactor = "Medium",
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6264),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3505),
                             Definition = "business objectives affected",
                             Impact = 20.0,
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6265)
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3506)
                         },
                         new
                         {
                             Id = 3,
                             AssessmentFactor = "High",
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6268),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3508),
                             Definition = "business objectives undermined",
                             Impact = 40.0,
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6269)
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3509)
                         },
                         new
                         {
                             Id = 4,
                             AssessmentFactor = "Critical",
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6272),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3511),
                             Definition = "business objectives not accomplished",
                             Impact = 60.0,
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6272)
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3512)
                         });
                 });
 
@@ -355,7 +354,6 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Definition")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<double>("Likelihood")
@@ -373,37 +371,37 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         {
                             Id = 1,
                             AssessmentFactor = "Low",
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6307),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3546),
                             Definition = "1-24% chance of occurrence",
                             Likelihood = 0.10000000000000001,
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6308)
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3547)
                         },
                         new
                         {
                             Id = 2,
                             AssessmentFactor = "Medium",
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6311),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3550),
                             Definition = "25-49% chance of occurrence",
                             Likelihood = 0.20000000000000001,
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6312)
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3550)
                         },
                         new
                         {
                             Id = 3,
                             AssessmentFactor = "High",
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6314),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3553),
                             Definition = "50-74% chance of occurrence",
                             Likelihood = 0.40000000000000002,
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6315)
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3554)
                         },
                         new
                         {
                             Id = 4,
                             AssessmentFactor = "Critical",
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6317),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3557),
                             Definition = "75-99% chance of occurrence",
                             Likelihood = 0.59999999999999998,
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6318)
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3557)
                         });
                 });
 
@@ -433,30 +431,30 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5729),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2906),
                             DepartmentName = "SFM",
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5735)
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2916)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5738),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2920),
                             DepartmentName = "HR",
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5739)
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2922)
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5741),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2924),
                             DepartmentName = "Finance",
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5742)
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2925)
                         },
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5744),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2927),
                             DepartmentName = "IT",
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5745)
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2929)
                         });
                 });
 
@@ -548,22 +546,22 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6223),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3464),
                             CreatedById = 1,
                             DepartmentId = 1,
                             Name = "Data Center Migration",
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6224),
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3465),
                             UpdatedById = 1,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6228),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3469),
                             CreatedById = 1,
                             DepartmentId = 2,
                             Name = "HR Inventory",
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6230),
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3470),
                             UpdatedById = 1,
                             UserId = 2
                         });
@@ -587,7 +585,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<int?>("CreatedById")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ExternalReviewerId")
+                    b.Property<int?>("ExternalReviewerId")
                         .HasColumnType("integer");
 
                     b.Property<int>("ReviewStatus")
@@ -599,7 +597,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Property<int?>("UpdatedById")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -627,7 +625,6 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Contingency")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)");
 
@@ -665,7 +662,6 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Remarks")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("ResponsibleUserId")
@@ -681,10 +677,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<int>("RiskResponse")
+                    b.Property<int?>("RiskResponseId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("RiskStatus")
+                    b.Property<int?>("RiskStatus")
                         .HasColumnType("integer");
 
                     b.Property<int>("RiskType")
@@ -705,6 +701,8 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.HasIndex("ProjectId");
 
                     b.HasIndex("ResponsibleUserId");
+
+                    b.HasIndex("RiskResponseId");
 
                     b.HasIndex("UpdatedById");
 
@@ -780,11 +778,9 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Example")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -856,7 +852,6 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
@@ -880,24 +875,24 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6120),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3350),
                             DepartmentId = 1,
                             Email = "admin@riskex.com",
                             FullName = "System Admin",
                             IsActive = true,
                             Password = "Admin@123",
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6122)
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3351)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6126),
+                            CreatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3355),
                             DepartmentId = 1,
                             Email = "risk.manager@riskex.com",
                             FullName = "Risk Manager",
                             IsActive = true,
                             Password = "Risk@123",
-                            UpdatedAt = new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6127)
+                            UpdatedAt = new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3356)
                         });
                 });
 
@@ -1012,9 +1007,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.HasOne("Risk_Management_RiskEX_Backend.Models.ExternalReviewer", "ExternalReviewer")
                         .WithMany("Reviews")
-                        .HasForeignKey("ExternalReviewerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ExternalReviewerId");
 
                     b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "UpdatedBy")
                         .WithMany("UpdatedReviews")
@@ -1022,9 +1015,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
                     b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "User")
                         .WithMany("Reviews")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("CreatedBy");
 
@@ -1057,6 +1048,11 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Risk_Management_RiskEX_Backend.Models.RiskResponseData", "RiskResponseData")
+                        .WithMany("Risks")
+                        .HasForeignKey("RiskResponseId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Risk_Management_RiskEX_Backend.Models.User", "UpdatedBy")
                         .WithMany("UpdatedRisks")
                         .HasForeignKey("UpdatedById");
@@ -1068,6 +1064,8 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     b.Navigation("Project");
 
                     b.Navigation("ResponsibleUser");
+
+                    b.Navigation("RiskResponseData");
 
                     b.Navigation("UpdatedBy");
                 });
@@ -1192,6 +1190,11 @@ namespace Risk_Management_RiskEX_Backend.Migrations
             modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.Risk", b =>
                 {
                     b.Navigation("RiskAssessments");
+                });
+
+            modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.RiskResponseData", b =>
+                {
+                    b.Navigation("Risks");
                 });
 
             modelBuilder.Entity("Risk_Management_RiskEX_Backend.Models.User", b =>

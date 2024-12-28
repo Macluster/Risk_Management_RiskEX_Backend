@@ -76,7 +76,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     AssessmentFactor = table.Column<string>(type: "text", nullable: false),
                     Impact = table.Column<double>(type: "double precision", nullable: false),
-                    Definition = table.Column<string>(type: "text", nullable: false),
+                    Definition = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -93,7 +93,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     AssessmentFactor = table.Column<string>(type: "text", nullable: false),
                     Likelihood = table.Column<double>(type: "double precision", nullable: false),
-                    Definition = table.Column<string>(type: "text", nullable: false),
+                    Definition = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -124,8 +124,8 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Example = table.Column<string>(type: "text", nullable: false)
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    Example = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -245,7 +245,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Email = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    Password = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
                     FullName = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     DepartmentId = table.Column<int>(type: "integer", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
@@ -356,8 +356,8 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    ExternalReviewerId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: true),
+                    ExternalReviewerId = table.Column<int>(type: "integer", nullable: true),
                     Comments = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     ReviewStatus = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -372,8 +372,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         name: "FK_Reviews_ExternalReviewers_ExternalReviewerId",
                         column: x => x.ExternalReviewerId,
                         principalTable: "ExternalReviewers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Reviews_Users_CreatedById",
                         column: x => x.CreatedById,
@@ -388,8 +387,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         name: "FK_Reviews_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -404,14 +402,14 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     RiskType = table.Column<int>(type: "integer", nullable: false),
                     Impact = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
                     Mitigation = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
-                    Contingency = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
+                    Contingency = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                     OverallRiskRating = table.Column<int>(type: "integer", nullable: false),
                     ResponsibleUserId = table.Column<int>(type: "integer", nullable: false),
                     PlannedActionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     ClosedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    RiskResponse = table.Column<int>(type: "integer", nullable: false),
-                    RiskStatus = table.Column<int>(type: "integer", nullable: false),
-                    Remarks = table.Column<string>(type: "text", nullable: false),
+                    RiskResponseId = table.Column<int>(type: "integer", nullable: true),
+                    RiskStatus = table.Column<int>(type: "integer", nullable: true),
+                    Remarks = table.Column<string>(type: "text", nullable: true),
                     DepartmentId = table.Column<int>(type: "integer", nullable: false),
                     ProjectId = table.Column<int>(type: "integer", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -433,6 +431,12 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Risks_RiskResponseDatas_RiskResponseId",
+                        column: x => x.RiskResponseId,
+                        principalTable: "RiskResponseDatas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Risks_Users_CreatedById",
                         column: x => x.CreatedById,
@@ -518,10 +522,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "Basis", "CreatedAt", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "Confidentiality", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6173), new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6174) },
-                    { 2, "Integrity", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6176), new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6177) },
-                    { 3, "Privacy", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6179), new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6180) },
-                    { 4, "Quality", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6182), new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6183) }
+                    { 1, "Confidentiality", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3405), new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3406) },
+                    { 2, "Integrity", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3408), new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3409) },
+                    { 3, "Privacy", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3411), new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3412) },
+                    { 4, "Quality", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3413), new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3414) }
                 });
 
             migrationBuilder.InsertData(
@@ -529,10 +533,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "AssessmentFactor", "CreatedAt", "Definition", "Impact", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "Low", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6261), "No/slight effect on business", 10.0, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6262) },
-                    { 2, "Medium", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6264), "business objectives affected", 20.0, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6265) },
-                    { 3, "High", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6268), "business objectives undermined", 40.0, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6269) },
-                    { 4, "Critical", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6272), "business objectives not accomplished", 60.0, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6272) }
+                    { 1, "Low", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3501), "No/slight effect on business", 10.0, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3502) },
+                    { 2, "Medium", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3505), "business objectives affected", 20.0, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3506) },
+                    { 3, "High", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3508), "business objectives undermined", 40.0, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3509) },
+                    { 4, "Critical", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3511), "business objectives not accomplished", 60.0, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3512) }
                 });
 
             migrationBuilder.InsertData(
@@ -540,10 +544,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "AssessmentFactor", "CreatedAt", "Definition", "Likelihood", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "Low", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6307), "1-24% chance of occurrence", 0.10000000000000001, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6308) },
-                    { 2, "Medium", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6311), "25-49% chance of occurrence", 0.20000000000000001, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6312) },
-                    { 3, "High", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6314), "50-74% chance of occurrence", 0.40000000000000002, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6315) },
-                    { 4, "Critical", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6317), "75-99% chance of occurrence", 0.59999999999999998, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6318) }
+                    { 1, "Low", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3546), "1-24% chance of occurrence", 0.10000000000000001, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3547) },
+                    { 2, "Medium", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3550), "25-49% chance of occurrence", 0.20000000000000001, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3550) },
+                    { 3, "High", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3553), "50-74% chance of occurrence", 0.40000000000000002, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3554) },
+                    { 4, "Critical", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3557), "75-99% chance of occurrence", 0.59999999999999998, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3557) }
                 });
 
             migrationBuilder.InsertData(
@@ -551,10 +555,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "DepartmentName", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5729), "SFM", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5735) },
-                    { 2, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5738), "HR", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5739) },
-                    { 3, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5741), "Finance", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5742) },
-                    { 4, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5744), "IT", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(5745) }
+                    { 1, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2906), "SFM", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2916) },
+                    { 2, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2920), "HR", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2922) },
+                    { 3, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2924), "Finance", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2925) },
+                    { 4, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2927), "IT", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2929) }
                 });
 
             migrationBuilder.InsertData(
@@ -573,8 +577,8 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedById", "DepartmentId", "Email", "FullName", "IsActive", "Password", "UpdatedAt", "UpdatedById" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6120), null, 1, "admin@riskex.com", "System Admin", true, "Admin@123", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6122), null },
-                    { 2, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6126), null, 1, "risk.manager@riskex.com", "Risk Manager", true, "Risk@123", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6127), null }
+                    { 1, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3350), null, 1, "admin@riskex.com", "System Admin", true, "Admin@123", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3351), null },
+                    { 2, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3355), null, 1, "risk.manager@riskex.com", "Risk Manager", true, "Risk@123", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3356), null }
                 });
 
             migrationBuilder.InsertData(
@@ -582,8 +586,8 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedById", "DepartmentId", "Name", "UpdatedAt", "UpdatedById", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6223), 1, 1, "Data Center Migration", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6224), 1, 1 },
-                    { 2, new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6228), 1, 2, "HR Inventory", new DateTime(2024, 12, 28, 8, 2, 18, 917, DateTimeKind.Utc).AddTicks(6230), 1, 2 }
+                    { 1, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3464), 1, 1, "Data Center Migration", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3465), 1, 1 },
+                    { 2, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3469), 1, 2, "HR Inventory", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3470), 1, 2 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -734,6 +738,11 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 column: "ResponsibleUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Risks_RiskResponseId",
+                table: "Risks",
+                column: "RiskResponseId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Risks_UpdatedById",
                 table: "Risks",
                 column: "UpdatedById");
@@ -776,9 +785,6 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 name: "Assessments");
 
             migrationBuilder.DropTable(
-                name: "RiskResponseDatas");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -804,6 +810,9 @@ namespace Risk_Management_RiskEX_Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Projects");
+
+            migrationBuilder.DropTable(
+                name: "RiskResponseDatas");
 
             migrationBuilder.DropTable(
                 name: "Users");

@@ -7,5 +7,7 @@
         public string? Description { get; set; }
         public string? Example { get; set; }
 
+        public ICollection<Risk> Risks { get; set; }
+
     }
 }
