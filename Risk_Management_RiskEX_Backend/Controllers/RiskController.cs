@@ -41,5 +41,19 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpGet("GetMitigationStatusOfARisk/{id}")]
+        public async Task<IActionResult> GetMitigationStatusOfARisk(int id)
+        {
+            try
+            {
+                var result = await _riskRepository.GetMitigationStatusOfARisk(id);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

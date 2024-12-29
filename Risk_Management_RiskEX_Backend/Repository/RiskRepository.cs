@@ -44,12 +44,13 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 r.Mitigation,
                 r.Contingency,
                 r.OverallRiskRating,
-                r.PlannedActionDate,
+                PlannedActionDate=r.PlannedActionDate!=null? r.PlannedActionDate.ToString() : "No planned action date set.",
                 r.Remarks,
                 
               
                 RiskStatus=r.RiskStatus.Value.ToString(),
                 r.RiskType,
+                
                 
                 RiskAssessments = r.RiskAssessments != null ? r.RiskAssessments.Select(ra => new
                 {
@@ -68,7 +69,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
                     ImpactMatix = new { Impact= ra.MatrixImpact.AssessmentFactor,Value=ra.MatrixImpact.Impact},
                     LikeliHoodMatix = new { LikeliHood = ra.MatrixLikelihood.AssessmentFactor, Value = ra.MatrixLikelihood.Likelihood},
-                    
+                   
+
                 }).ToList():null,
                 ResponsibleUser = r.ResponsibleUser != null ? new { r.ResponsibleUser.Id, r.ResponsibleUser.FullName } : null,
                 Department = r.Department != null ? new { r.Department.Id, r.Department.DepartmentName } : null,
@@ -83,6 +85,32 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
             return risk;
+        }
+
+
+        public async Task<Object> GetMitigationStatusOfARisk(int id)
+        {
+            var assessments = await _db.Assessments.Where(e => e.RiskId == id).ToListAsync();
+            var risks =  _db.Risks.Where(e => e.Id == id).Select(s => s.ResponsibleUser).FirstOrDefault();
+           
+            
+        
+
+            foreach(var assessment in assessments)
+            {
+                if(assessment.IsMitigated)
+                {
+                    return new {
+
+                        actionBy = risks != null ? risks.FullName : null,
+                        isMitigated = true,
+
+                    
+                    };
+                }
+              
+            }
+            return null;
         }
 
       
