@@ -4,6 +4,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
 {
     public interface IRiskRepository
     {
-        Task<ICollection<Risk>> GetRisksByType(string type);
+        Task<ICollection<Risk>> GetRisksByType(RiskType risktype);
+        Task<IEnumerable<Risk>> GetRisksByReviewerIdAsync(int? userId, int? externalReviewerId);
     }
 }
