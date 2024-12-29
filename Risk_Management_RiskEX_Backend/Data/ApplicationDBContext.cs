@@ -244,6 +244,14 @@ namespace Risk_Management_RiskEX_Backend.Data
                 .HasOne(r => r.Department)
                 .WithMany(u => u.Risks)
                 .HasForeignKey(u => u.DepartmentId);
+
+            //Risk - Risk Respomse
+            modelBuilder.Entity<Risk>()
+                 .HasOne(r => r.RiskResponseData)
+                 .WithMany(u => u.Risks)
+                 .HasForeignKey(r => r.RiskResponseId)
+                 .OnDelete(DeleteBehavior.Restrict);
+
         }
 
         private void ConfigureProjectRelationships(ModelBuilder modelBuilder)
@@ -316,6 +324,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                 .HasOne(ra => ra.Review)
                 .WithMany(ma => ma.RiskAssessments)
                 .HasForeignKey(r => r.ReviewId);
+      
         }
 
         private void ConfigureExternalReviewerRelationships(ModelBuilder modelBuilder)

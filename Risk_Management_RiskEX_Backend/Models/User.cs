@@ -10,7 +10,7 @@ namespace Risk_Management_RiskEX_Backend.Models
         public string Email { get; set; }
 
         [StringLength(30)]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         [StringLength(30)]
         public string FullName { get; set; }

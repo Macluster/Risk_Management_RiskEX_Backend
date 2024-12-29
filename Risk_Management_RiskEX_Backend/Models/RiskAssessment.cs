@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Risk_Management_RiskEX_Backend.Models
 {
@@ -15,6 +16,7 @@ namespace Risk_Management_RiskEX_Backend.Models
         public bool IsMitigated { get; set; }
         public int ReviewId { get; set; }
 
+        [JsonIgnore]
         [ForeignKey("RiskId")]
         public Risk Risk { get; set; }
 

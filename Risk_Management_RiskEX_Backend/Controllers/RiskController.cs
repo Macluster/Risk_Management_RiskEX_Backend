@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models;
+using Risk_Management_RiskEX_Backend.Models.DTO;
 
 namespace Risk_Management_RiskEX_Backend.Controllers
 {
@@ -29,28 +30,39 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
         [HttpGet("reviewer")]
-        public async Task<ActionResult<IEnumerable<Risk>>> GetRisksByReviewerId([FromQuery] int? userId, [FromQuery] int? externalReviewerId)
+        public async Task<ActionResult<IEnumerable<ApprovalDTO>>> GetRisksByReviewerId([FromQuery] int? userId)
         {
-            // Validate that either userId or externalReviewerId is provided, but not both
-            if (userId.HasValue && externalReviewerId.HasValue)
+            // Validate input
+            if (!userId.HasValue)
             {
-                return BadRequest("Either userId or externalReviewerId must be provided, not both.");
+                return BadRequest("User ID must be provided.");
             }
 
-            if (!userId.HasValue && !externalReviewerId.HasValue)
-            {
-                return BadRequest("Either userId or externalReviewerId must be provided.");
-            }
-
-            // Fetch risks based on the provided reviewer ID
-            var risks = await _riskRepository.GetRisksByReviewerIdAsync(userId, externalReviewerId);
+            // Fetch risks using the repository
+            var risks = await _riskRepository.GetRisksByReviewerAsync(userId.Value);
 
             if (risks == null || !risks.Any())
             {
                 return NotFound("No risks found for the provided reviewer ID.");
             }
 
+            // Return the risks in ApprovalDTO format
             return Ok(risks);
+        }
+
+
+        [HttpGet("id")]
+        public async Task<IActionResult> GetRisksById(int id)
+        {
+            try
+            {
+                var risks = await _riskRepository.GetRiskById(id);
+                return Ok(risks);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }
