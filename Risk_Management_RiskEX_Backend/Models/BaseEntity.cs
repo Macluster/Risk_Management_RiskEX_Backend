@@ -19,31 +19,32 @@ namespace Risk_Management_RiskEX_Backend.Models
 
     public enum RiskType
         {
-            Security,
-            Privacy,
-            Quality
+            Quality=1,
+            Security=2,
+            Privacy=3
+           
         }
 
         public enum RiskResponses
         {
-            Accept,
-            Mitigate,
-            Transfer,
-            Avoid
+            Accept=1,
+            Mitigate=2,
+            Transfer=3,
+            Avoid=4
         }
 
         public enum RiskStatus
         {
-            Open,
-            PostReviewPending,
-            Closed
+            open=1,
+            close=2  
         }
 
         public enum ReviewStatus
         {
-            Approved,
-            Pending,
-            Rejected
-        }
+        ReviewPending = 1,
+        ReviewCompleted = 2,
+        ApprovalPending = 3,
+        ApprovalCompleted = 4
+    }
     }
 

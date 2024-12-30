@@ -31,12 +31,15 @@ namespace Risk_Management_RiskEX_Backend.Models
 
         public int OverallRiskRating { get; set; }
         public int ResponsibleUserId { get; set; }
-        public DateTime? PlannedActionDate { get; set; }
+        public DateTime PlannedActionDate { get; set; }
         public DateTime? ClosedDate { get; set; }
+
+        public RiskStatus RiskStatus { get; set; }
+
         //public RiskResponses? RiskResponse { get; set; }
         public int? RiskResponseId { get; set; }
 
-        public RiskStatus? RiskStatus { get; set; }
+
         public string? Remarks { get; set; }
         public int DepartmentId { get; set; }
         public int? ProjectId { get; set; }

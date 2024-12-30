@@ -2,11 +2,10 @@
 {
     public class ReviewDTO
     {
-        public string RiskId { get; set; }
-        public string RiskName { get; set; }
-        public string Description { get; set; }
-        public string RiskType { get; set; }
-        public string RiskStatus { get; set; }
+        public int? UserId { get; set; }
+        public int? ExternalReviewerId { get; set; }
+        public string? Comments { get; set; }
+        public ReviewStatus ReviewStatus { get; set; }
 
 
 
