@@ -14,6 +14,12 @@ namespace Risk_Management_RiskEX_Backend
             CreateMap<ProjectDTO, Project>()
                        .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ProjectName))
                        .ForMember(dest => dest.DepartmentId, opt => opt.Ignore());
+
+            CreateMap<RiskDTO, Risk>();
+            CreateMap<RiskAssessmentDTO, RiskAssessment>();
+            CreateMap<ReviewDTO, Review>();
         }
+
+
     }
 }

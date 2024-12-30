@@ -24,7 +24,7 @@ namespace Risk_Management_RiskEX_Backend.Data
        public DbSet<AssessmentBasis> AssessmentsBasis { get; set; }
        public DbSet<AssessmentMatrixImpact> AssessmentsMatrixImpact { get; set; }
        public DbSet<AssessmentMatrixLikelihood> AssessmentsMatrixLikelihood { get; set; }
-        public DbSet<RiskResponseData> RiskResponseDatas { get; set; }
+       public DbSet<RiskResponseData> RiskResponseDatas { get; set; }
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
         //{
