@@ -262,6 +262,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         reviewerName = ra.Review.ExternalReviewer == null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
                     } : null,
                     AssessmentBasis = ra.AssessmentBasis != null ? new { ra.AssessmentBasis.Id, ra.AssessmentBasis.Basis } : null,
+                    ra.RiskFactor,
 
                     ra.IsMitigated,
 
