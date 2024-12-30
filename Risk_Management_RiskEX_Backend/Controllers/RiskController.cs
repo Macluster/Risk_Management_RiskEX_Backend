@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models;
@@ -53,46 +52,17 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
 
 
-
-        [HttpPost("{riskType}")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<RiskResponseDTO>> CreateRisk([FromRoute] string riskType, [FromBody] RiskDTO riskDto)
+        [HttpPost("security")]
+        public async Task<IActionResult> AddRisk([FromBody] RiskDTO riskDto)
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
-                // Validate and normalize risk type
-                riskType = riskType.ToLower();
-                if (riskType != "security" && riskType != "privacy")
-                {
-                    return BadRequest("Risk type must be either 'security' or 'privacy'");
-                }
-
-                // Set the risk name based on type
-                riskDto.RiskName = $"{char.ToUpper(riskType[0]) + riskType.Substring(1)} Risk: {riskDto.RiskName}";
-
-                // Set the risk type in the DTO
-                riskDto.RiskType = riskType == "security" ? "2" : "3"; // Assuming 1 for security, 2 for privacy
-
-                var risk = await _riskRepository.AddRiskAsync(riskDto);
-                var response = MapToResponseDTO(risk);
-
-                return Created($"api/risk/{risk.Id}", response);
-            }
-            catch (ArgumentException ex)
-            {
-                Logger.LogWarning(ex, "Invalid input for risk creation");
-                return BadRequest(ex.Message);
+                await _riskRepository.AddSecurityOrPrivacyRiskAsync(riskDto);
+                return CreatedAtAction(nameof(AddRisk), new { }, riskDto);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while creating risk");
-                return StatusCode(500, "An error occurred while processing your request");
+                return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
     }
