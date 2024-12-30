@@ -72,7 +72,10 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             try
             {
                 var risks = await _riskRepository.GetRiskById(id);
-                return Ok(risks);
+                if (risks != null)
+                    return Ok(risks);
+                else
+                    return Ok(new List<Object>());  
             }
             catch (ArgumentException ex)
             {
