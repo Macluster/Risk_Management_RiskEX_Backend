@@ -36,6 +36,19 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
             return BadRequest("Failed to add user. Please check the logs for details.");
         }
+        [HttpPatch("IsActive/{id}/{isActive}")]
+        public async Task<IActionResult> ChangeUserIsActiveStatus(int id,bool isActive)
+        {
+
+            var result=await _userRepository.ChangeUserActiveStatus(id,isActive);
+            if (result)
+            {
+                return Ok("User isActive status updated successfully ");
+            }
+
+            return BadRequest("Failed to patch user. Please check the logs for details.");
+        }
+
 
     }
 }
