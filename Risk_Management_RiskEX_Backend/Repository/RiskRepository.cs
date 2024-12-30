@@ -277,7 +277,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 {
                     r.CreatedBy.Id,
                     r.CreatedBy.FullName
-                } : null
+                } : null,
+                r.CreatedAt,
+                UpdatedBy = r.UpdatedBy != null ? new
+                {
+                    r.UpdatedBy.Id,
+                    r.UpdatedBy.FullName
+                } : null,
+                r.UpdatedAt
+
             })
             .FirstOrDefaultAsync();
 
