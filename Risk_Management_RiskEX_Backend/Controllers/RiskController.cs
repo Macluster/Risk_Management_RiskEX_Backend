@@ -32,6 +32,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
 
 
+
         [HttpPost("Quality")]
         public async Task<IActionResult> AddQualityRisk([FromBody] RiskDTO riskDto)
         {
@@ -63,6 +64,33 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpGet("id")]
+        public async Task<IActionResult> GetRisksById(int id)
+        {
+            try
+            {
+                var risks = await _riskRepository.GetRiskById(id);
+                return Ok(risks);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("GetMitigationStatusOfARisk/{id}")]
+        public async Task<IActionResult> GetMitigationStatusOfARisk(int id)
+        {
+            try
+            {
+                var result = await _riskRepository.GetMitigationStatusOfARisk(id);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
     }
