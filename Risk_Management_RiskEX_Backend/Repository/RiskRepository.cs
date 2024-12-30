@@ -277,15 +277,14 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 {
                     r.CreatedBy.Id,
                     r.CreatedBy.FullName
-                } : null,
+                }:null,
                 r.CreatedAt,
                 UpdatedBy = r.UpdatedBy != null ? new
-                {
-                    r.UpdatedBy.Id,
-                    r.UpdatedBy.FullName
-                } : null,
-                r.UpdatedAt
-
+                 {
+                     r.UpdatedBy.Id,
+                     r.UpdatedBy.FullName
+                 } : null,
+                 r.UpdatedAt
             })
             .FirstOrDefaultAsync();
 
@@ -295,27 +294,26 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<Object> GetMitigationStatusOfARisk(int id)
         {
-            var assessments = await _db.Assessments.Where(e => e.RiskId == id).ToListAsync();
-            var risks = _db.Risks.Where(e => e.Id == id).Select(s => s.ResponsibleUser).FirstOrDefault();
+            var responsibleUser = await _db.Risks
+                 .Where(e => e.Id == id)
+                 .Select(s => s.ResponsibleUser)
+                 .FirstOrDefaultAsync();
 
+           
+            var isMitigated = await _db.Assessments
+                .AnyAsync(e => e.RiskId == id && e.IsMitigated);
 
-
-
-            foreach (var assessment in assessments)
+           
+            if (isMitigated)
             {
-                if (assessment.IsMitigated)
+                return new
                 {
-                    return new
-                    {
-
-                        actionBy = risks != null ? risks.FullName : null,
-                        isMitigated = true,
-
-
-                    };
-                }
-
+                    actionBy = responsibleUser?.FullName,
+                    isMitigated = true
+                };
             }
+
+           
             return null;
         }
 
