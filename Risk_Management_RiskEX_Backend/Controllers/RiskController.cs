@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models;
 
@@ -55,5 +55,19 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-    }
+
+        [HttpGet("OverallRiskRating")]
+        public async Task<IActionResult> GetOverallRiskRatings()
+        {
+        var riskRating = await _riskRepository.GetOverallRiskRating();
+        return Ok(riskRating);
+        }
+
+        [HttpGet("OverallRiskRating/{id}")]
+        public async Task<IActionResult> GetOverallRiskRatingById(int id)
+        {
+        var riskRating = await _riskRepository.GetOverallRiskRating(id);
+        return Ok(riskRating);
+        }
+  }
 }
