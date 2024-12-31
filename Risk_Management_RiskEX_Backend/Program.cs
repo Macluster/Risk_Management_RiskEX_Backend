@@ -41,6 +41,8 @@ builder.Services.AddScoped<IRiskResponseRepository, RiskResponseRepository>();
 builder.Services.AddScoped<IAssessmentMatrixImpactRepository, AssessmentMatrixImpactRepository>();
 builder.Services.AddScoped<IAssessmentMatrixLikelihoodRepository, AssessmentMatrixLikelihoodRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
 
 builder.Services.AddSwaggerGen(option => {
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -100,7 +102,6 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("admin"));
 });
 
-builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 
 
 

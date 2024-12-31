@@ -40,55 +40,59 @@ namespace Risk_Management_RiskEX_Backend.Repository
             try
             {
                 var user = await _db.Users
-                          .Include(u => u.Department)  // Include Department
-                          .Include(u => u.Projects)    // Include Projects
+                          .Include(u => u.Department)
+                          .Include(u => u.Projects)
                           .FirstOrDefaultAsync(u => u.Email == loginRequestDTO.Email);
 
-                if (user == null || user.Password != loginRequestDTO.Password)
+                // Check if user exists
+                if (user == null)
                 {
                     return null;
                 }
+
+                // Check if user is active
+                if (!user.IsActive)
+                {
+                    throw new UnauthorizedAccessException("Your account has been deactivated. Please contact your administrator.");
+                }
+
+                // Check password
+                if (user.Password != loginRequestDTO.Password)
+                {
+                    return null;
+                }
+
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_secretKey);
 
-                // Create claims
                 var claims = new List<Claim>
-                {
-                       // Basic user claims
-                        new Claim(ClaimTypes.Email, user.Email),
-                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim("DepartmentId", user.Department?.Id.ToString() ?? "Unknown"),
-                        new Claim("DepartmentName", user.Department?.DepartmentName ?? "Unknown"),
-                        new Claim("UserName", user.FullName ?? "Unknown") // Include the user's name
-                };
+        {
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim("DepartmentId", user.Department?.Id.ToString() ?? "Unknown"),
+            new Claim("DepartmentName", user.Department?.DepartmentName ?? "Unknown"),
+            new Claim("UserName", user.FullName ?? "Unknown")
+        };
 
-                // Add the Admin role if the email matches a specific admin email
-                if (user.Email == "admin@gmail.com") // Replace with the actual admin email
+                if (user.Email == "admin@gmail.com")
                 {
                     claims.Add(new Claim(ClaimTypes.Role, "Admin"));
                 }
                 else
                 {
-                    // Add the DepartmentUser role if the user has a department
                     if (user.Department != null)
                     {
                         claims.Add(new Claim(ClaimTypes.Role, "DepartmentUser"));
-
-                        // Add ProjectUsers role if the user has associated projects
                         if (user.Projects != null && user.Projects.Any())
                         {
                             claims.Add(new Claim(ClaimTypes.Role, "ProjectUsers"));
-
-                            // Serialize the project list to JSON and add it as a custom claim
                             var projectsJson = JsonSerializer.Serialize(user.Projects.Select(p => new { p.Id, p.Name }));
                             claims.Add(new Claim("Projects", projectsJson));
                         }
                     }
                 }
 
-                // Add the current user ID as a custom claim
                 claims.Add(new Claim("CurrentUserId", user.Id.ToString()));
-
 
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
@@ -101,7 +105,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 };
 
                 var token = tokenHandler.CreateToken(tokenDescriptor);
-
                 LoginResponseDTO loginResponseDTO = new()
                 {
                     User = _mapper.Map<UsersDTO>(user),
@@ -109,6 +112,11 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 };
 
                 return loginResponseDTO;
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogWarning(ex, "Deactivated user attempted to login: {Email}", loginRequestDTO.Email);
+                throw; // Rethrow to maintain the specific exception type
             }
             catch (Exception ex)
             {
