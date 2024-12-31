@@ -24,25 +24,21 @@ namespace Risk_Management_RiskEX_Backend.Repository
             _db = db;
             _mapper = mapper;
         }
-        public async Task<ICollection<Risk>> GetRisksByType(string type)
-        {
-            if (!Enum.TryParse(type, true, out RiskType riskType))
-            {
-                throw new ArgumentException($"Invalid RiskType value: {type}");
-            }
 
-            var risks = await _db.Risks
+
+
+        public async Task<ICollection<Risk>> GetRisksByType(RiskType riskType)
+        {
+            
+
+            return await _db.Risks
                 .Where(r => r.RiskType == riskType)
                 .ToListAsync();
 
-            return risks;
 
 
         }
-
-
-
-
+       
         public async Task<Risk> AddQualityRiskAsync(RiskDTO riskDto)
         {
             using IDbContextTransaction transaction = await _db.Database.BeginTransactionAsync();
@@ -283,9 +279,62 @@ namespace Risk_Management_RiskEX_Backend.Repository
             })
             .FirstOrDefaultAsync();
 
-
             return risk;
         }
+
+
+
+
+        public async Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId)
+        {
+            if (!userId.HasValue)
+            {
+                Console.WriteLine("No userId provided.");
+                return new List<ApprovalDTO>();
+            }
+
+            // Query the reviews by userId and specific review status values
+            var reviews = await _db.Reviews
+                .Where(r => r.UserId == userId &&
+                            (r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending))
+                .Include(r => r.RiskAssessments) // Include RiskAssessments
+                .ThenInclude(ra => ra.Risk)    // Include Risk within RiskAssessments
+                .ToListAsync();
+
+            Console.WriteLine($"Found {reviews.Count} reviews for userId {userId.Value}.");
+
+            // Check if reviews were found for this user
+            if (reviews == null || reviews.Count == 0)
+            {
+                Console.WriteLine("No reviews found for this user.");
+                return new List<ApprovalDTO>();
+            }
+
+            // Get the unique risks associated with the reviews (where risk is not null)
+            var risks = reviews
+                .SelectMany(r => r.RiskAssessments) // Flatten all RiskAssessments
+                .Where(ra => ra.Risk != null)       // Ensure that Risk is not null
+                .Select(ra => ra.Risk)              // Select the Risk from RiskAssessment
+                .Distinct()                         // Ensure unique risks
+                .ToList();
+
+            Console.WriteLine($"Found {risks.Count} unique risks.");
+
+            // Create a list of ApprovalDTOs from the unique risks
+            var approvalDTOs = risks.Select(risk => new ApprovalDTO
+            {
+                RiskId = risk.RiskId,
+                RiskName = risk.RiskName,
+                Description = risk.Description,
+                RiskType = risk.RiskType,
+                OverallRiskRating = risk.OverallRiskRating,
+                PlannedActionDate = risk.PlannedActionDate,
+                RiskStatus = risk.RiskStatus
+            }).ToList();
+
+            return approvalDTOs;
+        }
+
 
         public async Task<Object> GetMitigationStatusOfARisk(int id)
         {
@@ -342,9 +391,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
 }
        
 
+}
 
-      
-      
 
 
 

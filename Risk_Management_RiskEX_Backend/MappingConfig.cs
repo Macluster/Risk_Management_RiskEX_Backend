@@ -17,6 +17,17 @@ namespace Risk_Management_RiskEX_Backend
                        .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ProjectName))
                        .ForMember(dest => dest.DepartmentId, opt => opt.Ignore());
 
+
+            CreateMap<ApprovalDTO, Risk>()
+                .ForMember(dest => dest.RiskId, opt => opt.MapFrom(src => src.RiskId))
+                .ForMember(dest => dest.RiskName, opt => opt.MapFrom(src => src.RiskName))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dest => dest.PlannedActionDate, opt => opt.MapFrom(src => src.PlannedActionDate))
+                .ForMember(dest => dest.RiskType, opt => opt.MapFrom(src => (int)src.RiskType))
+                .ForMember(dest => dest.OverallRiskRating, opt => opt.MapFrom(src => src.OverallRiskRating))
+                .ForMember(dest => dest.RiskStatus, opt => opt.MapFrom(src => src.RiskStatus));
+
+
             CreateMap<RiskDTO, Risk>();
             CreateMap<RiskAssessmentDTO, RiskAssessment>();
             CreateMap<ReviewDTO, Review>();
@@ -56,6 +67,7 @@ namespace Risk_Management_RiskEX_Backend
 
 
             CreateMap<RiskResponseDTO, Risk>().ReverseMap();
+
 
             CreateMap<User, UsersDTO>()
                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
