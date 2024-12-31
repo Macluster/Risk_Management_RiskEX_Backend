@@ -278,7 +278,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             return risk;
         }
-        
+
 
 
 
@@ -290,29 +290,34 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 return new List<ApprovalDTO>();
             }
 
+            // Query the reviews by userId and specific review status values
             var reviews = await _db.Reviews
-                .Where(r => r.UserId == userId.Value)
-                .Include(r => r.RiskAssessments)
-                .ThenInclude(ra => ra.Risk)
+                .Where(r => r.UserId == userId &&
+                            (r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending))
+                .Include(r => r.RiskAssessments) // Include RiskAssessments
+                .ThenInclude(ra => ra.Risk)    // Include Risk within RiskAssessments
                 .ToListAsync();
 
             Console.WriteLine($"Found {reviews.Count} reviews for userId {userId.Value}.");
 
+            // Check if reviews were found for this user
             if (reviews == null || reviews.Count == 0)
             {
                 Console.WriteLine("No reviews found for this user.");
                 return new List<ApprovalDTO>();
             }
 
+            // Get the unique risks associated with the reviews (where risk is not null)
             var risks = reviews
-                .SelectMany(r => r.RiskAssessments)
-                .Where(ra => ra.Risk != null) // Ensure Risk is not null
-                .Select(ra => ra.Risk)
-                .Distinct()
+                .SelectMany(r => r.RiskAssessments) // Flatten all RiskAssessments
+                .Where(ra => ra.Risk != null)       // Ensure that Risk is not null
+                .Select(ra => ra.Risk)              // Select the Risk from RiskAssessment
+                .Distinct()                         // Ensure unique risks
                 .ToList();
 
             Console.WriteLine($"Found {risks.Count} unique risks.");
 
+            // Create a list of ApprovalDTOs from the unique risks
             var approvalDTOs = risks.Select(risk => new ApprovalDTO
             {
                 RiskId = risk.RiskId,
@@ -325,9 +330,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
             }).ToList();
 
             return approvalDTOs;
-
-
         }
+
 
         public async Task<Object> GetMitigationStatusOfARisk(int id)
         {

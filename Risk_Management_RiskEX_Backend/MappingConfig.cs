@@ -68,8 +68,7 @@ namespace Risk_Management_RiskEX_Backend
 
             CreateMap<RiskResponseDTO, Risk>().ReverseMap();
 
-<<<<<<< HEAD
-=======
+
             CreateMap<User, UsersDTO>()
                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
@@ -85,7 +84,7 @@ namespace Risk_Management_RiskEX_Backend
             CreateMap<User, LoginResponseDTO>()
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => src))
                 .ForMember(dest => dest.Token, opt => opt.Ignore()); // Token is generated separately
->>>>>>> 072748d297ce3cba32ff6cd67b87afea8c02dd3a
+
 
         }
 
