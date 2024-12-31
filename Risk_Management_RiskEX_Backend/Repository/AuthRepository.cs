@@ -44,19 +44,16 @@ namespace Risk_Management_RiskEX_Backend.Repository
                           .Include(u => u.Projects)
                           .FirstOrDefaultAsync(u => u.Email == loginRequestDTO.Email);
 
-                // Check if user exists
                 if (user == null)
                 {
                     return null;
                 }
 
-                // Check if user is active
                 if (!user.IsActive)
                 {
-                    throw new UnauthorizedAccessException("Your account has been deactivated.Please contact the administrator.");
+                    throw new UnauthorizedAccessException("Your account has been deactivated.Please contact the admin.");
                 }
 
-                // Check password
                 if (user.Password != loginRequestDTO.Password)
                 {
                     return null;
@@ -116,7 +113,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             catch (UnauthorizedAccessException ex)
             {
                 _logger.LogWarning(ex, "Deactivated user attempted to login: {Email}", loginRequestDTO.Email);
-                throw; // Rethrow to maintain the specific exception type
+                throw; 
             }
             catch (Exception ex)
             {
