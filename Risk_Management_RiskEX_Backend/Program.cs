@@ -1,6 +1,10 @@
 
+using System.Text;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Risk_Management_RiskEX_Backend;
 using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Interfaces;
@@ -17,6 +21,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //Getting Connection String from Env file adding to db context
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+var jwt_Scret = Environment.GetEnvironmentVariable("API_SECRET");
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
            options.UseNpgsql(connectionString));
 
@@ -35,7 +40,70 @@ builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IRiskResponseRepository, RiskResponseRepository>();
 builder.Services.AddScoped<IAssessmentMatrixImpactRepository, AssessmentMatrixImpactRepository>();
 builder.Services.AddScoped<IAssessmentMatrixLikelihoodRepository, AssessmentMatrixLikelihoodRepository>();
+<<<<<<< HEAD
 builder.Services.AddScoped<IGetUserRepository, GetUserRepository>();
+=======
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+
+builder.Services.AddSwaggerGen(option => {
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description =
+             "JWT Authorization header using the Bearer scheme. \r\n\r\n " +
+             "Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\n" +
+             "Example: \"Bearer 12345abcdef\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+
+                        },
+                        new List<string>()
+                    }
+                });
+
+
+});
+
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
+            jwt_Scret)),
+        ValidateIssuer = false,
+        ValidateAudience = false
+
+    };
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("admin"));
+});
+
+>>>>>>> 072748d297ce3cba32ff6cd67b87afea8c02dd3a
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 
 
