@@ -12,6 +12,8 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
 
         Task<Object> GetRiskById(int id);
         Task<Object> GetMitigationStatusOfARisk(int id);
+
+        
         
     }
 }

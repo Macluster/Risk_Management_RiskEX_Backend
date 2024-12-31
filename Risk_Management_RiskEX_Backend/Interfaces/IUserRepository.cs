@@ -6,5 +6,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
     {
         Task<bool> AddUserToDepartment(UsersDTO userDto, int? currentUserId = null);
         Task<bool> ChangeUserActiveStatus(int id, bool isActive);
+
+     
     }
 }

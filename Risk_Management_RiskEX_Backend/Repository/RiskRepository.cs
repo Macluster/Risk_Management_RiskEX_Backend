@@ -232,60 +232,53 @@ namespace Risk_Management_RiskEX_Backend.Repository
         {
             var risk = await _db.Risks
             .Where(x => x.Id == id)
-            .Select(r => new
+            .Select(r => new RiskResponseDTO
             {
-                r.Id,
-                r.RiskId,
-                r.RiskName,
-                r.Description,
-                r.Impact,
-                r.Mitigation,
-                r.Contingency,
-                r.OverallRiskRating,
+                Id = r.Id,
+                RiskId = r.RiskId,
+                RiskName = r.RiskName,
+                Description = r.Description,
+                Impact = r.Impact,
+                Mitigation = r.Mitigation,
+                Contingency= r.Contingency!=null? r.Contingency:null,
+                OverallRiskRating=   r.OverallRiskRating,
                 PlannedActionDate = r.PlannedActionDate != null ? r.PlannedActionDate.ToString() : "No planned action date set.",
-                r.Remarks,
+                Remarks= r.Remarks!=null?r.Remarks:null,
 
 
                 RiskStatus = r.RiskStatus.ToString(),
-                r.RiskType,
+                RiskType= r.RiskType.ToString(),
 
 
-                RiskAssessments = r.RiskAssessments != null ? r.RiskAssessments.Select(ra => new
+                RiskAssessments =  r.RiskAssessments.Select(ra => new RiskAssessmentResponseDTO
                 {
-                    ra.Id,
+                    Id=ra.Id,
 
-                    Review = ra.Review != null ? new
+                    Review = ra.Review!=null? new 
                     {
-                        ra.Review.Id,
+                        Id= ra.Review.Id,
                         ReviewStatus = ra.Review.ReviewStatus.ToString(),
-                        ra.Review.Comments,
-                        reviewerName = ra.Review.ExternalReviewer == null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
-                    } : null,
-                    AssessmentBasis = ra.AssessmentBasis != null ? new { ra.AssessmentBasis.Id, ra.AssessmentBasis.Basis } : null,
-                    ra.RiskFactor,
+                        Comments=  ra.Review.Comments,
+                        ReviewerName = ra.Review.ExternalReviewer == null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
+                    }:null ,
+                    AssessmentBasis = ra.AssessmentBasis != null ? new AssessmentBasisResponseDTO { Id= ra.AssessmentBasis.Id, Basis= ra.AssessmentBasis.Basis } : null,
+                    RiskFactor=ra.RiskFactor,
 
-                    ra.IsMitigated,
+                    IsMitigated = ra.IsMitigated,
 
                     ImpactMatix = new { Impact = ra.MatrixImpact.AssessmentFactor, Value = ra.MatrixImpact.Impact },
-                    LikeliHoodMatix = new { LikeliHood = ra.MatrixLikelihood.AssessmentFactor, Value = ra.MatrixLikelihood.Likelihood },
+                    LikelihoodMatrix= new{ LikeliHood = ra.MatrixLikelihood.AssessmentFactor, Value = ra.MatrixLikelihood.Likelihood },
 
 
-                }).ToList() : null,
-                ResponsibleUser = r.ResponsibleUser != null ? new { r.ResponsibleUser.Id, r.ResponsibleUser.FullName } : null,
-                Department = r.Department != null ? new { r.Department.Id, r.Department.DepartmentName } : null,
-                Project = r.Project != null ? new { r.Project.Id, r.Project.Name } : null,
-                CreatedBy = r.CreatedBy != null ? new
-                {
-                    r.CreatedBy.Id,
-                    r.CreatedBy.FullName
-                }:null,
-                r.CreatedAt,
-                UpdatedBy = r.UpdatedBy != null ? new
-                 {
-                     r.UpdatedBy.Id,
-                     r.UpdatedBy.FullName
-                 } : null,
-                 r.UpdatedAt
+                }).ToList(),
+                ResponsibleUser = r.ResponsibleUser!=null?  new UserResponseDTO {Id= r.ResponsibleUser.Id, FullName= r.ResponsibleUser.FullName }:null ,
+                Department =  new  DepartmentDTO{ Id= r.Department.Id, Name= r.Department.DepartmentName },
+                Project = r.Project!=null?  new ProjectResponseDTO {  Id=r.Project.Id,  ProjectName=r.Project.Name }:null,
+                CreatedBy= r.CreatedBy.FullName,
+                CreatedAt= r.CreatedAt,
+                UpdatedBy = r.UpdatedBy!=null? r.UpdatedBy.FullName:null,
+                
+                UpdatedAt= r.UpdatedAt
             })
             .FirstOrDefaultAsync();
 
