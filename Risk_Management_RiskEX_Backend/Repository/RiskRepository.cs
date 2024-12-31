@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+using System.Collections;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Interfaces;
@@ -318,8 +319,23 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return null;
         }
 
+    public async Task<ICollection<int>> GetOverallRiskRating()
+    {
+         return await _db.Set<Risk>()
+        .Select(r => r.OverallRiskRating)
+        .ToListAsync();
+    }
+
+    public async Task<object> GetOverallRiskRating(int id)
+    {
+      return await _db.Set<Risk>()
+     .Where(r => r.Id == id)
+     .Select(r => (int?)r.OverallRiskRating)
+     .FirstOrDefaultAsync();
 
     }
+
+  }
 
 
 }
@@ -329,10 +345,5 @@ namespace Risk_Management_RiskEX_Backend.Repository
       
       
 
-
-    
-
-
-    
 
 
