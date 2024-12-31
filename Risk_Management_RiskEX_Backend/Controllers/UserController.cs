@@ -50,7 +50,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
-        [HttpGet("id")]
+        [HttpGet("GetEmailAndPasswordOfAUser/{id}")]
 
         public async Task<IActionResult> GetEmailAndPasswordOfAUser(int id)
         {
