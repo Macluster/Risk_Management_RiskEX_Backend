@@ -275,5 +275,12 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         var riskRating = await _riskRepository.GetOverallRiskRating(id);
         return Ok(riskRating);
         }
-  }
+
+        [HttpGet("GetRiskByAssigne/{id}")]
+        public async Task<IActionResult> GetRiskByAssigneId(int id)
+        {
+            var risks = await _riskRepository.GetRiskByAssigneeId(id);
+            return Ok(risks);
+        }
+    }
 }
