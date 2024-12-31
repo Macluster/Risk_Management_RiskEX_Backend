@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+using System.Collections;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Interfaces;
@@ -24,25 +25,21 @@ namespace Risk_Management_RiskEX_Backend.Repository
             _db = db;
             _mapper = mapper;
         }
-        public async Task<ICollection<Risk>> GetRisksByType(string type)
-        {
-            if (!Enum.TryParse(type, true, out RiskType riskType))
-            {
-                throw new ArgumentException($"Invalid RiskType value: {type}");
-            }
 
-            var risks = await _db.Risks
+
+
+        public async Task<ICollection<Risk>> GetRisksByType(RiskType riskType)
+        {
+            
+
+            return await _db.Risks
                 .Where(r => r.RiskType == riskType)
                 .ToListAsync();
 
-            return risks;
 
 
         }
-
-
-
-
+       
         public async Task<Risk> AddQualityRiskAsync(RiskDTO riskDto)
         {
             using IDbContextTransaction transaction = await _db.Database.BeginTransactionAsync();
@@ -265,10 +262,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     AssessmentBasis = ra.AssessmentBasis != null ? new { ra.AssessmentBasis.Id, ra.AssessmentBasis.Basis } : null,
 
                     ra.IsMitigated,
-
                     ImpactMatix = new { Impact = ra.MatrixImpact.AssessmentFactor, Value = ra.MatrixImpact.Impact },
                     LikeliHoodMatix = new { LikeliHood = ra.MatrixLikelihood.AssessmentFactor, Value = ra.MatrixLikelihood.Likelihood },
-
 
                 }).ToList() : null,
                 ResponsibleUser = r.ResponsibleUser != null ? new { r.ResponsibleUser.Id, r.ResponsibleUser.FullName } : null,
@@ -282,35 +277,62 @@ namespace Risk_Management_RiskEX_Backend.Repository
             })
             .FirstOrDefaultAsync();
 
-
             return risk;
         }
 
-        public async Task<Object> GetMitigationStatusOfARisk(int id)
+
+
+
+        public async Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId)
         {
-            var assessments = await _db.Assessments.Where(e => e.RiskId == id).ToListAsync();
-            var risks = _db.Risks.Where(e => e.Id == id).Select(s => s.ResponsibleUser).FirstOrDefault();
-
-
-
-
-            foreach (var assessment in assessments)
+            if (!userId.HasValue)
             {
-                if (assessment.IsMitigated)
-                {
-                    return new
-                    {
-
-                        actionBy = risks != null ? risks.FullName : null,
-                        isMitigated = true,
-
-
-                    };
-                }
-
+                Console.WriteLine("No userId provided.");
+                return new List<ApprovalDTO>();
             }
-            return null;
+
+            // Query the reviews by userId and specific review status values
+            var reviews = await _db.Reviews
+                .Where(r => r.UserId == userId &&
+                            (r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending))
+                .Include(r => r.RiskAssessments) // Include RiskAssessments
+                .ThenInclude(ra => ra.Risk)    // Include Risk within RiskAssessments
+                .ToListAsync();
+
+            Console.WriteLine($"Found {reviews.Count} reviews for userId {userId.Value}.");
+
+            // Check if reviews were found for this user
+            if (reviews == null || reviews.Count == 0)
+            {
+                Console.WriteLine("No reviews found for this user.");
+                return new List<ApprovalDTO>();
+            }
+
+            // Get the unique risks associated with the reviews (where risk is not null)
+            var risks = reviews
+                .SelectMany(r => r.RiskAssessments) // Flatten all RiskAssessments
+                .Where(ra => ra.Risk != null)       // Ensure that Risk is not null
+                .Select(ra => ra.Risk)              // Select the Risk from RiskAssessment
+                .Distinct()                         // Ensure unique risks
+                .ToList();
+
+            Console.WriteLine($"Found {risks.Count} unique risks.");
+
+            // Create a list of ApprovalDTOs from the unique risks
+            var approvalDTOs = risks.Select(risk => new ApprovalDTO
+            {
+                RiskId = risk.RiskId,
+                RiskName = risk.RiskName,
+                Description = risk.Description,
+                RiskType = risk.RiskType,
+                OverallRiskRating = risk.OverallRiskRating,
+                PlannedActionDate = risk.PlannedActionDate,
+                RiskStatus = risk.RiskStatus
+            }).ToList();
+
+            return approvalDTOs;
         }
+
 
 
 
@@ -763,34 +785,55 @@ namespace Risk_Management_RiskEX_Backend.Repository
             }
         }
 
+
+        public async Task<Object> GetMitigationStatusOfARisk(int id)
+        {
+            var responsibleUser = await _db.Risks
+                 .Where(e => e.Id == id)
+                 .Select(s => s.ResponsibleUser)
+                 .FirstOrDefaultAsync();
+
+           
+            var isMitigated = await _db.Assessments
+                .AnyAsync(e => e.RiskId == id && e.IsMitigated);
+
+           
+            if (isMitigated)
+            {
+                return new
+                {
+                    actionBy = responsibleUser?.FullName,
+                    isMitigated = true
+                };
+            }
+
+           
+            return null;
+        }
+
+    public async Task<ICollection<int>> GetOverallRiskRating()
+    {
+         return await _db.Set<Risk>()
+        .Select(r => r.OverallRiskRating)
+        .ToListAsync();
+    }
+
+    public async Task<object> GetOverallRiskRating(int id)
+    {
+      return await _db.Set<Risk>()
+     .Where(r => r.Id == id)
+     .Select(r => (int?)r.OverallRiskRating)
+     .FirstOrDefaultAsync();
+
+    }
+
+      
     }
 
 }
 
 
 
-    
 
-
-
-
-
-
-
-
-
-
-
-       
-
-
-      
-      
-
-
-    
-
-
-    
 
 

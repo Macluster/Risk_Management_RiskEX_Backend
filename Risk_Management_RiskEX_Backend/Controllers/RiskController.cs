@@ -1,5 +1,7 @@
+
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using Newtonsoft.Json;
 using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models;
@@ -20,7 +22,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             _logger = logger;
         }
         [HttpGet("type/{type}")]
-        public async Task<IActionResult> GetRisksByType(string type)
+        public async Task<IActionResult> GetRisksByType(RiskType type)
         {
             try
             {
@@ -32,6 +34,28 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpGet("reviewer")]
+        public async Task<ActionResult<IEnumerable<ApprovalDTO>>> GetRisksByReviewerId([FromQuery] int? userId)
+        {
+            // Validate input
+            if (!userId.HasValue)
+            {
+                return BadRequest("User ID must be provided.");
+            }
+
+            // Fetch risks using the repository
+            var risks = await _riskRepository.GetRisksByReviewerAsync(userId.Value);
+
+            if (risks == null || !risks.Any())
+            {
+                return NotFound("No risks found for the provided reviewer ID.");
+            }
+
+            // Return the risks in ApprovalDTO format
+            return Ok(risks);
+        }
+
 
 
 
@@ -75,7 +99,10 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             try
             {
                 var risks = await _riskRepository.GetRiskById(id);
-                return Ok(risks);
+                if (risks != null)
+                    return Ok(risks);
+                else
+                    return Ok(new List<Object>());  
             }
             catch (ArgumentException ex)
             {
@@ -96,6 +123,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
 
 
 
@@ -232,5 +260,20 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while updating the risk.", details = ex.Message });
             }
         }
-    }
+    
+
+        [HttpGet("OverallRiskRating")]
+        public async Task<IActionResult> GetOverallRiskRatings()
+        {
+        var riskRating = await _riskRepository.GetOverallRiskRating();
+        return Ok(riskRating);
+        }
+
+        [HttpGet("OverallRiskRating/{id}")]
+        public async Task<IActionResult> GetOverallRiskRatingById(int id)
+        {
+        var riskRating = await _riskRepository.GetOverallRiskRating(id);
+        return Ok(riskRating);
+        }
+  }
 }
