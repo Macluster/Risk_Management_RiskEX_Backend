@@ -31,7 +31,7 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
         public int DepartmentId { get; set; }
         public int? ProjectId { get; set; }
         public string DepartmentName { get; set; }
-        public List<RiskAssessmentDTO> RiskAssessments { get; set; }
+        public List<RiskAssessmentReportDTO> RiskAssessments { get; set; }
         public string Email { get; set; }
         public string CreatedBy { get; set; }
         public string UpdatedBy { get; set; }

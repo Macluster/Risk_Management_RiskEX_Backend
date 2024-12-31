@@ -85,6 +85,14 @@ namespace Risk_Management_RiskEX_Backend
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => src))
                 .ForMember(dest => dest.Token, opt => opt.Ignore()); // Token is generated separately
 
+            //Mapping for ReportDTO
+            CreateMap<Risk, ReportDTO>()
+                .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.DepartmentName))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.ResponsibleUser.Email));
+
+
+
+            CreateMap<ReportDTO, Risk>().ReverseMap();
 
         }
 
