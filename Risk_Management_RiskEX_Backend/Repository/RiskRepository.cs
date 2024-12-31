@@ -328,7 +328,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
     }
 
-  }
+        //public async Task<object> GetRiskByAssigneeId(int id)
+        //{
+        //    var result = await _db.Risks.Where(e => e.ResponsibleUserId == id).ToListAsync();
+
+        //    //var Risks=_mapper.Map<>(result);
+
+            
+        //}
+    }
 
 
 }

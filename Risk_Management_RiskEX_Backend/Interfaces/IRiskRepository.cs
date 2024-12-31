@@ -14,7 +14,8 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task<Object> GetMitigationStatusOfARisk(int id);       
         Task<ICollection<int>> GetOverallRiskRating();
         Task<Object> GetOverallRiskRating(int id);
+        Task<Object> GetRiskByAssigneeId(int id);
 
 
-  }
+    }
 }

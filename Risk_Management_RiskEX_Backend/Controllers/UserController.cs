@@ -50,6 +50,24 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
+        [HttpGet("id")]
+
+        public async Task<IActionResult> GetEmailAndPasswordOfAUser(int id)
+        {
+
+            var result = await _userRepository.GetNameAndEmailOfAUser(id);
+            if (result!=null)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest("No user found with the Id");
+        }
+
+
+
+
+
     }
 }
 
