@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Risk_Management_RiskEX_Backend.Models;
 
@@ -24,7 +24,7 @@ namespace Risk_Management_RiskEX_Backend.Data
        public DbSet<AssessmentBasis> AssessmentsBasis { get; set; }
        public DbSet<AssessmentMatrixImpact> AssessmentsMatrixImpact { get; set; }
        public DbSet<AssessmentMatrixLikelihood> AssessmentsMatrixLikelihood { get; set; }
-        public DbSet<RiskResponseData> RiskResponseDatas { get; set; }
+       public DbSet<RiskResponseData> RiskResponseDatas { get; set; }
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
         //{
@@ -244,6 +244,14 @@ namespace Risk_Management_RiskEX_Backend.Data
                 .HasOne(r => r.Department)
                 .WithMany(u => u.Risks)
                 .HasForeignKey(u => u.DepartmentId);
+
+            //Risk - Risk Response
+            modelBuilder.Entity<Risk>()
+                 .HasOne(r => r.RiskResponseData)
+                 .WithMany(u => u.Risks)
+                 .HasForeignKey(r => r.RiskResponseId)
+                 .OnDelete(DeleteBehavior.Restrict);
+
         }
 
         private void ConfigureProjectRelationships(ModelBuilder modelBuilder)
@@ -316,6 +324,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                 .HasOne(ra => ra.Review)
                 .WithMany(ma => ma.RiskAssessments)
                 .HasForeignKey(r => r.ReviewId);
+      
         }
 
         private void ConfigureExternalReviewerRelationships(ModelBuilder modelBuilder)
@@ -370,4 +379,3 @@ namespace Risk_Management_RiskEX_Backend.Data
     }
 }
 
-    

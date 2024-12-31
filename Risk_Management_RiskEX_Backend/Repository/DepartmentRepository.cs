@@ -29,6 +29,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
         {
             try
             {
+                // Validate input: Check if department name is null or empty
+                if (string.IsNullOrWhiteSpace(departmentDto.Name))
+                {
+                    throw new ArgumentException("Department name cannot be null or empty.");
+                }
+
                 // Check if department already exists
                 var existingDepartment = await _db.Departments
                     .FirstOrDefaultAsync(d => d.DepartmentName.ToLower() == departmentDto.Name.ToLower());
@@ -40,7 +46,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
                 // Map the DTO to the entity
                 var department = _mapper.Map<Department>(departmentDto);
-                department.DepartmentName = departmentDto.Name; // Match the property name from your model
+                department.DepartmentName = departmentDto.Name;
 
                 // Add the entity to the database
                 await _db.Departments.AddAsync(department);
@@ -49,9 +55,9 @@ namespace Risk_Management_RiskEX_Backend.Repository
             }
             catch (Exception ex)
             {
-                // Log the exception here
+                // Log the exception (consider logging to a logging framework in production)
                 Console.WriteLine($"Error adding department: {ex.Message}");
-                throw; // Rethrow to handle in controller
+                throw; // Rethrow the exception to allow the controller or calling method to handle it
             }
         }
 
