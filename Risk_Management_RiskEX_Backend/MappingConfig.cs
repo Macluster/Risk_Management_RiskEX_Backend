@@ -17,6 +17,9 @@ namespace Risk_Management_RiskEX_Backend
                        .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ProjectName))
                        .ForMember(dest => dest.DepartmentId, opt => opt.Ignore());
 
+            CreateMap<RiskDTO, Risk>();
+            CreateMap<RiskAssessmentDTO, RiskAssessment>();
+            CreateMap<ReviewDTO, Review>();
             CreateMap<UsersDTO, User>()
                     // Map basic fields
                     .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
@@ -71,5 +74,7 @@ namespace Risk_Management_RiskEX_Backend
                 .ForMember(dest => dest.Token, opt => opt.Ignore()); // Token is generated separately
 
         }
+
+
     }
 }
