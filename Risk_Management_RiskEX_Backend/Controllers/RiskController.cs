@@ -17,7 +17,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             _riskRepository = riskRepository;
         }
         [HttpGet("type/{type}")]
-        public async Task<IActionResult> GetRisksByType(string type)
+        public async Task<IActionResult> GetRisksByType(RiskType type)
         {
             try
             {
@@ -29,6 +29,28 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpGet("reviewer")]
+        public async Task<ActionResult<IEnumerable<ApprovalDTO>>> GetRisksByReviewerId([FromQuery] int? userId)
+        {
+            // Validate input
+            if (!userId.HasValue)
+            {
+                return BadRequest("User ID must be provided.");
+            }
+
+            // Fetch risks using the repository
+            var risks = await _riskRepository.GetRisksByReviewerAsync(userId.Value);
+
+            if (risks == null || !risks.Any())
+            {
+                return NotFound("No risks found for the provided reviewer ID.");
+            }
+
+            // Return the risks in ApprovalDTO format
+            return Ok(risks);
+        }
+
 
 
 
