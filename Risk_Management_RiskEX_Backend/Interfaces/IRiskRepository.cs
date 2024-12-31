@@ -5,12 +5,16 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
 {
     public interface IRiskRepository
     {
-        Task<ICollection<Risk>> GetRisksByType(string type);
+
+        Task<ICollection<Risk>> GetRisksByType(RiskType risktype);
+        //Task<IEnumerable<Risk>> GetRisksByReviewerIdAsync(int userId);
+        Task<Object> GetRiskById(int id);
+        //Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int userId);
+        Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId);
 
         Task<Risk> AddQualityRiskAsync(RiskDTO riskDto);
         Task<Risk> AddSecurityOrPrivacyRiskAsync(RiskDTO riskDto);
 
-        Task<Object> GetRiskById(int id);
         Task<Object> GetMitigationStatusOfARisk(int id);       
         Task<ICollection<int>> GetOverallRiskRating();
         Task<Object> GetOverallRiskRating(int id);
