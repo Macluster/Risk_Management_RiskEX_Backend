@@ -57,6 +57,22 @@ namespace Risk_Management_RiskEX_Backend
 
             CreateMap<RiskResponseDTO, Risk>().ReverseMap();
 
+            CreateMap<User, UsersDTO>()
+               .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+               .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+               .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.DepartmentName))
+               .ForMember(dest => dest.ProjectNames, opt => opt.MapFrom(src => src.Projects.Select(p => p.Name).ToList()));
+
+            // Mapping for LoginRequestDTO (no mapping needed as it's a simple DTO)
+            CreateMap<LoginRequestDTO, User>()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password));
+
+            // Mapping for LoginResponseDTO
+            CreateMap<User, LoginResponseDTO>()
+                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src))
+                .ForMember(dest => dest.Token, opt => opt.Ignore()); // Token is generated separately
+
         }
 
 
