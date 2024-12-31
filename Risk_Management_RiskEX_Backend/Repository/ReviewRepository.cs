@@ -40,16 +40,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
              }).ToListAsync();
                 return assessments[0];
             }
-
-
-
-
-
-
-
-
-
-            return null;
+          
         }
     }
 }
