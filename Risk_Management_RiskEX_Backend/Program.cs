@@ -40,7 +40,6 @@ builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IRiskResponseRepository, RiskResponseRepository>();
 builder.Services.AddScoped<IAssessmentMatrixImpactRepository, AssessmentMatrixImpactRepository>();
 builder.Services.AddScoped<IAssessmentMatrixLikelihoodRepository, AssessmentMatrixLikelihoodRepository>();
-<<<<<<< HEAD
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 builder.Services.AddSwaggerGen(option => {
@@ -100,10 +99,9 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("admin"));
 });
-=======
+
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 
->>>>>>> be029075de9a1a3ad23970c36715a6ccab07239a
 
 
 
