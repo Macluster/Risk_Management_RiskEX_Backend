@@ -53,7 +53,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 // Check if user is active
                 if (!user.IsActive)
                 {
-                    throw new UnauthorizedAccessException("Your account has been deactivated. Please contact your administrator.");
+                    throw new UnauthorizedAccessException("Your account has been deactivated.Please contact the administrator.");
                 }
 
                 // Check password
