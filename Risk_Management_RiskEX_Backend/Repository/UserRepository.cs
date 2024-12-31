@@ -43,25 +43,25 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     return false;
                 }
 
-                // Validate department
+                // Validate and get department
                 var department = await _db.Departments
                                 .FirstOrDefaultAsync(d => d.DepartmentName.ToLower() == userDto.DepartmentName.ToLower());
                 if (department == null)
                 {
-                    _logger.LogError($"Department with ID {userDto.DepartmentName} not found.");
+                    _logger.LogError($"Department with name {userDto.DepartmentName} not found.");
                     return false;
                 }
-
-             
-                
 
                 // Create new User entity using AutoMapper
                 var user = _mapper.Map<User>(userDto);
 
+                // Set the DepartmentId explicitly
+                user.DepartmentId = department.Id;
+
                 // Set audit fields
                 user.CreatedAt = DateTime.UtcNow;
                 user.UpdatedAt = DateTime.UtcNow;
-
+                user.IsActive = true;
 
                 //if (currentUserId.HasValue)
                 //{
@@ -75,7 +75,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     var projects = await _db.Projects
                         .Where(p => userDto.ProjectNames.Contains(p.Name))
                         .ToListAsync();
-
 
                     // Verify all project names were found
                     var foundProjectNames = projects.Select(p => p.Name).ToList();
@@ -96,18 +95,18 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 await _db.Users.AddAsync(user);
                 await _db.SaveChangesAsync();
 
-                // Send welcome email with the actual password used
+                // Send welcome email
                 try
                 {
                     await _emailService.SendEmail(
-                user.Email,
-                "Your Account Credentials",
-                $"Welcome to the system!\n\n" +
-                $"Your account has been created with the following credentials:\n" +
-                $"Username: {user.Email}\n" +
-                $"Password: {DEFAULT_PASSWORD}\n\n" +
-                "Please change your password upon first login for security purposes."
-                );
+                        user.Email,
+                        "Your Account Credentials",
+                        $"Welcome to the system!\n\n" +
+                        $"Your account has been created with the following credentials:\n" +
+                        $"Username: {user.Email}\n" +
+                        $"Password: {DEFAULT_PASSWORD}\n\n" +
+                        "Please change your password upon first login for security purposes."
+                    );
                 }
                 catch (Exception emailEx)
                 {
@@ -121,6 +120,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 _logger.LogError(ex, "Error adding user to department");
                 return false;
             }
+        
         }
 
         public async Task<bool> ChangeUserActiveStatus(int id,bool isActive)
