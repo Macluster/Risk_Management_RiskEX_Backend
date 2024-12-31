@@ -12,6 +12,13 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
 
         Task<Object> GetRiskById(int id);
         Task<Object> GetMitigationStatusOfARisk(int id);
-        
+
+        Task<Risk> EditQualityRiskAsync(int id, RiskDTO riskDto);
+        Task<Risk> EditSecurityOrPrivacyRiskAsync(int id, RiskDTO riskDto);
+        Task<Risk> UpdateQualityRiskAsync(int riskId, RiskUpdateDTO riskUpdateDto);
+
+        Task<Risk> UpdateSecurityOrPrivacyRiskAsync(int riskId, RiskUpdateDTO riskUpdateDto);
+
+
     }
 }
