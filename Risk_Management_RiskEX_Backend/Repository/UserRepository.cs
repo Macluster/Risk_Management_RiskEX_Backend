@@ -142,6 +142,20 @@ namespace Risk_Management_RiskEX_Backend.Repository
           
            
         }
+
+        public async Task<Object> GetNameAndEmailOfAUser(int userId)
+        {
+            var User=  await _db.Users.FirstOrDefaultAsync(e=>e.Id==userId);
+
+            AssigneeResponseDTO assigneeResponseDTO=  _mapper.Map<AssigneeResponseDTO>(User);
+
+            return new
+            {
+                User.FullName,
+                User.Email
+                
+            };
+        }
     }
 }
 
