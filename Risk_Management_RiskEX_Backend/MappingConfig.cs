@@ -91,8 +91,14 @@ namespace Risk_Management_RiskEX_Backend
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.ResponsibleUser.Email));
 
 
-
             CreateMap<ReportDTO, Risk>().ReverseMap();
+
+            //Mapping for ExternalReviewerDTO
+            CreateMap<ExternalReviewer, ExternalReviewerDTO>()
+               .ForMember(dest => dest.DepartmentId, opt => opt.MapFrom(src => src.Department.Id));
+
+
+            CreateMap<ExternalReviewerDTO, ExternalReviewer>().ReverseMap();
 
         }
 
