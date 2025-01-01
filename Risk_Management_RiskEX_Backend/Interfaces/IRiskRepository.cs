@@ -26,6 +26,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task<Risk> UpdateSecurityOrPrivacyRiskAsync(int riskId, RiskUpdateDTO riskUpdateDto);
         Task<ICollection<int>> GetOverallRiskRating();
         Task<Object> GetOverallRiskRating(int id);
+        Task<Object> GetRiskByAssigneeId(int id);
 
 
 
@@ -34,4 +35,5 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
       
 
  
+    
 }
