@@ -63,12 +63,14 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 var key = Encoding.ASCII.GetBytes(_secretKey);
 
                 var claims = new List<Claim>
+
                 {
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim("DepartmentId", user.Department?.Id.ToString() ?? "Unknown"),
                     new Claim("DepartmentName", user.Department?.DepartmentName ?? "Unknown"),
-                    new Claim("UserName", user.FullName ?? "Unknown")
+                    new Claim("UserName", user.FullName ?? "Unknown"),
+                    new Claim("UserMail", user.Email ?? "Unknown")
                 };
 
                 if (user.Email == "admin@gmail.com")

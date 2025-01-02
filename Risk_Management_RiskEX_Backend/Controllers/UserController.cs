@@ -31,9 +31,13 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
             var result = await _userRepository.AddUserToDepartment(userDto, currentUserId);
 
-            if (result)
+            if (result!=0)
             {
-                return Ok("User successfully added to department.");
+                return Ok(new
+                {
+                    result= "User successfully added to department.",
+                    id=result,
+                });
             }
 
             return BadRequest("Failed to add user. Please check the logs for details.");
@@ -66,6 +70,19 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             return BadRequest("No user found with the Id");
         }
 
+
+        [HttpGet("GetInfoOfAssigneeByRiskId/{id}")]
+        public async Task<IActionResult> GetInfoOfAssigneeByRiskId(int id)
+        {
+
+            var result = await _userRepository.GetInfoOfAssigneeByRiskId(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest("No Assignee found");
+        }
 
 
 
