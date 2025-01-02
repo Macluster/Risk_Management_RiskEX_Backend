@@ -69,6 +69,19 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
+        [HttpGet("GetInfoOfAssigneeByRiskId/{id}")]
+        public async Task<IActionResult> GetInfoOfAssigneeByRiskId(int id)
+        {
+
+            var result = await _userRepository.GetInfoOfAssigneeByRiskId(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest("No Assignee found");
+        }
+
 
 
 
