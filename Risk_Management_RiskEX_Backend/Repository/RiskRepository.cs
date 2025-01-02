@@ -8,6 +8,8 @@ using Risk_Management_RiskEX_Backend.Models.DTO;
 
 
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Claims;
 
 
 namespace Risk_Management_RiskEX_Backend.Repository
@@ -19,30 +21,26 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
 
-        public RiskRepository(ApplicationDBContext db,IMapper mapper)
+        public RiskRepository(ApplicationDBContext db, IMapper mapper)
         {
             _db = db;
             _mapper = mapper;
         }
-        public async Task<ICollection<Risk>> GetRisksByType(string type)
-        {
-            if (!Enum.TryParse(type, true, out RiskType riskType))
-            {
-                throw new ArgumentException($"Invalid RiskType value: {type}");
-            }
 
-            var risks = await _db.Risks
+
+
+        public async Task<ICollection<Risk>> GetRisksByType(RiskType riskType)
+        {
+            
+
+            return await _db.Risks
                 .Where(r => r.RiskType == riskType)
                 .ToListAsync();
 
-            return risks;
 
 
         }
-
-
-
-
+       
         public async Task<Risk> AddQualityRiskAsync(RiskDTO riskDto)
         {
             using IDbContextTransaction transaction = await _db.Database.BeginTransactionAsync();
@@ -233,66 +231,564 @@ namespace Risk_Management_RiskEX_Backend.Repository
         {
             var risk = await _db.Risks
             .Where(x => x.Id == id)
-            .Select(r => new
+            .Select(r => new RiskResponseDTO
             {
-                r.Id,
-                r.RiskId,
-                r.RiskName,
-                r.Description,
-                r.Impact,
-                r.Mitigation,
-                r.Contingency,
-                r.OverallRiskRating,
+                Id = r.Id,
+                RiskId = r.RiskId,
+                RiskName = r.RiskName,
+                Description = r.Description,
+                Impact = r.Impact,
+                Mitigation = r.Mitigation,
+                Contingency= r.Contingency!=null? r.Contingency:null,
+                OverallRiskRating=   r.OverallRiskRating,
                 PlannedActionDate = r.PlannedActionDate != null ? r.PlannedActionDate.ToString() : "No planned action date set.",
-                r.Remarks,
+                Remarks= r.Remarks!=null?r.Remarks:null,
 
 
                 RiskStatus = r.RiskStatus.ToString(),
-                r.RiskType,
+                RiskType= r.RiskType.ToString(),
 
 
-                RiskAssessments = r.RiskAssessments != null ? r.RiskAssessments.Select(ra => new
+                RiskAssessments =  r.RiskAssessments.Select(ra => new RiskAssessmentResponseDTO
                 {
-                    ra.Id,
+                    Id=ra.Id,
 
-                    Review = ra.Review != null ? new
+                    Review = ra.Review!=null? new 
                     {
-                        ra.Review.Id,
+                        Id= ra.Review.Id,
                         ReviewStatus = ra.Review.ReviewStatus.ToString(),
-                        ra.Review.Comments,
-                        reviewerName = ra.Review.ExternalReviewer == null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
-                    } : null,
-                    AssessmentBasis = ra.AssessmentBasis != null ? new { ra.AssessmentBasis.Id, ra.AssessmentBasis.Basis } : null,
-                    ra.RiskFactor,
+                        Comments=  ra.Review.Comments,
+                        ReviewerName = ra.Review.ExternalReviewer == null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
+                    }:null ,
+                    AssessmentBasis = ra.AssessmentBasis != null ? new AssessmentBasisResponseDTO { Id= ra.AssessmentBasis.Id, Basis= ra.AssessmentBasis.Basis } : null,
+                    RiskFactor=ra.RiskFactor,
 
-                    ra.IsMitigated,
+                    IsMitigated = ra.IsMitigated,
 
                     ImpactMatix = new { Impact = ra.MatrixImpact.AssessmentFactor, Value = ra.MatrixImpact.Impact },
-                    LikeliHoodMatix = new { LikeliHood = ra.MatrixLikelihood.AssessmentFactor, Value = ra.MatrixLikelihood.Likelihood },
+                    LikelihoodMatrix= new{ LikeliHood = ra.MatrixLikelihood.AssessmentFactor, Value = ra.MatrixLikelihood.Likelihood },
 
 
-                }).ToList() : null,
-                ResponsibleUser = r.ResponsibleUser != null ? new { r.ResponsibleUser.Id, r.ResponsibleUser.FullName } : null,
-                Department = r.Department != null ? new { r.Department.Id, r.Department.DepartmentName } : null,
-                Project = r.Project != null ? new { r.Project.Id, r.Project.Name } : null,
-                CreatedBy = r.CreatedBy != null ? new
-                {
-                    r.CreatedBy.Id,
-                    r.CreatedBy.FullName
-                }:null,
-                r.CreatedAt,
-                UpdatedBy = r.UpdatedBy != null ? new
-                 {
-                     r.UpdatedBy.Id,
-                     r.UpdatedBy.FullName
-                 } : null,
-                 r.UpdatedAt
+                }).ToList(),
+                ResponsibleUser = r.ResponsibleUser!=null?  new UserResponseDTO {Id= r.ResponsibleUser.Id, FullName= r.ResponsibleUser.FullName }:null ,
+                Department =  new  DepartmentDTO{ Id= r.Department.Id, Name= r.Department.DepartmentName },
+                Project = r.Project!=null?  new ProjectResponseDTO {  Id=r.Project.Id,  ProjectName=r.Project.Name }:null,
+                CreatedBy= r.CreatedBy.FullName,
+                CreatedAt= r.CreatedAt,
+                UpdatedBy = r.UpdatedBy!=null? r.UpdatedBy.FullName:null,
+                
+                UpdatedAt= r.UpdatedAt
             })
             .FirstOrDefaultAsync();
 
-
             return risk;
         }
+
+
+
+
+        public async Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId)
+        {
+            if (!userId.HasValue)
+            {
+                Console.WriteLine("No userId provided.");
+                return new List<ApprovalDTO>();
+            }
+
+            // Query the reviews by userId and specific review status values
+            var reviews = await _db.Reviews
+                .Where(r => r.UserId == userId &&
+                            (r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending))
+                .Include(r => r.RiskAssessments) // Include RiskAssessments
+                .ThenInclude(ra => ra.Risk)    // Include Risk within RiskAssessments
+                .ToListAsync();
+
+            Console.WriteLine($"Found {reviews.Count} reviews for userId {userId.Value}.");
+
+            // Check if reviews were found for this user
+            if (reviews == null || reviews.Count == 0)
+            {
+                Console.WriteLine("No reviews found for this user.");
+                return new List<ApprovalDTO>();
+            }
+
+            // Get the unique risks associated with the reviews (where risk is not null)
+            var risks = reviews
+                .SelectMany(r => r.RiskAssessments) // Flatten all RiskAssessments
+                .Where(ra => ra.Risk != null)       // Ensure that Risk is not null
+                .Select(ra => ra.Risk)              // Select the Risk from RiskAssessment
+                .Distinct()                         // Ensure unique risks
+                .ToList();
+
+            Console.WriteLine($"Found {risks.Count} unique risks.");
+
+            // Create a list of ApprovalDTOs from the unique risks
+            var approvalDTOs = risks.Select(risk => new ApprovalDTO
+            {
+                RiskId = risk.RiskId,
+                RiskName = risk.RiskName,
+                Description = risk.Description,
+                RiskType = risk.RiskType,
+                OverallRiskRating = risk.OverallRiskRating,
+                PlannedActionDate = risk.PlannedActionDate,
+                RiskStatus = risk.RiskStatus
+            }).ToList();
+
+            return approvalDTOs;
+        }
+
+
+
+
+
+
+
+
+        public async Task<Risk> EditQualityRiskAsync(int id, RiskDTO riskDto)
+        {
+            // Start a transaction to ensure atomicity
+            using IDbContextTransaction transaction = await _db.Database.BeginTransactionAsync();
+            try
+            {
+                // 1. Find the existing Risk by primary key (Id)
+                var existingRisk = await _db.Risks
+                    .Include(r => r.RiskAssessments)
+                    .ThenInclude(ra => ra.Review)
+                    .FirstOrDefaultAsync(r => r.Id == id);  // Use primary key 'Id'
+
+                if (existingRisk == null)
+                {
+                    throw new KeyNotFoundException($"Risk with ID {id} not found.");
+                }
+
+                // 2. Update the properties, including RiskId
+                existingRisk.RiskId = riskDto.RiskId;  // Update the front-end RiskId
+                existingRisk.RiskName = riskDto.RiskName;
+                existingRisk.Description = riskDto.Description;
+                existingRisk.RiskType = riskDto.RiskType;
+                existingRisk.Impact = riskDto.Impact;
+                existingRisk.Mitigation = riskDto.Mitigation;
+                existingRisk.Contingency = riskDto.Contingency;
+                existingRisk.OverallRiskRating = riskDto.OverallRiskRating;
+                existingRisk.ResponsibleUserId = riskDto.ResponsibleUserId;
+                existingRisk.PlannedActionDate = riskDto.PlannedActionDate;
+                existingRisk.DepartmentId = riskDto.DepartmentId;
+                existingRisk.ProjectId = riskDto.ProjectId;
+
+                // 3. Update Review (if present)
+                var firstReviewDto = riskDto.RiskAssessments[0].Review;
+                var existingReview = existingRisk.RiskAssessments.FirstOrDefault()?.Review;
+
+                if (existingReview == null)
+                {
+                    // Create a new review if it doesn't exist
+                    existingReview = new Review
+                    {
+                        Comments = firstReviewDto.Comments,
+                        ReviewStatus = firstReviewDto.ReviewStatus
+                    };
+
+                    if (firstReviewDto.UserId.HasValue)
+                    {
+                        existingReview.UserId = firstReviewDto.UserId;
+                        existingReview.ExternalReviewerId = null;
+                    }
+                    else if (firstReviewDto.ExternalReviewerId.HasValue)
+                    {
+                        existingReview.ExternalReviewerId = firstReviewDto.ExternalReviewerId;
+                        existingReview.UserId = null;
+                    }
+
+                    _db.Reviews.Add(existingReview);
+                    await _db.SaveChangesAsync();
+                }
+                else
+                {
+                    // Update existing review
+                    existingReview.Comments = firstReviewDto.Comments;
+                    existingReview.ReviewStatus = firstReviewDto.ReviewStatus;
+
+                    if (firstReviewDto.UserId.HasValue)
+                    {
+                        existingReview.UserId = firstReviewDto.UserId;
+                        existingReview.ExternalReviewerId = null;
+                    }
+                    else if (firstReviewDto.ExternalReviewerId.HasValue)
+                    {
+                        existingReview.ExternalReviewerId = firstReviewDto.ExternalReviewerId;
+                        existingReview.UserId = null;
+                    }
+
+                    _db.Reviews.Update(existingReview);
+                }
+
+                // 4. Update RiskAssessments
+                foreach (var assessmentDto in riskDto.RiskAssessments)
+                {
+                    var existingAssessment = existingRisk.RiskAssessments
+                        .FirstOrDefault(ra => ra.AssessmentBasisId == assessmentDto.AssessmentBasisId);
+
+                    if (existingAssessment != null)
+                    {
+                        // Update existing assessment
+                        existingAssessment.Likelihood = assessmentDto.Likelihood;
+                        existingAssessment.Impact = assessmentDto.Impact;
+                        existingAssessment.RiskFactor = assessmentDto.RiskFactor;
+                        existingAssessment.IsMitigated = assessmentDto.IsMitigated;
+                        existingAssessment.ReviewId = existingReview.Id;
+                    }
+                    else
+                    {
+                        // Add new assessment if not found
+                        var newAssessment = new RiskAssessment
+                        {
+                            AssessmentBasisId = assessmentDto.AssessmentBasisId,
+                            Likelihood = assessmentDto.Likelihood,
+                            Impact = assessmentDto.Impact,
+                            RiskFactor = assessmentDto.RiskFactor,
+                            IsMitigated = assessmentDto.IsMitigated,
+                            ReviewId = existingReview.Id
+                        };
+                        existingRisk.RiskAssessments.Add(newAssessment);
+                    }
+                }
+
+                // Remove old assessments not in the new list
+                var assessmentIdsInDto = riskDto.RiskAssessments.Select(a => a.AssessmentBasisId).ToList();
+                var assessmentsToRemove = existingRisk.RiskAssessments
+                    .Where(ra => !assessmentIdsInDto.Contains(ra.AssessmentBasisId))
+                    .ToList();
+
+                _db.Assessments.RemoveRange(assessmentsToRemove);
+
+                // 5. Save changes to the Risk
+                _db.Risks.Update(existingRisk);
+                await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return existingRisk;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception("Database update error: " + dbEx.Message, dbEx);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception("An unexpected error occurred while updating the risk: " + ex.Message, ex);
+            }
+        }
+
+
+
+
+
+
+        public async Task<Risk> EditSecurityOrPrivacyRiskAsync(int id, RiskDTO riskDto)
+        {
+            using (var transaction = await _db.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    // 1. Retrieve the existing Security Risk by primary key (Id)
+                    var existingRisk = await _db.Risks
+                        .Include(r => r.RiskAssessments)
+                        .ThenInclude(ra => ra.Review)  // Ensure Review is included
+                        .FirstOrDefaultAsync(r => r.Id == id);
+
+                    if (existingRisk == null)
+                    {
+                        throw new KeyNotFoundException($"Risk with ID {id} not found.");
+                    }
+
+                    // 2. Update the properties, including RiskId
+                    existingRisk.RiskId = riskDto.RiskId;  // Update the front-end RiskId
+                    existingRisk.RiskName = riskDto.RiskName;
+                    existingRisk.Description = riskDto.Description;
+                    existingRisk.RiskType = riskDto.RiskType;
+                    existingRisk.Impact = riskDto.Impact;
+                    existingRisk.Mitigation = riskDto.Mitigation;
+                    existingRisk.Contingency = riskDto.Contingency;
+                    existingRisk.OverallRiskRating = riskDto.OverallRiskRating;
+                    existingRisk.ResponsibleUserId = riskDto.ResponsibleUserId;
+                    existingRisk.PlannedActionDate = riskDto.PlannedActionDate;
+                    existingRisk.DepartmentId = riskDto.DepartmentId;
+                    existingRisk.ProjectId = riskDto.ProjectId;
+
+                    // 3. Update Review (if present)
+                    var firstReviewDto = riskDto.RiskAssessments[0].Review;
+                    var existingReview = existingRisk.RiskAssessments.FirstOrDefault()?.Review;
+
+                    if (existingReview == null)
+                    {
+                        // No existing review; create a new one
+                        existingReview = new Review
+                        {
+                            Comments = firstReviewDto.Comments,
+                            ReviewStatus = firstReviewDto.ReviewStatus,
+                            UserId = firstReviewDto.UserId,
+                            ExternalReviewerId = firstReviewDto.ExternalReviewerId
+                        };
+
+                        _db.Reviews.Add(existingReview);
+                        await _db.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        // Update existing review without creating a new reviewer
+                        existingReview.Comments = firstReviewDto.Comments;
+                        existingReview.ReviewStatus = firstReviewDto.ReviewStatus;
+
+                        if (firstReviewDto.UserId.HasValue)
+                        {
+                            existingReview.UserId = firstReviewDto.UserId;
+                            existingReview.ExternalReviewerId = null;  // Clear ExternalReviewerId if a UserId is provided
+                        }
+                        else if (firstReviewDto.ExternalReviewerId.HasValue)
+                        {
+                            existingReview.ExternalReviewerId = firstReviewDto.ExternalReviewerId;
+                            existingReview.UserId = null;  // Clear UserId if an ExternalReviewerId is provided
+                        }
+
+                        _db.Reviews.Update(existingReview); // Ensure we update the existing review
+                    }
+
+                    // 4. Update the RiskAssessments or add new ones if necessary
+                    foreach (var assessmentDto in riskDto.RiskAssessments)
+                    {
+                        // Check if the assessment already exists using the 'AssessmentBasisId'
+                        var existingAssessment = existingRisk.RiskAssessments
+                            .FirstOrDefault(ra => ra.AssessmentBasisId == assessmentDto.AssessmentBasisId);
+
+                        if (existingAssessment != null)
+                        {
+                            // If the assessment already exists, update it
+                            existingAssessment.Likelihood = assessmentDto.Likelihood;
+                            existingAssessment.Impact = assessmentDto.Impact;
+                            existingAssessment.RiskFactor = assessmentDto.RiskFactor;
+                            existingAssessment.IsMitigated = assessmentDto.IsMitigated;
+                        }
+                        else
+                        {
+                            // Add a new RiskAssessment if it does not exist
+                            var riskAssessment = new RiskAssessment
+                            {
+                                RiskId = existingRisk.Id,  // Use the primary key of the existing Risk
+                                ReviewId = existingReview.Id,  // Use the primary key of the Review
+                                AssessmentBasisId = assessmentDto.AssessmentBasisId,
+                                Likelihood = assessmentDto.Likelihood,
+                                Impact = assessmentDto.Impact,
+                                RiskFactor = assessmentDto.RiskFactor,
+                                IsMitigated = assessmentDto.IsMitigated
+                            };
+
+                            existingRisk.RiskAssessments.Add(riskAssessment);
+                        }
+                    }
+
+                    await _db.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    return existingRisk;
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    throw new Exception($"Error editing security risk: {ex.Message}", ex);
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<Risk> UpdateQualityRiskAsync(int riskId, RiskUpdateDTO riskUpdateDto)
+        {
+            using (var transaction = await _db.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    // Retrieve the existing Risk by ID
+                    var existingRisk = await _db.Risks.FirstOrDefaultAsync(r => r.Id == riskId);
+
+                    if (existingRisk == null)
+                    {
+                        throw new KeyNotFoundException($"Risk with ID {riskId} not found.");
+                    }
+
+                    // Update Risk properties
+                    if (riskUpdateDto.ClosedDate.HasValue)
+                    {
+                        existingRisk.ClosedDate = riskUpdateDto.ClosedDate.Value;
+                        existingRisk.RiskStatus = RiskStatus.close; // Set status to closed
+                    }
+
+                    if (riskUpdateDto.RiskResponseId.HasValue)
+                    {
+                        existingRisk.RiskResponseId = riskUpdateDto.RiskResponseId.Value;
+                    }
+
+                    // Handle RiskAssessments and their Reviews
+                    foreach (var assessmentDto in riskUpdateDto.RiskAssessments)
+                    {
+                        // Create new RiskAssessment for the mitigated case
+                        var newAssessment = new RiskAssessment
+                        {
+                            RiskId = existingRisk.Id,
+                            Likelihood = assessmentDto.Likelihood,
+                            Impact = assessmentDto.Impact,
+                            RiskFactor = assessmentDto.RiskFactor,
+                            IsMitigated = true
+                        };
+
+                        // Add Review if provided
+                        if (assessmentDto.Review != null)
+                        {
+                            var newReview = new Review
+                            {
+                                Comments = assessmentDto.Review.Comments,
+                                ReviewStatus = assessmentDto.Review.ReviewStatus
+                            };
+
+                            // Ensure only one of UserId or ExternalReviewerId is set
+                            if (assessmentDto.Review.UserId.HasValue)
+                            {
+                                newReview.UserId = assessmentDto.Review.UserId;
+                                newReview.ExternalReviewerId = null;
+                            }
+                            else if (assessmentDto.Review.ExternalReviewerId.HasValue)
+                            {
+                                newReview.ExternalReviewerId = assessmentDto.Review.ExternalReviewerId;
+                                newReview.UserId = null;
+                            }
+
+                            // Add the new Review to the database
+                            _db.Reviews.Add(newReview);
+                            await _db.SaveChangesAsync(); // Save to generate ReviewId
+
+                            // Assign the ReviewId to the new assessment
+                            newAssessment.ReviewId = newReview.Id;
+                        }
+
+                        // Add the new assessment to the database
+                        _db.Assessments.Add(newAssessment);
+                    }
+
+                    // Save changes to the Risk entity
+                    await _db.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    return existingRisk;
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    throw new Exception($"Error updating risk: {ex.Message}", ex);
+                }
+            }
+        }
+
+
+
+
+
+
+
+        public async Task<Risk> UpdateSecurityOrPrivacyRiskAsync(int riskId, RiskUpdateDTO riskUpdateDto)
+        {
+            using (var transaction = await _db.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    // Retrieve the existing Risk by ID
+                    var existingRisk = await _db.Risks.FirstOrDefaultAsync(r => r.Id == riskId);
+
+                    if (existingRisk == null)
+                    {
+                        throw new KeyNotFoundException($"Risk with ID {riskId} not found.");
+                    }
+
+                    // Update Risk properties
+                    if (riskUpdateDto.ClosedDate.HasValue)
+                    {
+                        existingRisk.ClosedDate = riskUpdateDto.ClosedDate.Value;
+                        existingRisk.RiskStatus = RiskStatus.close; // Set status to closed
+                    }
+
+                    if (riskUpdateDto.RiskResponseId.HasValue)
+                    {
+                        existingRisk.RiskResponseId = riskUpdateDto.RiskResponseId.Value;
+                    }
+
+                    // Initialize a shared review if provided
+                    int sharedReviewId =0;
+                    if (riskUpdateDto.RiskAssessments.Any() && riskUpdateDto.RiskAssessments[0].Review != null)
+                    {
+                        var firstReviewDto = riskUpdateDto.RiskAssessments[0].Review;
+                        var newReview = new Review
+                        {
+                            Comments = firstReviewDto.Comments,
+                            ReviewStatus = firstReviewDto.ReviewStatus
+                        };
+
+                        // Ensure only one of UserId or ExternalReviewerId is set
+                        if (firstReviewDto.UserId.HasValue)
+                        {
+                            newReview.UserId = firstReviewDto.UserId;
+                            newReview.ExternalReviewerId = null;
+                        }
+                        else if (firstReviewDto.ExternalReviewerId.HasValue)
+                        {
+                            newReview.ExternalReviewerId = firstReviewDto.ExternalReviewerId;
+                            newReview.UserId = null;
+                        }
+
+                        // Add and save the new review
+                        _db.Reviews.Add(newReview);
+                        await _db.SaveChangesAsync(); // Generate ReviewId
+                        sharedReviewId = newReview.Id;
+                    }
+
+                    // Handle RiskAssessments and assign shared ReviewId
+                    foreach (var assessmentDto in riskUpdateDto.RiskAssessments)
+                    {
+                        var newAssessment = new RiskAssessment
+                        {
+                            RiskId = existingRisk.Id,
+                            Likelihood = assessmentDto.Likelihood,
+                            Impact = assessmentDto.Impact,
+                            RiskFactor = assessmentDto.RiskFactor,
+                            AssessmentBasisId = assessmentDto.AssessmentBasisId,
+                            IsMitigated = true,
+                            ReviewId = sharedReviewId
+                        };
+
+                        // Add the new assessment to the database
+                        _db.Assessments.Add(newAssessment);
+                    }
+
+                    // Save changes to the Risk entity
+                    await _db.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    return existingRisk;
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    throw new Exception($"Error updating risk: {ex.Message}", ex);
+                }
+            }
+        }
+
 
         public async Task<Object> GetMitigationStatusOfARisk(int id)
         {
@@ -319,31 +815,47 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return null;
         }
 
-    public async Task<ICollection<int>> GetOverallRiskRating()
-    {
-         return await _db.Set<Risk>()
-        .Select(r => r.OverallRiskRating)
-        .ToListAsync();
+        public async Task<ICollection<int>> GetOverallRiskRating()
+        {
+             return await _db.Set<Risk>()
+            .Select(r => r.OverallRiskRating)
+            .ToListAsync();
+        }
+
+        public async Task<object> GetOverallRiskRating(int id)
+        {
+          return await _db.Set<Risk>()
+         .Where(r => r.Id == id)
+         .Select(r => (int?)r.OverallRiskRating)
+         .FirstOrDefaultAsync();
+
+        }
+
+        public async Task<object> GetRiskByAssigneeId(int id)
+        {
+           
+
+            var result = await _db.Risks.Where(e => e.ResponsibleUserId == id).ToListAsync();
+
+            
+
+            var Risks=_mapper.Map<List<RiskForApprovalDTO>>(result);
+
+            return Risks; 
+
+
+        }
+
+
     }
-
-    public async Task<object> GetOverallRiskRating(int id)
-    {
-      return await _db.Set<Risk>()
-     .Where(r => r.Id == id)
-     .Select(r => (int?)r.OverallRiskRating)
-     .FirstOrDefaultAsync();
-
-    }
-
-  }
-
 
 }
        
 
 
-      
-      
+
+
+
 
 
 
