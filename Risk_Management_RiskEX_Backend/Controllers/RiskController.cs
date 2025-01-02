@@ -30,26 +30,26 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
         }
 
-        [HttpGet("reviewer")]
-        public async Task<ActionResult<IEnumerable<ApprovalDTO>>> GetRisksByReviewerId([FromQuery] int? userId)
-        {
-            // Validate input
-            if (!userId.HasValue)
-            {
-                return BadRequest("User ID must be provided.");
-            }
+        //[HttpGet("reviewer")]
+        //public async Task<ActionResult<IEnumerable<ApprovalDTO>>> GetRisksByReviewerId([FromQuery] int? userId)
+        //{
+        //    // Validate input
+        //    if (!userId.HasValue)
+        //    {
+        //        return BadRequest("User ID must be provided.");
+        //    }
 
-            // Fetch risks using the repository
-            var risks = await _riskRepository.GetRisksByReviewerAsync(userId.Value);
+        //    // Fetch risks using the repository
+        //    var risks = await _riskRepository.GetRisksByReviewerAsync(userId.Value);
 
-            if (risks == null || !risks.Any())
-            {
-                return NotFound("No risks found for the provided reviewer ID.");
-            }
+        //    if (risks == null || !risks.Any())
+        //    {
+        //        return NotFound("No risks found for the provided reviewer ID.");
+        //    }
 
-            // Return the risks in ApprovalDTO format
-            return Ok(risks);
-        }
+        //    // Return the risks in ApprovalDTO format
+        //    return Ok(risks);
+        //}
 
 
 

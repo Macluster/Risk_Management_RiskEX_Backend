@@ -41,6 +41,7 @@ builder.Services.AddScoped<IRiskResponseRepository, RiskResponseRepository>();
 builder.Services.AddScoped<IAssessmentMatrixImpactRepository, AssessmentMatrixImpactRepository>();
 builder.Services.AddScoped<IAssessmentMatrixLikelihoodRepository, AssessmentMatrixLikelihoodRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IApprovalRepository, ApprovalsRepository>();
 
 builder.Services.AddSwaggerGen(option => {
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
