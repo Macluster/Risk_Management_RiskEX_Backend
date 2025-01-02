@@ -71,7 +71,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim("DepartmentId", user.Department?.Id.ToString() ?? "Unknown"),
             new Claim("DepartmentName", user.Department?.DepartmentName ?? "Unknown"),
-            new Claim("UserName", user.FullName ?? "Unknown")
+            new Claim("UserName", user.FullName ?? "Unknown"),
+            new Claim("UserMail", user.Email ?? "Unknown")
         };
 
                 if (user.Email == "admin@gmail.com")

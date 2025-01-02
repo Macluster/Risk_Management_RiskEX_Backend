@@ -43,7 +43,10 @@ builder.Services.AddScoped<IAssessmentMatrixImpactRepository, AssessmentMatrixIm
 builder.Services.AddScoped<IAssessmentMatrixLikelihoodRepository, AssessmentMatrixLikelihoodRepository>();
 builder.Services.AddScoped<IGetUserRepository, GetUserRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+<<<<<<< HEAD
+=======
 
+>>>>>>> eed720e6e05d1be340cac7979d371856faeda5c9
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
