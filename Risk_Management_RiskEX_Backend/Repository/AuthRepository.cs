@@ -17,7 +17,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         private readonly ApplicationDBContext _db;
         private readonly IMapper _mapper;
-        private readonly ILogger<AuthRepository> _logger;  // Fixed logger type
+        private readonly ILogger<AuthRepository> _logger; 
         private readonly IConfiguration _configuration;
         private readonly string _secretKey;
         public AuthRepository(ApplicationDBContext db, IMapper mapper, ILogger<AuthRepository> logger, IConfiguration configuration)
@@ -63,13 +63,13 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 var key = Encoding.ASCII.GetBytes(_secretKey);
 
                 var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim("DepartmentId", user.Department?.Id.ToString() ?? "Unknown"),
-            new Claim("DepartmentName", user.Department?.DepartmentName ?? "Unknown"),
-            new Claim("UserName", user.FullName ?? "Unknown")
-        };
+                {
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim("DepartmentId", user.Department?.Id.ToString() ?? "Unknown"),
+                    new Claim("DepartmentName", user.Department?.DepartmentName ?? "Unknown"),
+                    new Claim("UserName", user.FullName ?? "Unknown")
+                };
 
                 if (user.Email == "admin@gmail.com")
                 {

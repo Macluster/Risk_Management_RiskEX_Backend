@@ -9,6 +9,7 @@ using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Models.DTO;
 using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Repository;
+using Microsoft.AspNetCore.Http;
 
 namespace RiskManagement
 {
@@ -28,7 +29,10 @@ namespace RiskManagement
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-            _context = new ApplicationDBContext(options);
+            var httpContextAccessor = new HttpContextAccessor();
+
+
+            _context = new ApplicationDBContext(options, httpContextAccessor);
 
             // Initialize AutoMapper
             var mapperConfig = new MapperConfiguration(cfg =>
