@@ -24,7 +24,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             _emailService = emailService;
         }
 
-        public async Task<bool> AddUserToDepartment(UsersDTO userDto, int? currentUserId = null)
+        public async Task<int> AddUserToDepartment(UsersDTO userDto, int? currentUserId = null)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 if (string.IsNullOrWhiteSpace(userDto.Email))
                 {
                     _logger.LogError("User email cannot be empty.");
-                    return false;
+                    return 0;
                 }
 
                 // Check for existing user
@@ -40,28 +40,28 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 if (existingUser != null)
                 {
                     _logger.LogError($"User with email {userDto.Email} already exists.");
-                    return false;
+                    return 0;
                 }
 
-                // Validate department
+                // Validate and get department
                 var department = await _db.Departments
                                 .FirstOrDefaultAsync(d => d.DepartmentName.ToLower() == userDto.DepartmentName.ToLower());
                 if (department == null)
                 {
-                    _logger.LogError($"Department with ID {userDto.DepartmentName} not found.");
-                    return false;
+                    _logger.LogError($"Department with name {userDto.DepartmentName} not found.");
+                    return 0;
                 }
-
-             
-                
 
                 // Create new User entity using AutoMapper
                 var user = _mapper.Map<User>(userDto);
 
+                // Set the DepartmentId explicitly
+                user.DepartmentId = department.Id;
+
                 // Set audit fields
                 user.CreatedAt = DateTime.UtcNow;
                 user.UpdatedAt = DateTime.UtcNow;
-
+                user.IsActive = true;
 
                 //if (currentUserId.HasValue)
                 //{
@@ -76,7 +76,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         .Where(p => userDto.ProjectNames.Contains(p.Name))
                         .ToListAsync();
 
-
                     // Verify all project names were found
                     var foundProjectNames = projects.Select(p => p.Name).ToList();
                     var missingProjects = userDto.ProjectNames
@@ -86,42 +85,47 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     if (missingProjects.Any())
                     {
                         _logger.LogError($"Projects not found: {string.Join(", ", missingProjects)}");
-                        return false;
+                        return 0;
                     }
 
                     user.Projects = projects;
                 }
 
                 // Add user to database
-                await _db.Users.AddAsync(user);
-                await _db.SaveChangesAsync();
+                var insertedUser = await _db.Users.AddAsync(user);
+                 await _db.SaveChangesAsync();
 
-                // Send welcome email with the actual password used
+                // Send welcome email
                 try
                 {
                     await _emailService.SendEmail(
-                user.Email,
-                "Your Account Credentials",
-                $"Welcome to the system!\n\n" +
-                $"Your account has been created with the following credentials:\n" +
-                $"Username: {user.Email}\n" +
-                $"Password: {DEFAULT_PASSWORD}\n\n" +
-                "Please change your password upon first login for security purposes."
-                );
+                        user.Email,
+                        "Your Account Credentials",
+                        $"Welcome to the system!\n\n" +
+                        $"Your account has been created with the following credentials:\n" +
+                        $"Username: {user.Email}\n" +
+                        $"Password: {DEFAULT_PASSWORD}\n\n" +
+                        "Please change your password upon first login for security purposes."
+                    );
                 }
                 catch (Exception emailEx)
                 {
                     _logger.LogWarning($"Failed to send welcome email: {emailEx.Message}");
                 }
 
-                return true;
+                return user.Id;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error adding user to department");
-                return false;
+                return 0;
             }
+        
         }
+
+
+
+
 
         public async Task<bool> ChangeUserActiveStatus(int id,bool isActive)
         {
@@ -141,6 +145,20 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
           
            
+        }
+
+        public async Task<Object> GetNameAndEmailOfAUser(int userId)
+        {
+            var User=  await _db.Users.FirstOrDefaultAsync(e=>e.Id==userId);
+
+            AssigneeResponseDTO assigneeResponseDTO=  _mapper.Map<AssigneeResponseDTO>(User);
+
+            return new
+            {
+                User.FullName,
+                User.Email
+                
+            };
         }
     }
 }

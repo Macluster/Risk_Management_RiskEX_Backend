@@ -19,7 +19,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             _logger = logger;
         }
 
-        [HttpPost("add")]
+        [HttpPost("register")]
         public async Task<IActionResult> AddUserToDepartment([FromBody] UsersDTO userDto)
         {
             // Get the current user's ID from your authentication context
@@ -29,9 +29,13 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
             var result = await _userRepository.AddUserToDepartment(userDto, currentUserId);
 
-            if (result)
+            if (result!=0)
             {
-                return Ok("User successfully added to department.");
+                return Ok(new
+                {
+                    result= "User successfully added to department.",
+                    id=result,
+                });
             }
 
             return BadRequest("Failed to add user. Please check the logs for details.");
@@ -48,6 +52,24 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
             return BadRequest("Failed to patch user. Please check the logs for details.");
         }
+
+
+        [HttpGet("GetEmailAndPasswordOfAUser/{id}")]
+
+        public async Task<IActionResult> GetEmailAndPasswordOfAUser(int id)
+        {
+
+            var result = await _userRepository.GetNameAndEmailOfAUser(id);
+            if (result!=null)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest("No user found with the Id");
+        }
+
+
+
 
 
     }
