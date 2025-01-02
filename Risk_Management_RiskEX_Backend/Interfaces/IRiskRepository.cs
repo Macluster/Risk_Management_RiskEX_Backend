@@ -14,6 +14,11 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task<Object> GetMitigationStatusOfARisk(int id);       
         Task<ICollection<int>> GetOverallRiskRating();
         Task<Object> GetOverallRiskRating(int id);
+        Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCounts();
+        Task<ICollection<OpenRiskCountByTypeDTO>>GetOpenRiskCountByType();
+        Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCountsByDepartments(List<int> departmentIds);
+
+
 
 
   }
