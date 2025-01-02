@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Risk_Management_RiskEX_Backend.Models.DTO;
 using Risk_Management_RiskEX_Backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Risk_Management_RiskEX_Backend.Controllers
 {
@@ -30,6 +31,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
         [HttpPost("Project")]
+        [Authorize]
         public async Task<IActionResult> AddProject( [FromServices] IProjectRepository _projectRepository,[FromBody] ProjectDTO projectDto)
         {
             if (string.IsNullOrEmpty(projectDto.ProjectName))

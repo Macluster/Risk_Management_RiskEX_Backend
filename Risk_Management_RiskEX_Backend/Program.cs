@@ -3,6 +3,7 @@ using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Risk_Management_RiskEX_Backend;
@@ -19,15 +20,28 @@ DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 
+
+
 //Getting Connection String from Env file adding to db context
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 var jwt_Scret = Environment.GetEnvironmentVariable("API_SECRET");
-builder.Services.AddDbContext<ApplicationDBContext>(options =>
-           options.UseNpgsql(connectionString));
+//builder.Services.AddDbContext<ApplicationDBContext>(options =>
+//           options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<ApplicationDBContext>((serviceProvider, options) =>
+{
+    options.UseNpgsql(connectionString);
+}, ServiceLifetime.Scoped);
+
+builder.Services.AddScoped<ApplicationDBContext>((serviceProvider) =>
+{
+    var options = serviceProvider.GetRequiredService<DbContextOptions<ApplicationDBContext>>();
+    var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+    return new ApplicationDBContext(options, httpContextAccessor);
+});
 
 builder.Services.AddTransient<IEmailService, EmailService>();
 // Add services to the container.
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -43,10 +57,6 @@ builder.Services.AddScoped<IAssessmentMatrixImpactRepository, AssessmentMatrixIm
 builder.Services.AddScoped<IAssessmentMatrixLikelihoodRepository, AssessmentMatrixLikelihoodRepository>();
 builder.Services.AddScoped<IGetUserRepository, GetUserRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-<<<<<<< HEAD
-=======
-
->>>>>>> eed720e6e05d1be340cac7979d371856faeda5c9
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
@@ -106,7 +116,13 @@ builder.Services.AddAuthentication(x =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly", policy => policy.RequireRole("admin"));
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+
+    options.AddPolicy("ProjectUsers", policy =>
+             policy.RequireRole("ProjectUsers"));
+
+    options.AddPolicy("DepartmentUsers", policy =>
+        policy.RequireRole("DepartmentUser"));
 });
 
 
