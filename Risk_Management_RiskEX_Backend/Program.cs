@@ -43,12 +43,9 @@ builder.Services.AddScoped<IAssessmentMatrixImpactRepository, AssessmentMatrixIm
 builder.Services.AddScoped<IAssessmentMatrixLikelihoodRepository, AssessmentMatrixLikelihoodRepository>();
 builder.Services.AddScoped<IGetUserRepository, GetUserRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-<<<<<<< HEAD
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-=======
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
->>>>>>> 05c4d83b911d34c7c180696d59ffd4f12c23e640
 
 builder.Services.AddSwaggerGen(option => {
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
