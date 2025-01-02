@@ -28,5 +28,25 @@ namespace Risk_Management_RiskEX_Backend.Repository
             throw new NotImplementedException();
         }
 
+        public async Task<User> GetUserById(int id)
+        {
+            return await _db.Users.FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public IEnumerable<User> GetUsersByDepartment(int departmentId)
+        {
+            // Assuming you have a DbContext and a User entity with a DepartmentId property
+            return _db.Users.Where(u => u.DepartmentId == departmentId).ToList();
+        }
+
+        public IEnumerable<User> GetUsersByProject(int projectId)
+        {
+           
+            return _db.Projects
+                             .Where(p => p.Id == projectId)
+                             .Select(p => p.User)
+                             .ToList();
+        }
+
     }
 }

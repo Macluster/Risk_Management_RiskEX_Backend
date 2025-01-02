@@ -6,7 +6,13 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
     public interface IGetUserRepository
     {
         Task<IEnumerable<User>> GetAllUsers();
+        Task<User> GetUserById(int id);
+
         Task<bool> GetAllUsers(GetUserDTO getUserDTO);
+
+        IEnumerable<User> GetUsersByDepartment(int departmentId);
+
+        IEnumerable<User> GetUsersByProject(int projectId);
 
     }
 }
