@@ -92,8 +92,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 }
 
                 // Add user to database
-                var insertedUser = await _db.Users.AddAsync(user);
-                 await _db.SaveChangesAsync();
+                await _db.Users.AddAsync(user);
+                await _db.SaveChangesAsync();
 
                 // Send welcome email
                 try
@@ -122,10 +122,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
             }
         
         }
-
-
-
-
 
         public async Task<bool> ChangeUserActiveStatus(int id,bool isActive)
         {
@@ -160,6 +156,22 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 
             };
         }
+
+        public async Task<Object> GetInfoOfAssigneeByRiskId(int riskId)
+        {
+            var risks = await _db.Risks.Include(e=>e.ResponsibleUser).FirstOrDefaultAsync(e => e.Id == riskId);
+
+           
+
+            return new
+            {
+                FullName=risks.ResponsibleUser.FullName,
+                Email=risks.ResponsibleUser.Email
+
+            };
+        }
+
+
     }
 }
 
