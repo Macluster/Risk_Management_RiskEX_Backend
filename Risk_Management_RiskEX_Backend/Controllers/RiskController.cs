@@ -1,5 +1,7 @@
 
-﻿using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using Newtonsoft.Json;
@@ -276,11 +278,42 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         return Ok(riskRating);
         }
 
-        [HttpGet("GetRiskByAssigne/{id}")]
-        public async Task<IActionResult> GetRiskByAssigneId(int id)
+        [HttpGet("GetRiskByAssigne")]
+        public async Task<IActionResult> GetRiskByAssigneId(int? id)
         {
-            var risks = await _riskRepository.GetRiskByAssigneeId(id);
-            return Ok(risks);
+
+
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+
+            try
+            {
+                if(id==null)
+                {
+                    // Validate and decode the token
+                    var tokenHandler = new JwtSecurityTokenHandler();
+                    var jwtToken = tokenHandler.ReadJwtToken(token);
+
+                    // Extract claims from the token
+                    var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    userId = jwtToken.Payload["nameid"].ToString();
+
+                    var risks = await _riskRepository.GetRiskByAssigneeId(Int32.Parse(userId));
+                    return Ok(risks);
+                }
+                else
+                {
+                    var risks = await _riskRepository.GetRiskByAssigneeId(id??0);
+                    return Ok(risks);
+                }
+              
+            }
+            catch (Exception e)
+            {
+                return Ok("No user with the given Id");
+            }
+           
+  
         }
     }
 }

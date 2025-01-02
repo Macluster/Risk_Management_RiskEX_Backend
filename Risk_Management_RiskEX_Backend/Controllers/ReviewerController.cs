@@ -34,5 +34,20 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpPost("add-reviewer")]
+        public async Task<IActionResult> AddReviewer([FromBody] ExternalReviewerDTO externalReviewerDTO)
+        {
+            try
+            {
+                var reviewerId = await _reviewerRepository.AddNewReviewer(externalReviewerDTO);
+                return Ok(new { ReviewerId = reviewerId });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
     }
 }

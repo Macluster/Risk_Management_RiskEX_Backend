@@ -9,6 +9,7 @@ using Risk_Management_RiskEX_Backend.Models.DTO;
 
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Claims;
 
 
 namespace Risk_Management_RiskEX_Backend.Repository
@@ -814,34 +815,38 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return null;
         }
 
-    public async Task<ICollection<int>> GetOverallRiskRating()
-    {
-         return await _db.Set<Risk>()
-        .Select(r => r.OverallRiskRating)
-        .ToListAsync();
-    }
+        public async Task<ICollection<int>> GetOverallRiskRating()
+        {
+             return await _db.Set<Risk>()
+            .Select(r => r.OverallRiskRating)
+            .ToListAsync();
+        }
 
-    public async Task<object> GetOverallRiskRating(int id)
-    {
-      return await _db.Set<Risk>()
-     .Where(r => r.Id == id)
-     .Select(r => (int?)r.OverallRiskRating)
-     .FirstOrDefaultAsync();
+        public async Task<object> GetOverallRiskRating(int id)
+        {
+          return await _db.Set<Risk>()
+         .Where(r => r.Id == id)
+         .Select(r => (int?)r.OverallRiskRating)
+         .FirstOrDefaultAsync();
 
-    }
+        }
 
         public async Task<object> GetRiskByAssigneeId(int id)
         {
+           
+
             var result = await _db.Risks.Where(e => e.ResponsibleUserId == id).ToListAsync();
 
             
 
-            var Risks=_mapper.Map<List<ApprovalDTO>>(result);
+            var Risks=_mapper.Map<List<RiskForApprovalDTO>>(result);
 
             return Risks; 
 
 
         }
+
+
     }
 
 }

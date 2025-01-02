@@ -46,7 +46,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         DepartmentId = r.DepartmentId,
                         ProjectId = r.Project.Id,
                         DepartmentName = r.Department.DepartmentName,
-                        RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentDTO
+                        RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentReportDTO
                         {
                             Id = ra.Id,
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
@@ -102,7 +102,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         DepartmentId = r.DepartmentId,
                         ProjectId = r.Project.Id,
                         DepartmentName = r.Department.DepartmentName,
-                        RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentDTO
+                        RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentReportDTO
                         {
                             Id = ra.Id,
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
@@ -157,7 +157,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         DepartmentId = r.DepartmentId,
                         ProjectId = r.Project.Id,
                         DepartmentName = r.Department.DepartmentName,
-                        RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentDTO
+                        RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentReportDTO
                         {
                             Id = ra.Id,
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
@@ -218,7 +218,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         DepartmentId = r.DepartmentId,
                         ProjectId = r.Project.Id,
                         DepartmentName = r.Department.DepartmentName,
-                        RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentDTO
+                        RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentReportDTO
                         {
                             Id = ra.Id,
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
@@ -265,7 +265,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     DepartmentId = r.DepartmentId,
                     ProjectId = r.Project.Id,
                     DepartmentName = r.Department.DepartmentName,
-                    RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentDTO
+                    RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentReportDTO
                     {
                         Id = ra.Id,
                         MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
@@ -317,7 +317,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     DepartmentId = r.DepartmentId,
                     ProjectId = r.ProjectId ?? 0,
                     DepartmentName = r.Department.DepartmentName,
-                    RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentDTO
+                    RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentReportDTO
                     {
                         Id = ra.Id,
                         MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
