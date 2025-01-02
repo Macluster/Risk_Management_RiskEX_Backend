@@ -88,42 +88,62 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return Ok(new { Message = "Comment updated successfully" });
             else
                 return NotFound(new { Message = "Review not found for the provided RiskId" });
-        }     
-        //[HttpPut("update-comment-by-risk")]
-        //public async Task<IActionResult> UpdatereviestatusByRiskId([FromQuery] int riskId, [FromBody] string approvalStatus ,[FromBody] string comments)
+        }
+
+
+        //[HttpPut("update-review/{riskId}")]
+        //public async Task<IActionResult> UpdateReviewStatusAndComments(int riskId, [FromBody] ReviewUpdateDTO updateRequest)
         //{
-        //    // Validate inputs
-        //    if (riskId <= 0 || string.IsNullOrWhiteSpace(comments))
-        //        return BadRequest("Invalid risk ID or comments");
-
-        //    // Attempt to update the review comment based on RiskId
-        //    var result = await _approvalRepository.UpdateReviewStatusAsync(riskId, approvalStatus,comments);
-
-        //    if (result)
-        //        return Ok(new { Message = "Comment updated successfully" });
-        //    else
-        //        return NotFound(new { Message = "Review not found for the provided RiskId" });
-        //}
-
-        //[HttpPut("update-review-status-and-comments")]
-        //public async Task<IActionResult> UpdateReviewStatusAndComments(int riskId, string approvalStatus, string comments)
-        //{
-        //    // Validate input
-        //    if (string.IsNullOrEmpty(approvalStatus) || !new[] { "approved", "rejected" }.Contains(approvalStatus.ToLower()))
+        //    if (updateRequest == null)
         //    {
-        //        return BadRequest("Invalid approval status.");
+        //        return BadRequest("Invalid data.");
         //    }
 
-        //    // Call the service method to update both status and comments
-        //    bool updateSuccess = await _approvalRepository.UpdateReviewStatusAsync(riskId, approvalStatus, comments);
-
-        //    if (!updateSuccess)
+        //    // Call the method to update the review status
+        //    bool statusUpdated = await _approvalRepository.UpdateReviewStatusAsync(riskId, updateRequest.ApprovalStatus);
+        //    if (!statusUpdated)
         //    {
-        //        return NotFound("Risk or review not found.");
+        //        return NotFound("Risk or review not found for status update.");
+        //    }
+
+        //    // Call the method to update the review comment
+        //    bool commentUpdated = await _approvalRepository.UpdateReviewCommentByRiskIdAsync(riskId, updateRequest.Comments);
+        //    if (!commentUpdated)
+        //    {
+        //        return NotFound("Risk or review not found for comment update.");
         //    }
 
         //    return Ok("Review status and comments updated successfully.");
         //}
+
+        [HttpPut("update-review/{riskId}")]
+        public async Task<IActionResult> UpdateReviewStatusAndComments(int riskId, [FromBody] ReviewUpdateDTO updateRequest)
+        {
+            // Validate the request body
+            if (updateRequest == null || string.IsNullOrWhiteSpace(updateRequest.ApprovalStatus))
+            {
+                return BadRequest(new { Message = "Invalid data. ApprovalStatus is required." });
+            }
+
+            // Update the review status
+            var statusUpdated = await _approvalRepository.UpdateReviewStatusAsync(riskId, updateRequest.ApprovalStatus);
+            if (!statusUpdated)
+            {
+                return NotFound(new { Message = "Risk or review not found for status update." });
+            }
+
+            // Update the review comment
+            var commentUpdated = await _approvalRepository.UpdateReviewCommentByRiskIdAsync(riskId, updateRequest.Comments);
+            if (!commentUpdated)
+            {
+                return NotFound(new { Message = "Risk or review not found for comment update." });
+            }
+
+            // Return success response
+            return Ok(new { Message = "Review status and comments updated successfully." });
+        }
+
+
 
 
     }

@@ -53,10 +53,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId)
         {
-            
-
-            
-
             if (!userId.HasValue)
             {
                 Console.WriteLine("No userId provided.");
@@ -142,22 +138,22 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
         public async Task<bool> UpdateReviewCommentByRiskIdAsync(int riskId, string comments)
         {
-            // Find the review associated with the given RiskId
+            
             var review = await _db.Set<RiskAssessment>()
                                        .Where(ra => ra.RiskId == riskId)
                                        .Select(ra => ra.Review)
                                        .FirstOrDefaultAsync();
 
             if (review == null)
-                return false; // Return false if no review is found
+                return false; 
 
-            // Update the comments field
+            
             review.Comments = comments;
 
-            // Save changes to the database
+            
             await _db.SaveChangesAsync();
 
-            return true; // Return true if the operation is successful
+            return true; 
         }
 
         
