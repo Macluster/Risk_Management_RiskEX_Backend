@@ -30,7 +30,7 @@ var jwt_Scret = Environment.GetEnvironmentVariable("API_SECRET");
 builder.Services.AddDbContext<ApplicationDBContext>((serviceProvider, options) =>
 {
     options.UseNpgsql(connectionString);
-}, ServiceLifetime.Scoped);
+});
 
 builder.Services.AddScoped<ApplicationDBContext>((serviceProvider) =>
 {
@@ -140,21 +140,24 @@ builder.Services.AddCors(options =>
 });
 
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
+
 
 
 var app = builder.Build();
 app.UseCors("AllowAll");
+app.UseCors(builder => builder
+       .AllowAnyOrigin()
+       .AllowAnyMethod()
+       .AllowAnyHeader());
 
-app.UseCors("AllowAll");
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
