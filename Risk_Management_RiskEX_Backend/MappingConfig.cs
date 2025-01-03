@@ -19,6 +19,7 @@ namespace Risk_Management_RiskEX_Backend
 
 
             CreateMap<ApprovalDTO, Risk>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.RiskId, opt => opt.MapFrom(src => src.RiskId))
                 .ForMember(dest => dest.RiskName, opt => opt.MapFrom(src => src.RiskName))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
@@ -26,6 +27,29 @@ namespace Risk_Management_RiskEX_Backend
                 .ForMember(dest => dest.RiskType, opt => opt.MapFrom(src => (int)src.RiskType))
                 .ForMember(dest => dest.OverallRiskRating, opt => opt.MapFrom(src => src.OverallRiskRating))
                 .ForMember(dest => dest.RiskStatus, opt => opt.MapFrom(src => src.RiskStatus));
+
+            // Map Risk entity to RiskDetailsDTO
+           CreateMap<Risk, RiskDetailsDTO>()
+                .ForMember(dest => dest.ReviewerName, opt => opt.Ignore()) // ReviewerName comes from Review.User
+                .ForMember(dest => dest.ReviewerDepartment, opt => opt.Ignore()); // ReviewerDepartment comes from Review.User.Department
+
+            // Map Review to RiskDetailsDTO
+            CreateMap<Review, RiskDetailsDTO>()
+               
+                .ForMember(dest => dest.RiskId, opt => opt.MapFrom(src => src.RiskAssessments.FirstOrDefault().Risk.RiskId))
+                .ForMember(dest => dest.RiskName, opt => opt.MapFrom(src => src.RiskAssessments.FirstOrDefault().Risk.RiskName))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.RiskAssessments.FirstOrDefault().Risk.Description))
+                .ForMember(dest => dest.RiskType, opt => opt.MapFrom(src => src.RiskAssessments.FirstOrDefault().Risk.RiskType))
+                .ForMember(dest => dest.PlannedActionDate, opt => opt.MapFrom(src => src.RiskAssessments.FirstOrDefault().Risk.PlannedActionDate))
+                .ForMember(dest => dest.OverallRiskRating, opt => opt.MapFrom(src => src.RiskAssessments.FirstOrDefault().Risk.OverallRiskRating))
+                .ForMember(dest => dest.RiskStatus, opt => opt.MapFrom(src => src.RiskAssessments.FirstOrDefault().Risk.RiskStatus))
+                .ForMember(dest => dest.ReviewerName, opt => opt.MapFrom(src => src.User.FullName))
+                .ForMember(dest => dest.ReviewerDepartment, opt => opt.MapFrom(src => src.User.Department.DepartmentName));
+
+            CreateMap<ReviewUpdateDTO, Review>()
+                //.ForMember(dest => dest.RiskId, opt => opt.MapFrom(src => src.RiskId))
+                .ForMember(dest => dest.ReviewStatus, opt => opt.MapFrom(src => src.ApprovalStatus)) 
+                .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments));
 
 
             CreateMap<RiskDTO, Risk>();
@@ -104,6 +128,7 @@ namespace Risk_Management_RiskEX_Backend
 
 
         }
+       
 
 
     }
