@@ -48,7 +48,6 @@ namespace RiskManagement_Department_API.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception
                 return StatusCode(500, new { message = "An error occurred while adding the department." });
             }
         }

@@ -8,6 +8,7 @@ using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Models.DTO;
 using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Repository;
+using Microsoft.AspNetCore.Http;
 
 
 namespace Risk_Management_RiskEX_Backend.Tests
@@ -26,7 +27,9 @@ namespace Risk_Management_RiskEX_Backend.Tests
                 .UseInMemoryDatabase(databaseName: $"TestDb_{Guid.NewGuid()}")
                 .Options;
 
-            _dbContext = new ApplicationDBContext(options);
+            var httpContextAccessor = new HttpContextAccessor();
+
+            _dbContext = new ApplicationDBContext(options, httpContextAccessor);
 
             var config = new MapperConfiguration(cfg =>
                 cfg.CreateMap<DepartmentDTO, Department>()

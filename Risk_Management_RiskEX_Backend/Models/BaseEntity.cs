@@ -45,7 +45,7 @@ namespace Risk_Management_RiskEX_Backend.Models
         ReviewCompleted = 2,
         ApprovalPending = 3,
         ApprovalCompleted = 4,
-        Rijected=5,
+        Rejected=5,
         HasValue = 6
     }
     }

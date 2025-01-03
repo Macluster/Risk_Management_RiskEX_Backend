@@ -13,7 +13,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                 new Department { Id = 1, DepartmentName = "SFM", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
                 new Department {Id = 2, DepartmentName = "HR", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
                 new Department {Id = 3, DepartmentName = "Finance", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 4, DepartmentName = "IT", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+                new Department { Id = 4, DepartmentName = "Admin & Purchase", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
 
 
             );
@@ -23,8 +23,8 @@ namespace Risk_Management_RiskEX_Backend.Data
                 new User
                 {
                     Id = 1,
-                    Email = "admin@riskex.com",
-                    Password = "Admin@123", // In production, use hashed passwords
+                    Email = "admin@gmail.com",
+                    Password = "admin@123", // In production, use hashed passwords
                     FullName = "System Admin",
                     DepartmentId = 1,
                     IsActive = true,
@@ -115,7 +115,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 1,
                     AssessmentFactor = "Low",
-                    Impact = 10.0,  // Updated value
+                    Impact = 10.0, 
                     Definition = "No/slight effect on business",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
@@ -124,7 +124,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 2,
                     AssessmentFactor = "Medium",
-                    Impact = 20.0,  // Updated value
+                    Impact = 20.0,  
                     Definition = "business objectives affected",
 
                     CreatedAt = DateTime.UtcNow,
@@ -134,7 +134,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 3,
                     AssessmentFactor = "High",
-                    Impact = 40.0,  // Updated value
+                    Impact = 40.0, 
                     Definition= "business objectives undermined",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
@@ -143,7 +143,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 4,
                     AssessmentFactor = "Critical",
-                    Impact = 60.0,  // Updated value
+                    Impact = 60.0,  
                     Definition = "business objectives not accomplished",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
@@ -156,7 +156,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 1,
                     AssessmentFactor = "Low",
-                    Likelihood = 0.1,  // Updated value
+                    Likelihood = 0.1,  
                     Definition = "1-24% chance of occurrence",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
@@ -165,7 +165,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 2,
                     AssessmentFactor = "Medium",
-                    Likelihood = 0.2,  // Updated value
+                    Likelihood = 0.2, 
                     Definition = "25-49% chance of occurrence",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
@@ -174,7 +174,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 3,
                     AssessmentFactor = "High",
-                    Likelihood = 0.4,  // Updated value
+                    Likelihood = 0.4, 
                     Definition= "50-74% chance of occurrence",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
@@ -183,7 +183,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 4,
                     AssessmentFactor = "Critical",
-                    Likelihood = 0.6,  // Updated value
+                    Likelihood = 0.6,  
                     Definition = "75-99% chance of occurrence",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
