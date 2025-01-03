@@ -39,7 +39,7 @@ namespace Risk_Management_RiskEX_Backend.Data
        public DbSet<AssessmentMatrixLikelihood> AssessmentsMatrixLikelihood { get; set; }
        public DbSet<RiskResponseData> RiskResponseDatas { get; set; }
 
-       
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
