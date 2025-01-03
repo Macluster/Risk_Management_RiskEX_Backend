@@ -24,7 +24,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             _emailService = emailService;
         }
 
-        public async Task<bool> AddUserToDepartment(UsersDTO userDto, int? currentUserId = null)
+        public async Task<int> AddUserToDepartment(UsersDTO userDto, int? currentUserId = null)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 if (string.IsNullOrWhiteSpace(userDto.Email))
                 {
                     _logger.LogError("User email cannot be empty.");
-                    return false;
+                    return 0;
                 }
 
                 // Check for existing user
@@ -40,7 +40,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 if (existingUser != null)
                 {
                     _logger.LogError($"User with email {userDto.Email} already exists.");
-                    return false;
+                    return 0;
                 }
 
                 // Validate and get department
@@ -49,7 +49,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 if (department == null)
                 {
                     _logger.LogError($"Department with name {userDto.DepartmentName} not found.");
-                    return false;
+                    return 0;
                 }
 
                 // Create new User entity using AutoMapper
@@ -85,7 +85,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     if (missingProjects.Any())
                     {
                         _logger.LogError($"Projects not found: {string.Join(", ", missingProjects)}");
-                        return false;
+                        return 0;
                     }
 
                     user.Projects = projects;
@@ -113,12 +113,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     _logger.LogWarning($"Failed to send welcome email: {emailEx.Message}");
                 }
 
-                return true;
+                return user.Id;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error adding user to department");
-                return false;
+                return 0;
             }
         
         }
@@ -142,6 +142,53 @@ namespace Risk_Management_RiskEX_Backend.Repository
           
            
         }
+
+        public async Task<Object> GetNameAndEmailOfAUser(int userId)
+        {
+            var User=  await _db.Users.FirstOrDefaultAsync(e=>e.Id==userId);
+
+            AssigneeResponseDTO assigneeResponseDTO=  _mapper.Map<AssigneeResponseDTO>(User);
+
+            return new
+            {
+                User.FullName,
+                User.Email
+                
+            };
+        }
+
+        public async Task<Object> GetInfoOfAssigneeByRiskId(int riskId)
+        {
+            var risks = await _db.Risks.Include(e=>e.ResponsibleUser).FirstOrDefaultAsync(e => e.Id == riskId);
+
+           
+
+            return new
+            {
+                FullName=risks.ResponsibleUser.FullName,
+                Email=risks.ResponsibleUser.Email
+
+            };
+        }
+
+
+        public async Task<List<User>> GetAllUsersWithDetailsAsync()
+        {
+            return await _db.Users
+                .Include(u => u.Department)
+                .Include(u => u.Projects)
+                .ToListAsync();
+        }
+
+        public async Task<List<User>> GetUsersByDepartmentNameAsync(string departmentName)
+        {
+            return await _db.Users
+                .Include(u => u.Department)  
+                .Include(u => u.Projects)   
+                .Where(u => u.Department.DepartmentName == departmentName) 
+                .ToListAsync();
+        }
+
     }
 }
 

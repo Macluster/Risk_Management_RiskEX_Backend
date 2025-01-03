@@ -36,12 +36,20 @@ builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IRiskRepository, RiskRepository>();
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IRiskResponseRepository, RiskResponseRepository>();
 builder.Services.AddScoped<IAssessmentMatrixImpactRepository, AssessmentMatrixImpactRepository>();
 builder.Services.AddScoped<IAssessmentMatrixLikelihoodRepository, AssessmentMatrixLikelihoodRepository>();
+builder.Services.AddScoped<IGetUserRepository, GetUserRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IApprovalRepository, ApprovalsRepository>();
+builder.Services.AddScoped<IEmailRepository, EmailRepository>();
+
+
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
 
 builder.Services.AddSwaggerGen(option => {
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -101,7 +109,6 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("admin"));
 });
 
-builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 
 
 

@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Risk_Management_RiskEX_Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreation : Migration
+    public partial class initialCreationAddRisk : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -405,10 +405,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     Contingency = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                     OverallRiskRating = table.Column<int>(type: "integer", nullable: false),
                     ResponsibleUserId = table.Column<int>(type: "integer", nullable: false),
-                    PlannedActionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    PlannedActionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ClosedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    RiskStatus = table.Column<int>(type: "integer", nullable: false),
                     RiskResponseId = table.Column<int>(type: "integer", nullable: true),
-                    RiskStatus = table.Column<int>(type: "integer", nullable: true),
                     Remarks = table.Column<string>(type: "text", nullable: true),
                     DepartmentId = table.Column<int>(type: "integer", nullable: false),
                     ProjectId = table.Column<int>(type: "integer", nullable: true),
@@ -522,10 +522,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "Basis", "CreatedAt", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "Confidentiality", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3405), new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3406) },
-                    { 2, "Integrity", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3408), new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3409) },
-                    { 3, "Privacy", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3411), new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3412) },
-                    { 4, "Quality", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3413), new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3414) }
+                    { 1, "Confidentiality", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5955), new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5956) },
+                    { 2, "Integrity", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5958), new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5959) },
+                    { 3, "Privacy", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5960), new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5961) },
+                    { 4, "Quality", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5995), new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5996) }
                 });
 
             migrationBuilder.InsertData(
@@ -533,10 +533,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "AssessmentFactor", "CreatedAt", "Definition", "Impact", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "Low", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3501), "No/slight effect on business", 10.0, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3502) },
-                    { 2, "Medium", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3505), "business objectives affected", 20.0, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3506) },
-                    { 3, "High", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3508), "business objectives undermined", 40.0, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3509) },
-                    { 4, "Critical", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3511), "business objectives not accomplished", 60.0, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3512) }
+                    { 1, "Low", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6066), "No/slight effect on business", 10.0, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6067) },
+                    { 2, "Medium", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6069), "business objectives affected", 20.0, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6070) },
+                    { 3, "High", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6072), "business objectives undermined", 40.0, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6073) },
+                    { 4, "Critical", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6075), "business objectives not accomplished", 60.0, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6076) }
                 });
 
             migrationBuilder.InsertData(
@@ -544,10 +544,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "AssessmentFactor", "CreatedAt", "Definition", "Likelihood", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "Low", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3546), "1-24% chance of occurrence", 0.10000000000000001, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3547) },
-                    { 2, "Medium", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3550), "25-49% chance of occurrence", 0.20000000000000001, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3550) },
-                    { 3, "High", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3553), "50-74% chance of occurrence", 0.40000000000000002, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3554) },
-                    { 4, "Critical", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3557), "75-99% chance of occurrence", 0.59999999999999998, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3557) }
+                    { 1, "Low", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6106), "1-24% chance of occurrence", 0.10000000000000001, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6107) },
+                    { 2, "Medium", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6109), "25-49% chance of occurrence", 0.20000000000000001, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6110) },
+                    { 3, "High", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6112), "50-74% chance of occurrence", 0.40000000000000002, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6113) },
+                    { 4, "Critical", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6115), "75-99% chance of occurrence", 0.59999999999999998, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6116) }
                 });
 
             migrationBuilder.InsertData(
@@ -555,10 +555,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "DepartmentName", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2906), "SFM", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2916) },
-                    { 2, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2920), "HR", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2922) },
-                    { 3, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2924), "Finance", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2925) },
-                    { 4, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2927), "IT", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(2929) }
+                    { 1, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5600), "SFM", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5606) },
+                    { 2, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5608), "HR", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5609) },
+                    { 3, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5611), "Finance", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5612) },
+                    { 4, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5614), "IT", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5615) }
                 });
 
             migrationBuilder.InsertData(
@@ -577,8 +577,8 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedById", "DepartmentId", "Email", "FullName", "IsActive", "Password", "UpdatedAt", "UpdatedById" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3350), null, 1, "admin@riskex.com", "System Admin", true, "Admin@123", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3351), null },
-                    { 2, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3355), null, 1, "risk.manager@riskex.com", "Risk Manager", true, "Risk@123", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3356), null }
+                    { 1, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5902), null, 1, "admin@riskex.com", "System Admin", true, "Admin@123", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5903), null },
+                    { 2, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5907), null, 1, "risk.manager@riskex.com", "Risk Manager", true, "Risk@123", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5907), null }
                 });
 
             migrationBuilder.InsertData(
@@ -586,8 +586,8 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedById", "DepartmentId", "Name", "UpdatedAt", "UpdatedById", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3464), 1, 1, "Data Center Migration", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3465), 1, 1 },
-                    { 2, new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3469), 1, 2, "HR Inventory", new DateTime(2024, 12, 28, 9, 16, 17, 310, DateTimeKind.Utc).AddTicks(3470), 1, 2 }
+                    { 1, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6036), 1, 1, "Data Center Migration", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6037), 1, 1 },
+                    { 2, new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6041), 1, 2, "HR Inventory", new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6042), 1, 2 }
                 });
 
             migrationBuilder.CreateIndex(
