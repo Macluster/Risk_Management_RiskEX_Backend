@@ -354,7 +354,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             return Ok(risks);
         }
 
-        [HttpGet(" GetRiskWithHeighestOverallRationg")]
+        [HttpGet("GetRiskWithHeighestOverallRationg")]
         public async Task<IActionResult> GetRiskWithHeighestOverallRationg(int? id)
         {
 
