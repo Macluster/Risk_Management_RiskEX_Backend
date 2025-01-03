@@ -12,7 +12,7 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
         public string RiskId { get; set; }
         public string RiskName { get; set; }
         public string Description { get; set; }
-        public RiskType RiskType { get; set; }
+        public string RiskType { get; set; }
         public string Impact { get; set; }
         public string Mitigation { get; set; }
         public string? Contingency { get; set; }
