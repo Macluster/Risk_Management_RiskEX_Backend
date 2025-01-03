@@ -12,8 +12,8 @@ using Risk_Management_RiskEX_Backend.Data;
 namespace Risk_Management_RiskEX_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241230061023_initialCreationAddRisk")]
-    partial class initialCreationAddRisk
+    [Migration("20250103035504_InitialCreation")]
+    partial class InitialCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -234,10 +234,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.HasKey("Id");
 
@@ -248,29 +248,29 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         {
                             Id = 1,
                             Basis = "Confidentiality",
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5955),
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5956)
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7412),
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7413)
                         },
                         new
                         {
                             Id = 2,
                             Basis = "Integrity",
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5958),
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5959)
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7414),
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7415)
                         },
                         new
                         {
                             Id = 3,
                             Basis = "Privacy",
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5960),
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5961)
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7416),
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7416)
                         },
                         new
                         {
                             Id = 4,
                             Basis = "Quality",
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5995),
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5996)
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7417),
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7418)
                         });
                 });
 
@@ -287,7 +287,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("Definition")
                         .HasColumnType("text");
@@ -296,7 +296,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("double precision");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.HasKey("Id");
 
@@ -307,37 +307,37 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         {
                             Id = 1,
                             AssessmentFactor = "Low",
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6066),
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7454),
                             Definition = "No/slight effect on business",
                             Impact = 10.0,
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6067)
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7454)
                         },
                         new
                         {
                             Id = 2,
                             AssessmentFactor = "Medium",
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6069),
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7456),
                             Definition = "business objectives affected",
                             Impact = 20.0,
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6070)
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7457)
                         },
                         new
                         {
                             Id = 3,
                             AssessmentFactor = "High",
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6072),
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7458),
                             Definition = "business objectives undermined",
                             Impact = 40.0,
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6073)
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7458)
                         },
                         new
                         {
                             Id = 4,
                             AssessmentFactor = "Critical",
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6075),
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7459),
                             Definition = "business objectives not accomplished",
                             Impact = 60.0,
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6076)
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7460)
                         });
                 });
 
@@ -354,7 +354,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("Definition")
                         .HasColumnType("text");
@@ -363,7 +363,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("double precision");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.HasKey("Id");
 
@@ -374,37 +374,37 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         {
                             Id = 1,
                             AssessmentFactor = "Low",
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6106),
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7511),
                             Definition = "1-24% chance of occurrence",
                             Likelihood = 0.10000000000000001,
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6107)
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7511)
                         },
                         new
                         {
                             Id = 2,
                             AssessmentFactor = "Medium",
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6109),
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7513),
                             Definition = "25-49% chance of occurrence",
                             Likelihood = 0.20000000000000001,
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6110)
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7513)
                         },
                         new
                         {
                             Id = 3,
                             AssessmentFactor = "High",
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6112),
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7515),
                             Definition = "50-74% chance of occurrence",
                             Likelihood = 0.40000000000000002,
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6113)
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7515)
                         },
                         new
                         {
                             Id = 4,
                             AssessmentFactor = "Critical",
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6115),
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7516),
                             Definition = "75-99% chance of occurrence",
                             Likelihood = 0.59999999999999998,
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6116)
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7517)
                         });
                 });
 
@@ -417,14 +417,14 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("DepartmentName")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.HasKey("Id");
 
@@ -434,30 +434,30 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5600),
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7238),
                             DepartmentName = "SFM",
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5606)
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7241)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5608),
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7243),
                             DepartmentName = "HR",
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5609)
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7243)
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5611),
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7245),
                             DepartmentName = "Finance",
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5612)
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7245)
                         },
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5614),
-                            DepartmentName = "IT",
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5615)
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7246),
+                            DepartmentName = "Admin & Purchase",
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7247)
                         });
                 });
 
@@ -470,7 +470,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int?>("CreatedById")
                         .HasColumnType("integer");
@@ -487,7 +487,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int?>("UpdatedById")
                         .HasColumnType("integer");
@@ -512,7 +512,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int?>("CreatedById")
                         .HasColumnType("integer");
@@ -525,7 +525,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int?>("UpdatedById")
                         .HasColumnType("integer");
@@ -549,22 +549,22 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6036),
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7437),
                             CreatedById = 1,
                             DepartmentId = 1,
                             Name = "Data Center Migration",
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6037),
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7438),
                             UpdatedById = 1,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6041),
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7440),
                             CreatedById = 1,
                             DepartmentId = 2,
                             Name = "HR Inventory",
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(6042),
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7441),
                             UpdatedById = 1,
                             UserId = 2
                         });
@@ -583,7 +583,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("character varying(250)");
 
                     b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int?>("CreatedById")
                         .HasColumnType("integer");
@@ -595,7 +595,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int?>("UpdatedById")
                         .HasColumnType("integer");
@@ -632,7 +632,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("character varying(1000)");
 
                     b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int?>("CreatedById")
                         .HasColumnType("integer");
@@ -690,7 +690,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int?>("UpdatedById")
                         .HasColumnType("integer");
@@ -724,7 +724,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int?>("CreatedById")
                         .HasColumnType("integer");
@@ -748,7 +748,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int?>("UpdatedById")
                         .HasColumnType("integer");
@@ -834,7 +834,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int?>("CreatedById")
                         .HasColumnType("integer");
@@ -859,7 +859,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         .HasColumnType("character varying(30)");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int?>("UpdatedById")
                         .HasColumnType("integer");
@@ -878,24 +878,24 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5902),
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7387),
                             DepartmentId = 1,
-                            Email = "admin@riskex.com",
+                            Email = "admin@gmail.com",
                             FullName = "System Admin",
                             IsActive = true,
-                            Password = "Admin@123",
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5903)
+                            Password = "admin@123",
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7387)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5907),
+                            CreatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7389),
                             DepartmentId = 1,
                             Email = "risk.manager@riskex.com",
                             FullName = "Risk Manager",
                             IsActive = true,
                             Password = "Risk@123",
-                            UpdatedAt = new DateTime(2024, 12, 30, 6, 10, 22, 356, DateTimeKind.Utc).AddTicks(5907)
+                            UpdatedAt = new DateTime(2025, 1, 3, 3, 55, 4, 463, DateTimeKind.Utc).AddTicks(7390)
                         });
                 });
 

@@ -932,8 +932,72 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
       return await query.ToListAsync();
     
-  }
-  }
+     }
+
+        public async Task<Object> RiskApproachingDeadline(int? id)
+        {
+
+           if(id== null)
+            {
+                var closestRisks = await _db.Risks
+      
+                .ToListAsync();
+
+
+                var closestRisksSorted = closestRisks
+                    .OrderBy(r => Math.Abs((r.PlannedActionDate - DateTime.Now).Ticks))
+                    .Take(3)
+                    .ToList();
+
+
+                var data = _mapper.Map<List<RiskMinimalInfoDTO>>(closestRisksSorted);
+                return data;
+            }
+           else
+            {
+                var closestRisks = await _db.Risks
+                 .Where(e => e.DepartmentId == id)  
+                 .ToListAsync();  
+
+               
+                var closestRisksSorted = closestRisks
+                    .OrderBy(r => Math.Abs((r.PlannedActionDate - DateTime.Now).Ticks)) 
+                    .Take(3) 
+                    .ToList();
+
+                
+                var data = _mapper.Map<List<RiskMinimalInfoDTO>>(closestRisksSorted);
+                return data;
+            }
+         
+
+           
+        }
+
+        public async Task<object> GetRiskWithHeighestOverallRationg(int? id)
+        {
+           
+
+            if (id == null)
+            {
+                var highestRatedRisk = await _db.Risks.OrderByDescending(r => r.OverallRiskRating).ToListAsync();
+                var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
+
+                return data;
+            }
+            else
+            {
+                var highestRatedRisk = await _db.Risks.Where(e=>e.DepartmentId==id).OrderByDescending(r => r.OverallRiskRating).ToListAsync();
+                var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
+
+                return data;
+            }
+          
+
+        
+            
+        }
+    }
 
 }
        

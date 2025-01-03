@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models.DTO;
@@ -20,6 +21,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
         [HttpPost("register")]
+        [Authorize]
         public async Task<IActionResult> AddUserToDepartment([FromBody] UsersDTO userDto)
         {
             // Get the current user's ID from your authentication context

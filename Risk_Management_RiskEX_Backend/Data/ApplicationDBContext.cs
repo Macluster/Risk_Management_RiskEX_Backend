@@ -1,18 +1,31 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Risk_Management_RiskEX_Backend.Models;
 
 namespace Risk_Management_RiskEX_Backend.Data
 {
     public class ApplicationDBContext:IdentityDbContext
     {
-
-        public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options, IHttpContextAccessor httpContextAccessor) : base(options)
         {
-
+            _httpContextAccessor = httpContextAccessor;
+        }
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            UpdateAuditFields();
+            return base.SaveChangesAsync(cancellationToken);
         }
 
-       public  DbSet<Risk> Risks {  get; set; }
+        public override int SaveChanges()
+        {
+            UpdateAuditFields();
+            return base.SaveChanges();
+        }
+
+        public  DbSet<Risk> Risks {  get; set; }
        public  DbSet<Department> Departments { get; set; }
 
        public  DbSet<User> Users { get; set; }
@@ -26,23 +39,23 @@ namespace Risk_Management_RiskEX_Backend.Data
        public DbSet<AssessmentMatrixLikelihood> AssessmentsMatrixLikelihood { get; set; }
        public DbSet<RiskResponseData> RiskResponseDatas { get; set; }
 
-        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure TimeStamps properties as nullable
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 if (typeof(TimeStamps).IsAssignableFrom(entityType.ClrType))
                 {
                     modelBuilder.Entity(entityType.ClrType)
                         .Property(nameof(TimeStamps.CreatedAt))
+                        .HasColumnType("timestamptz") // Short for "timestamp with time zone"
                         .IsRequired(false);
 
                     modelBuilder.Entity(entityType.ClrType)
                         .Property(nameof(TimeStamps.UpdatedAt))
+                        .HasColumnType("timestamptz")
                         .IsRequired(false);
                 }
             }
@@ -225,35 +238,103 @@ namespace Risk_Management_RiskEX_Backend.Data
                 .HasForeignKey(f => f.DepartmentId);
         }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            UpdateTimestamps();
-            return base.SaveChangesAsync(cancellationToken);
-        }
+        //public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        //{
+        //    UpdateTimestamps();
+        //    return base.SaveChangesAsync(cancellationToken);
+        //}
 
-        public override int SaveChanges()
-        {
-            UpdateTimestamps();
-            return base.SaveChanges();
-        }
+        //public override int SaveChanges()
+        //{
+        //    UpdateTimestamps();
+        //    return base.SaveChanges();
+        //}
 
-        private void UpdateTimestamps()
+        //private void UpdateTimestamps()
+        //{
+        //    var entries = ChangeTracker
+        //        .Entries()
+        //        .Where(e => e.Entity is TimeStamps && (
+        //            e.State == EntityState.Added ||
+        //            e.State == EntityState.Modified));
+
+        //    foreach (var entityEntry in entries)
+        //    {
+        //        var entity = (TimeStamps)entityEntry.Entity;
+
+        //        if (entityEntry.State == EntityState.Added)
+        //        {
+        //            entity.CreatedAt = DateTime.UtcNow;
+        //        }
+        //        entity.UpdatedAt = DateTime.UtcNow;
+        //    }
+        //}
+        private void UpdateAuditFields()
         {
+            var currentUserId = GetCurrentUserId();
+
             var entries = ChangeTracker
                 .Entries()
-                .Where(e => e.Entity is TimeStamps && (
-                    e.State == EntityState.Added ||
-                    e.State == EntityState.Modified));
+                .Where(e => (e.Entity is TimeStamps || e.Entity is BaseEntity) &&
+                            (e.State == EntityState.Added || e.State == EntityState.Modified));
 
-            foreach (var entityEntry in entries)
+            UpdateTimeStamps(entries);
+            UpdateUserAuditFields(entries, currentUserId);
+        }
+        private void UpdateTimeStamps(IEnumerable<EntityEntry> entries)
+        {
+            var utcNow = DateTime.UtcNow;
+
+            foreach (var entityEntry in entries.Where(e => e.Entity is TimeStamps))
             {
-                var entity = (TimeStamps)entityEntry.Entity;
-
-                if (entityEntry.State == EntityState.Added)
+                if (entityEntry.Entity is TimeStamps entity)
                 {
-                    entity.CreatedAt = DateTime.UtcNow;
+                    if (entityEntry.State == EntityState.Added)
+                    {
+                        entity.CreatedAt = utcNow;
+                    }
+                    entity.UpdatedAt = utcNow;
                 }
-                entity.UpdatedAt = DateTime.UtcNow;
+            }
+        }
+
+
+        private void UpdateUserAuditFields(IEnumerable<EntityEntry> entries, int? currentUserId)
+        {
+            if (!currentUserId.HasValue)
+                return;
+
+            foreach (var entityEntry in entries.Where(e => e.Entity is BaseEntity))
+            {
+                if (entityEntry.Entity is BaseEntity baseEntity)
+                {
+                    if (entityEntry.State == EntityState.Added)
+                    {
+                        baseEntity.CreatedById = currentUserId;
+                        baseEntity.UpdatedById = currentUserId;
+                    }
+                    else if (entityEntry.State == EntityState.Modified)
+                    {
+                        baseEntity.UpdatedById = currentUserId;
+                    }
+                }
+            }
+        }
+
+
+        private int? GetCurrentUserId()
+        {
+            try
+            {
+                var userIdClaim = _httpContextAccessor.HttpContext?.User
+                    .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                return userIdClaim != null ? int.Parse(userIdClaim) : null;
+            }
+            catch
+            {
+                // If there's any error parsing the ID or accessing the claim, return null
+                return null;
             }
         }
     }

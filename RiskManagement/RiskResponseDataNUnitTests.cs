@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Models;
@@ -21,7 +22,9 @@ namespace RiskManagement
                     .UseInMemoryDatabase(Guid.NewGuid().ToString())
                     .Options;
 
-                var context = new ApplicationDBContext(options);
+                var httpContextAccessor = new HttpContextAccessor();
+
+                var context = new ApplicationDBContext(options, httpContextAccessor);
 
                 // Seed RiskResponseData
                 context.RiskResponseDatas.AddRange(
@@ -99,7 +102,10 @@ namespace RiskManagement
                 var options = new DbContextOptionsBuilder<ApplicationDBContext>()
                     .UseInMemoryDatabase(Guid.NewGuid().ToString())
                     .Options;
-                var dbContext = new ApplicationDBContext(options);
+
+                var httpContextAccessor = new HttpContextAccessor();
+
+                var dbContext = new ApplicationDBContext(options, httpContextAccessor);
                 var repository = new RiskResponseRepository(dbContext);
 
                 // Act

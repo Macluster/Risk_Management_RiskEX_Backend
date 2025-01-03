@@ -105,6 +105,28 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
         }
 
+
+        [HttpGet("GetRiskApproachingDeadline")]
+        public async Task<IActionResult> RiskApproachingDeadline(int? id)
+        {
+
+            var risks = await _riskRepository.RiskApproachingDeadline(id);
+            return Ok(risks);
+        }
+
+        [HttpGet("GetRiskWithHeighestOverallRationg")]
+        public async Task<IActionResult> GetRiskWithHeighestOverallRationg(int? id)
+        {
+
+            var risks = await _riskRepository.GetRiskWithHeighestOverallRationg(id);
+            return Ok(risks);
+        }
+
+       
+
+
+    
+
         [HttpGet("GetMitigationStatusOfARisk/{id}")]
         public async Task<IActionResult> GetMitigationStatusOfARisk(int id)
         {

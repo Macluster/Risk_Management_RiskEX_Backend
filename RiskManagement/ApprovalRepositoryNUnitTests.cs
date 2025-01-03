@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Risk_Management_RiskEX_Backend.Data;
@@ -26,8 +27,12 @@ namespace RiskManagement
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
 
-            _context = new ApplicationDBContext(options);
+            var httpContextAccessor = new HttpContextAccessor();
+            _context = new ApplicationDBContext(options,httpContextAccessor);
             _repository = new ApprovalsRepository(_context);
+
+
+
 
             // Seed the database with test data
             SeedData();

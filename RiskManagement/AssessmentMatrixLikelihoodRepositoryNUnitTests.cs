@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Models;
@@ -19,7 +20,10 @@ namespace RiskManagement
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-            var context = new ApplicationDBContext(options);
+            var httpContextAccessor = new HttpContextAccessor();
+
+
+            var context = new ApplicationDBContext(options, httpContextAccessor);
 
             // Seed data
             context.AssessmentsMatrixLikelihood.AddRange(
@@ -105,7 +109,9 @@ namespace RiskManagement
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-            using var dbContext = new ApplicationDBContext(options);
+            var httpContextAccessor = new HttpContextAccessor();
+
+            using var dbContext = new ApplicationDBContext(options, httpContextAccessor);
             var repository = new AssessmentMatrixLikelihoodRepository(dbContext);
 
             // Act
