@@ -8,6 +8,10 @@ namespace Risk_Management_RiskEX_Backend.Models
         [Key]
         public int Id { get; set; }
         public string DepartmentName { get; set; }
+
+        public string? NewName { get; set; }
+
+        public string? DepartmentCode { get; set; }
         
         [JsonIgnore]
         public ICollection<Project> Projects { get; set; }

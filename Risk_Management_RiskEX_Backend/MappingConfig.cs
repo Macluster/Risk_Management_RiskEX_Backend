@@ -25,7 +25,7 @@ namespace Risk_Management_RiskEX_Backend
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.PlannedActionDate, opt => opt.MapFrom(src => src.PlannedActionDate))
                 .ForMember(dest => dest.RiskType, opt => opt.MapFrom(src => (int)src.RiskType))
-                .ForMember(dest => dest.OverallRiskRating, opt => opt.MapFrom(src => src.OverallRiskRating))
+                .ForMember(dest => dest.OverallRiskRatingBefore, opt => opt.MapFrom(src => src.OverallRiskRating))
                 .ForMember(dest => dest.RiskStatus, opt => opt.MapFrom(src => src.RiskStatus));
 
             // Map Risk entity to RiskDetailsDTO
@@ -41,7 +41,7 @@ namespace Risk_Management_RiskEX_Backend
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.RiskAssessments.FirstOrDefault().Risk.Description))
                 .ForMember(dest => dest.RiskType, opt => opt.MapFrom(src => src.RiskAssessments.FirstOrDefault().Risk.RiskType))
                 .ForMember(dest => dest.PlannedActionDate, opt => opt.MapFrom(src => src.RiskAssessments.FirstOrDefault().Risk.PlannedActionDate))
-                .ForMember(dest => dest.OverallRiskRating, opt => opt.MapFrom(src => src.RiskAssessments.FirstOrDefault().Risk.OverallRiskRating))
+                .ForMember(dest => dest.OverallRiskRating, opt => opt.MapFrom(src => src.RiskAssessments.FirstOrDefault().Risk.OverallRiskRatingBefore))
                 .ForMember(dest => dest.RiskStatus, opt => opt.MapFrom(src => src.RiskAssessments.FirstOrDefault().Risk.RiskStatus))
                 .ForMember(dest => dest.ReviewerName, opt => opt.MapFrom(src => src.User.FullName))
                 .ForMember(dest => dest.ReviewerDepartment, opt => opt.MapFrom(src => src.User.Department.DepartmentName));
