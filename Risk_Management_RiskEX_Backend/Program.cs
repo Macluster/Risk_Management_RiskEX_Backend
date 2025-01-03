@@ -152,19 +152,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 app.UseCors("AllowAll");
-app.UseCors(builder => builder
-       .AllowAnyOrigin()
-       .AllowAnyMethod()
-       .AllowAnyHeader());
 
-app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
