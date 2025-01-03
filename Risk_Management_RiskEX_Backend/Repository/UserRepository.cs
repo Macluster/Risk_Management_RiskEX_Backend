@@ -172,6 +172,23 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
+        public async Task<List<User>> GetAllUsersWithDetailsAsync()
+        {
+            return await _db.Users
+                .Include(u => u.Department)
+                .Include(u => u.Projects)
+                .ToListAsync();
+        }
+
+        public async Task<List<User>> GetUsersByDepartmentNameAsync(string departmentName)
+        {
+            return await _db.Users
+                .Include(u => u.Department)  
+                .Include(u => u.Projects)   
+                .Where(u => u.Department.DepartmentName == departmentName) 
+                .ToListAsync();
+        }
+
     }
 }
 

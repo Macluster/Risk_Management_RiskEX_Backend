@@ -85,6 +85,60 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
+        [HttpGet("GetAllUsers")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+                var users = await _userRepository.GetAllUsersWithDetailsAsync();
+
+                var result = users.Select(u => new
+                {
+                    u.FullName,
+                    u.Email,
+                    u.IsActive,
+                    Department = u.Department?.DepartmentName ?? "No Department",
+                    Projects = u.Projects?.Select(p => p.Name).ToList() ?? new List<string>()
+                });
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetUsersByDepartment/{departmentName}")]
+        public async Task<IActionResult> GetUsersByDepartment(string departmentName)
+        {
+            try
+            {
+                
+                var users = await _userRepository.GetUsersByDepartmentNameAsync(departmentName);
+
+                if (users == null || !users.Any())
+                {
+                    return NotFound($"No users found for the department: {departmentName}");
+                }
+
+                var result = users.Select(u => new
+                {
+                    u.FullName,
+                    u.Email,
+                    u.IsActive,
+                    Department = u.Department?.DepartmentName ?? "No Department",
+                    Projects = u.Projects?.Select(p => p.Name).ToList() ?? new List<string>()
+                });
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
 
 
     }

@@ -292,6 +292,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId)
         {
+
+
             if (!userId.HasValue)
             {
                 Console.WriteLine("No userId provided.");
@@ -302,8 +304,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
             var reviews = await _db.Reviews
                 .Where(r => r.UserId == userId &&
                             (r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending))
-                .Include(r => r.RiskAssessments) // Include RiskAssessments
-                .ThenInclude(ra => ra.Risk)    // Include Risk within RiskAssessments
+                .Include(r => r.RiskAssessments)
+                .ThenInclude(ra => ra.Risk)
                 .ToListAsync();
 
             Console.WriteLine($"Found {reviews.Count} reviews for userId {userId.Value}.");
@@ -317,10 +319,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             // Get the unique risks associated with the reviews (where risk is not null)
             var risks = reviews
-                .SelectMany(r => r.RiskAssessments) // Flatten all RiskAssessments
-                .Where(ra => ra.Risk != null)       // Ensure that Risk is not null
-                .Select(ra => ra.Risk)              // Select the Risk from RiskAssessment
-                .Distinct()                         // Ensure unique risks
+                .SelectMany(r => r.RiskAssessments)
+                .Where(ra => ra.Risk != null)
+                .Select(ra => ra.Risk)
+                .Distinct()
                 .ToList();
 
             Console.WriteLine($"Found {risks.Count} unique risks.");

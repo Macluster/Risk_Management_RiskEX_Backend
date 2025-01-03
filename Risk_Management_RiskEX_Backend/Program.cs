@@ -27,10 +27,12 @@ var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 var jwt_Scret = Environment.GetEnvironmentVariable("API_SECRET");
 //builder.Services.AddDbContext<ApplicationDBContext>(options =>
 //           options.UseNpgsql(connectionString));
+
+
 builder.Services.AddDbContext<ApplicationDBContext>((serviceProvider, options) =>
 {
     options.UseNpgsql(connectionString);
-}, ServiceLifetime.Scoped);
+});
 
 builder.Services.AddScoped<ApplicationDBContext>((serviceProvider) =>
 {
@@ -57,6 +59,11 @@ builder.Services.AddScoped<IAssessmentMatrixImpactRepository, AssessmentMatrixIm
 builder.Services.AddScoped<IAssessmentMatrixLikelihoodRepository, AssessmentMatrixLikelihoodRepository>();
 builder.Services.AddScoped<IGetUserRepository, GetUserRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+
+builder.Services.AddScoped<IApprovalRepository, ApprovalsRepository>();
+builder.Services.AddScoped<IEmailRepository, EmailRepository>();
+
+
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
@@ -140,21 +147,24 @@ builder.Services.AddCors(options =>
 });
 
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
+
 
 
 var app = builder.Build();
 app.UseCors("AllowAll");
+app.UseCors(builder => builder
+       .AllowAnyOrigin()
+       .AllowAnyMethod()
+       .AllowAnyHeader());
 
-app.UseCors("AllowAll");
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
