@@ -69,7 +69,7 @@ namespace RiskManagement
             DepartmentId = 1,
             Description = "Test Risk Description",
             RiskType = RiskType.Quality,
-            OverallRiskRating = 2,
+            OverallRiskRatingBefore = 2,
             PlannedActionDate = DateTime.UtcNow.AddDays(30),
             RiskStatus = RiskStatus.open,
             Impact = "High financial impact if unaddressed", // Required property

@@ -21,7 +21,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
         [HttpPost("register")]
-        [Authorize]
+    
         public async Task<IActionResult> AddUserToDepartment([FromBody] UsersDTO userDto)
         {
             // Get the current user's ID from your authentication context

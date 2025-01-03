@@ -42,7 +42,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             Description = ra.Risk.Description,
             RiskType = ra.Risk.RiskType,
             PlannedActionDate = ra.Risk.PlannedActionDate,
-            OverallRiskRating = ra.Risk.OverallRiskRating,
+            OverallRiskRating = ra.Risk.OverallRiskRatingBefore,
             RiskStatus = ra.Risk.RiskStatus,
             ReviewerName = r.UserId.HasValue ? r.User.FullName : r.ExternalReviewer.FullName, // Choose User or ExternalReviewer
             ReviewerDepartment = r.UserId.HasValue ? r.User.Department.DepartmentName : r.ExternalReviewer.Department.DepartmentName
@@ -94,7 +94,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 RiskName = risk.RiskName,
                 Description = risk.Description,
                 RiskType = risk.RiskType,
-                OverallRiskRating = risk.OverallRiskRating,
+                OverallRiskRating = risk.OverallRiskRatingBefore,
                 PlannedActionDate = risk.PlannedActionDate,
                 RiskStatus = risk.RiskStatus
             }).ToList();
