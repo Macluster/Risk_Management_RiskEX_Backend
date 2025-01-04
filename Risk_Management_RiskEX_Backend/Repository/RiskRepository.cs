@@ -689,7 +689,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return new
             {
                 actionBy = responsibleUser?.FullName,
-                isMitigated = fals
+                isMitigated = false
             };
         }
 
