@@ -237,7 +237,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 Impact = r.Impact,
                 Mitigation = r.Mitigation,
                 Contingency= r.Contingency!=null? r.Contingency:null,
-                OverallRiskRating=   r.OverallRiskRatingBefore,
+                OverallRiskRating=   r.OverallRiskRatingAfter.HasValue?r.OverallRiskRatingAfter.Value:r.OverallRiskRatingBefore,
                 PlannedActionDate = r.PlannedActionDate != null ? r.PlannedActionDate.ToString() : "No planned action date set.",
                 Remarks= r.Remarks!=null?r.Remarks:null,
 
@@ -817,13 +817,27 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<object> GetRiskByAssigneeId(int id)
         {
-           
 
-            var result = await _db.Risks.Where(e => e.ResponsibleUserId == id).ToListAsync();
 
-            
+            var result = await _db.Risks
+              .Where(e => e.ResponsibleUserId == id)
+              .Select(e => new RiskForApprovalDTO
+              {
+                  Id = e.Id,
+                  RiskId = e.RiskId,
+                  RiskName = e.RiskName,
+                  Description = e.Description,
+                  RiskType = e.RiskType.ToString(),
+                  OverallRiskRating = e.OverallRiskRatingAfter.HasValue?e.OverallRiskRatingAfter.Value:e.OverallRiskRatingBefore,
+                  PlannedActionDate = e.PlannedActionDate,
+                  RiskStatus = e.RiskStatus
+              })
+              .ToListAsync();
 
-            var Risks=_mapper.Map<List<RiskForApprovalDTO>>(result);
+
+
+
+            var Risks =_mapper.Map<List<RiskForApprovalDTO>>(result);
 
             return Risks; 
 
