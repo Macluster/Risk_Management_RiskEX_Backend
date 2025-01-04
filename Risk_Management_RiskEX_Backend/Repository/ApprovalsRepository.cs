@@ -28,28 +28,45 @@ namespace Risk_Management_RiskEX_Backend.Repository
         public async Task<IEnumerable<RiskDetailsDTO>> GetRiskDetailsToReviewAsync()
         {
             var risks = await _db.Reviews
-        .Include(r => r.User)
-        .ThenInclude(u => u.Department)
-        .Include(r => r.RiskAssessments)
-        .ThenInclude(ra => ra.Risk)
-        .ThenInclude(risk => risk.Department)
-        .Where(r => r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending)
-        .SelectMany(r => r.RiskAssessments.Select(ra => new RiskDetailsDTO
-        {
-            RiskId = ra.Risk.RiskId,
-            RiskName = ra.Risk.RiskName,
-            RiskDepartment = ra.Risk.Department.DepartmentName,
-            Description = ra.Risk.Description,
-            RiskType = ra.Risk.RiskType,
-            PlannedActionDate = ra.Risk.PlannedActionDate,
-            OverallRiskRating = ra.Risk.OverallRiskRatingBefore,
-            RiskStatus = ra.Risk.RiskStatus,
-            ReviewerName = r.UserId.HasValue ? r.User.FullName : r.ExternalReviewer.FullName, // Choose User or ExternalReviewer
-            ReviewerDepartment = r.UserId.HasValue ? r.User.Department.DepartmentName : r.ExternalReviewer.Department.DepartmentName
-        })).ToListAsync();
+                .Include(r => r.User)
+                    .ThenInclude(u => u.Department)
+                .Include(r => r.RiskAssessments)
+                    .ThenInclude(ra => ra.Risk)
+                        .ThenInclude(risk => risk.Department)
+                .Where(r => r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending)
+                .SelectMany(r => r.RiskAssessments.Select(ra => new
+                {
+                    RiskId = ra.Risk.RiskId,
+                    RiskName = ra.Risk.RiskName,
+                    RiskDepartment = ra.Risk.Department.DepartmentName,
+                    Description = ra.Risk.Description,
+                    RiskType = ra.Risk.RiskType,  // Keep enum as it is
+                    PlannedActionDate = ra.Risk.PlannedActionDate,
+                    OverallRiskRating = ra.Risk.OverallRiskRatingAfter.HasValue ? ra.Risk.OverallRiskRatingBefore : ra.Risk.OverallRiskRatingAfter,
+                    RiskStatus = ra.Risk.RiskStatus,  // Keep enum as it is
+                    ReviewerName = r.UserId.HasValue ? r.User.FullName : r.ExternalReviewer.FullName,
+                    ReviewerDepartment = r.UserId.HasValue ? r.User.Department.DepartmentName : r.ExternalReviewer.Department.DepartmentName
+                }))
+                .ToListAsync();
 
-            return risks;
+            // After fetching the data, convert enums to strings in memory
+            var riskDetails = risks.Select(r => new RiskDetailsDTO
+            {
+                RiskId = r.RiskId,
+                RiskName = r.RiskName,
+                RiskDepartment = r.RiskDepartment,
+                Description = r.Description,
+                RiskType = Enum.GetName(typeof(RiskType), r.RiskType),  // Convert enum to string here
+                PlannedActionDate = r.PlannedActionDate,
+                OverallRiskRating = (int)r.OverallRiskRating,
+                RiskStatus = Enum.GetName(typeof(RiskStatus), r.RiskStatus),  // Convert enum to string here
+                ReviewerName = r.ReviewerName,
+                ReviewerDepartment = r.ReviewerDepartment
+            }).ToList();
+
+            return riskDetails;
         }
+
 
         public async Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId)
         {
@@ -93,14 +110,22 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 RiskId = risk.RiskId,
                 RiskName = risk.RiskName,
                 Description = risk.Description,
-                RiskType = risk.RiskType,
-                OverallRiskRating = risk.OverallRiskRatingBefore,
+
+                RiskType = Enum.GetName(typeof(RiskType), risk.RiskType) ?? "Unknown",
+                OverallRiskRating = risk.OverallRiskRatingAfter.HasValue ? risk.OverallRiskRatingBefore : risk.OverallRiskRatingAfter,
+
+                //RiskType = risk.RiskType,
+                //OverallRiskRating = risk.OverallRiskRatingBefore,
+
                 PlannedActionDate = risk.PlannedActionDate,
-                RiskStatus = risk.RiskStatus
+                RiskStatus = Enum.GetName(typeof(RiskStatus), risk.RiskType) ?? "Unknown",
             }).ToList();
 
             return approvalDTOs;
         }
+
+
+
 
         public async Task<bool> UpdateReviewStatusAsync(int riskId, string approvalStatus)
         {
