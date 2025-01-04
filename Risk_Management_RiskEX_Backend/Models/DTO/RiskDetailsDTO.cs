@@ -6,10 +6,10 @@
         public string RiskName { get; set; }
         public string RiskDepartment { get; set; }
         public string Description { get; set; }
-        public RiskType RiskType { get; set; }
+        public string RiskType { get; set; }
         public DateTime PlannedActionDate { get; set; }
         public int OverallRiskRating { get; set; }
-        public RiskStatus RiskStatus { get; set; }
+        public string RiskStatus { get; set; }
         public string ReviewerName { get; set; }
         public string ReviewerDepartment { get; set; }
     }
