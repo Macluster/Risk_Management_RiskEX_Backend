@@ -47,6 +47,12 @@ namespace Risk_Management_RiskEX_Backend.Models
         ApprovalCompleted = 4,
         Rejected=5,
         HasValue = 6
-    }
-    }
+        }
+        public enum ResidualRisk
+            {
+                Low = 1,
+                Medium = 2,
+                High = 3
+            }
+}
 
