@@ -92,6 +92,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
                 var result = users.Select(u => new
                 {
+                    u.Id,
                     u.FullName,
                     u.Email,
                     u.IsActive,
@@ -122,6 +123,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
                 var result = users.Select(u => new
                 {
+                    u.Id,
                     u.FullName,
                     u.Email,
                     u.IsActive,
@@ -136,6 +138,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
 
 
