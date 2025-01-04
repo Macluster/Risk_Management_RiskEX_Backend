@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models;
@@ -45,10 +47,19 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
-        public async Task<List<ReviewerDTO>> GetAllReviewersAsync()
+        public async Task<List<ReviewerDTO>> GetAllReviewersAsync([FromServices] IHttpContextAccessor httpContextAccessor)
         {
+            // Get the current user's role from the token
+            var currentUserRole = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (currentUserRole?.ToLower() == "admin")
+            {
+                return new List<ReviewerDTO>();  
+            }
+
             var users = await _db.Users
-                .Where(u => u.IsActive)
+                .Where(u => u.IsActive
+                    && !u.Email.ToLower().Contains("admin"))
                 .Select(u => new ReviewerDTO
                 {
                     Id = u.Id,
@@ -59,6 +70,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 .ToListAsync();
 
             var externalReviewers = await _db.ExternalReviewers
+                .Where(er => !er.Email.ToLower().Contains("admin"))
                 .Select(er => new ReviewerDTO
                 {
                     Id = er.Id,
@@ -70,5 +82,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             return users.Concat(externalReviewers).ToList();
         }
+
+
     }
 }
