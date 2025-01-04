@@ -126,12 +126,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
     }
 
 
-
-
-
-
-
-
     public async Task<Risk> AddSecurityOrPrivacyRiskAsync(RiskDTO riskDto)
     {
       using (var transaction = await _db.Database.BeginTransactionAsync())
@@ -487,9 +481,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
 
-
-
-
         public async Task<Risk> EditSecurityOrPrivacyRiskAsync(int id, RiskDTO riskDto)
         {
             using (var transaction = await _db.Database.BeginTransactionAsync())
@@ -690,11 +681,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 }
             }
         }
-
-
-
-
-
 
 
         public async Task<Risk> UpdateSecurityOrPrivacyRiskAsync(int riskId, RiskUpdateDTO riskUpdateDto)
