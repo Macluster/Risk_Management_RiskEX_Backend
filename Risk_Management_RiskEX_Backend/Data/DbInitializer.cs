@@ -13,7 +13,20 @@ namespace Risk_Management_RiskEX_Backend.Data
                 new Department { Id = 1, DepartmentName = "SFM", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
                 new Department {Id = 2, DepartmentName = "HR", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
                 new Department {Id = 3, DepartmentName = "Finance", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 4, DepartmentName = "Admin & Purchase", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+                new Department { Id = 4, DepartmentName = "Admin & Purchase", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 5, DepartmentName = "DU1", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 6, DepartmentName = "DU2", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 7, DepartmentName = "DU3", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 8, DepartmentName = "DU4", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 9, DepartmentName = "DU5", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 10, DepartmentName = "DU6", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 11, DepartmentName = "Data & Analytics", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 12, DepartmentName = "Design Services", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 13, DepartmentName = "Testing Services", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 14, DepartmentName = "Marketing", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 15, DepartmentName = "Business Solution Group", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 16, DepartmentName = "Learning & Development", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 17, DepartmentName = "Audits & Compliance", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
 
 
             );
