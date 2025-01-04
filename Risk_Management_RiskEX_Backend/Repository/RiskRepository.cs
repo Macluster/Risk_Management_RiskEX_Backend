@@ -686,7 +686,11 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     isMitigated = true
                 };
             }
-            return null;
+            return new
+            {
+                actionBy = responsibleUser?.FullName,
+                isMitigated = false
+            };
         }
 
 
@@ -710,7 +714,20 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<object> GetRiskByAssigneeId(int id)
         {
-            var result = await _db.Risks.Where(e => e.ResponsibleUserId == id).ToListAsync();
+            var result = await _db.Risks.Where(e => e.ResponsibleUserId == id).Select(r => new RiskForApprovalDTO
+            {
+                Id =r.Id,
+                RiskId =r.RiskId,
+                RiskName =r.RiskName,
+                Description=r.Description,
+                RiskType =r.RiskType.ToString(),
+                OverallRiskRating =r.OverallRiskRatingAfter.HasValue?r.OverallRiskRatingAfter.Value:r.OverallRiskRatingBefore,
+                PlannedActionDate =r.PlannedActionDate,
+                RiskStatus =r.RiskStatus
+
+             }).ToListAsync();
+
+
             var Risks = _mapper.Map<List<RiskForApprovalDTO>>(result);
             return Risks;
         }
