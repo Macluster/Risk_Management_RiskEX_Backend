@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace Risk_Management_RiskEX_Backend.Models
@@ -6,6 +7,7 @@ namespace Risk_Management_RiskEX_Backend.Models
     public class Department : TimeStamps
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string DepartmentName { get; set; }
 

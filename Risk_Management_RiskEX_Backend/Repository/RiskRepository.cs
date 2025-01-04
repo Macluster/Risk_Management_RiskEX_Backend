@@ -189,8 +189,9 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 }
             }
         }
-       public async Task<Object> GetRiskById(int id)
-       {
+        public async Task<Object> GetRiskById(int id)
+        {
+
             var risk = await _db.Risks
             .Where(x => x.Id == id)
             .Select(r => new RiskResponseDTO
@@ -202,70 +203,51 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 Impact = r.Impact,
                 Mitigation = r.Mitigation,
                 Contingency = r.Contingency != null ? r.Contingency : null,
-                OverallRiskRating = r.OverallRiskRatingBefore,
+                OverallRiskRating = r.OverallRiskRatingAfter.HasValue ? r.OverallRiskRatingAfter.Value : r.OverallRiskRatingBefore,
                 PlannedActionDate = r.PlannedActionDate != null ? r.PlannedActionDate.ToString() : "No planned action date set.",
                 Remarks = r.Remarks != null ? r.Remarks : null,
+
+
                 RiskStatus = r.RiskStatus.ToString(),
                 RiskType = r.RiskType.ToString(),
+
+
                 RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentResponseDTO
                 {
                     Id = ra.Id,
+
                     Review = ra.Review != null ? new
                     {
                         Id = ra.Review.Id,
-
                         ReviewStatus = ra.Review.ReviewStatus.ToString(),
-
                         Comments = ra.Review.Comments,
-
                         ReviewerName = ra.Review.ExternalReviewer == null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
-
                     } : null,
-
                     AssessmentBasis = ra.AssessmentBasis != null ? new AssessmentBasisResponseDTO { Id = ra.AssessmentBasis.Id, Basis = ra.AssessmentBasis.Basis } : null,
-
                     RiskFactor = ra.RiskFactor,
-
-
 
                     IsMitigated = ra.IsMitigated,
 
-
-
                     ImpactMatix = new { Impact = ra.MatrixImpact.AssessmentFactor, Value = ra.MatrixImpact.Impact },
-
                     LikelihoodMatrix = new { LikeliHood = ra.MatrixLikelihood.AssessmentFactor, Value = ra.MatrixLikelihood.Likelihood },
 
 
-
-
-
                 }).ToList(),
-
                 ResponsibleUser = r.ResponsibleUser != null ? new UserResponseDTO { Id = r.ResponsibleUser.Id, FullName = r.ResponsibleUser.FullName } : null,
-
                 Department = new DepartmentDTO { Id = r.Department.Id, Name = r.Department.DepartmentName },
-
                 Project = r.Project != null ? new ProjectResponseDTO { Id = r.Project.Id, ProjectName = r.Project.Name } : null,
-
+                ResidualRisk = r.ResidualRisk.ToString(),
+                ResidualValue = r.ResidualValue,
+                PercentageRedution = r.PercentageRedution,
                 CreatedBy = r.CreatedBy.FullName,
-
                 CreatedAt = r.CreatedAt,
-
                 UpdatedBy = r.UpdatedBy != null ? r.UpdatedBy.FullName : null,
 
-
-
                 UpdatedAt = r.UpdatedAt
-
             })
-
             .FirstOrDefaultAsync();
 
-
-
             return risk;
-
         }
 
 
@@ -704,7 +686,11 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     isMitigated = true
                 };
             }
-            return null;
+            return new
+            {
+                actionBy = responsibleUser?.FullName,
+                isMitigated = false
+            };
         }
 
 
@@ -728,7 +714,20 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<object> GetRiskByAssigneeId(int id)
         {
-            var result = await _db.Risks.Where(e => e.ResponsibleUserId == id).ToListAsync();
+            var result = await _db.Risks.Where(e => e.ResponsibleUserId == id).Select(r => new RiskForApprovalDTO
+            {
+                Id =r.Id,
+                RiskId =r.RiskId,
+                RiskName =r.RiskName,
+                Description=r.Description,
+                RiskType =r.RiskType.ToString(),
+                OverallRiskRating =r.OverallRiskRatingAfter.HasValue?r.OverallRiskRatingAfter.Value:r.OverallRiskRatingBefore,
+                PlannedActionDate =r.PlannedActionDate,
+                RiskStatus =r.RiskStatus
+
+             }).ToListAsync();
+
+
             var Risks = _mapper.Map<List<RiskForApprovalDTO>>(result);
             return Risks;
         }
