@@ -191,6 +191,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 .Where(u => u.Department.DepartmentName == departmentName) 
                 .ToListAsync();
         }
+        
+    
 
     }
 }
