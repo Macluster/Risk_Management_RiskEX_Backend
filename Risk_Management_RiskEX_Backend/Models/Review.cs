@@ -7,6 +7,7 @@ namespace Risk_Management_RiskEX_Backend.Models
     public class Review : BaseEntity
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int? UserId { get; set; }
         public int? ExternalReviewerId { get; set; }
