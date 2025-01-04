@@ -25,13 +25,16 @@ namespace Risk_Management_RiskEX_Backend
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.PlannedActionDate, opt => opt.MapFrom(src => src.PlannedActionDate))
                 .ForMember(dest => dest.RiskType, opt => opt.MapFrom(src => src.RiskType))
-                .ForMember(dest => dest.OverallRiskRatingAfter.HasValue ? dest.OverallRiskRatingBefore:dest.OverallRiskRatingAfter, opt => opt.MapFrom(src => src.OverallRiskRating))
+                //.ForMember(dest => dest.OverallRiskRatingAfter.HasValue ? dest.OverallRiskRatingBefore:dest.OverallRiskRatingAfter, opt => opt.MapFrom(src => src.OverallRiskRating))
+               
                 //.ForMember(dest => dest.RiskType, opt => opt.MapFrom(src => (int)src.RiskType))
-              
                 .ForMember(dest => dest.RiskStatus, opt => opt.MapFrom(src => src.RiskStatus));
-
+            CreateMap<Risk, ApprovalDTO>()
+                .AfterMap((src, dest) =>
+                {
+                     dest.OverallRiskRating = src.OverallRiskRatingAfter.HasValue ? src.OverallRiskRatingAfter.Value: src.OverallRiskRatingBefore;});
             // Map Risk entity to RiskDetailsDTO
-           CreateMap<Risk, RiskDetailsDTO>()
+            CreateMap<Risk, RiskDetailsDTO>()
                 .ForMember(dest => dest.ReviewerName, opt => opt.Ignore()) // ReviewerName comes from Review.User
                 .ForMember(dest => dest.ReviewerDepartment, opt => opt.Ignore()); // ReviewerDepartment comes from Review.User.Department
 
