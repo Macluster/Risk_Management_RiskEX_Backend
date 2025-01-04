@@ -831,13 +831,27 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<object> GetRiskByAssigneeId(int id)
         {
-           
 
-            var result = await _db.Risks.Where(e => e.ResponsibleUserId == id).ToListAsync();
 
-            
+            var result = await _db.Risks
+              .Where(e => e.ResponsibleUserId == id)
+              .Select(e => new RiskForApprovalDTO
+              {
+                  Id = e.Id,
+                  RiskId = e.RiskId,
+                  RiskName = e.RiskName,
+                  Description = e.Description,
+                  RiskType = e.RiskType.ToString(),
+                  OverallRiskRating = e.OverallRiskRatingBefore,
+                  PlannedActionDate = e.PlannedActionDate,
+                  RiskStatus = e.RiskStatus
+              })
+              .ToListAsync();
 
-            var Risks=_mapper.Map<List<RiskForApprovalDTO>>(result);
+
+
+
+            var Risks =_mapper.Map<List<RiskForApprovalDTO>>(result);
 
             return Risks; 
 
