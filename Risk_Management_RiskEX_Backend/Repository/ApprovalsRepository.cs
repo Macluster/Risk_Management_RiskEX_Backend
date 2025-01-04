@@ -42,7 +42,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     Description = ra.Risk.Description,
                     RiskType = ra.Risk.RiskType,  // Keep enum as it is
                     PlannedActionDate = ra.Risk.PlannedActionDate,
-                    OverallRiskRating = ra.Risk.OverallRiskRating,
+                    OverallRiskRating = ra.Risk.OverallRiskRatingAfter.HasValue ? ra.Risk.OverallRiskRatingBefore : ra.Risk.OverallRiskRatingAfter,
                     RiskStatus = ra.Risk.RiskStatus,  // Keep enum as it is
                     ReviewerName = r.UserId.HasValue ? r.User.FullName : r.ExternalReviewer.FullName,
                     ReviewerDepartment = r.UserId.HasValue ? r.User.Department.DepartmentName : r.ExternalReviewer.Department.DepartmentName
@@ -58,7 +58,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 Description = r.Description,
                 RiskType = Enum.GetName(typeof(RiskType), r.RiskType),  // Convert enum to string here
                 PlannedActionDate = r.PlannedActionDate,
-                OverallRiskRating = r.OverallRiskRating,
+                OverallRiskRating = (int)r.OverallRiskRating,
                 RiskStatus = Enum.GetName(typeof(RiskStatus), r.RiskStatus),  // Convert enum to string here
                 ReviewerName = r.ReviewerName,
                 ReviewerDepartment = r.ReviewerDepartment
@@ -110,8 +110,13 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 RiskId = risk.RiskId,
                 RiskName = risk.RiskName,
                 Description = risk.Description,
+
                 RiskType = Enum.GetName(typeof(RiskType), risk.RiskType) ?? "Unknown",
-                OverallRiskRating = risk.OverallRiskRating,
+                OverallRiskRating = risk.OverallRiskRatingAfter.HasValue ? risk.OverallRiskRatingBefore : risk.OverallRiskRatingAfter,
+
+                //RiskType = risk.RiskType,
+                //OverallRiskRating = risk.OverallRiskRatingBefore,
+
                 PlannedActionDate = risk.PlannedActionDate,
                 RiskStatus = Enum.GetName(typeof(RiskStatus), risk.RiskType) ?? "Unknown",
             }).ToList();

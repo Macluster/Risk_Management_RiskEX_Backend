@@ -29,8 +29,16 @@ namespace Risk_Management_RiskEX_Backend.Models
         [StringLength(1000)]
         public string? Contingency { get; set; }
 
-        public int OverallRiskRating { get; set; }
+        public int OverallRiskRatingBefore { get; set; }
+        
         public int ResponsibleUserId { get; set; }
+        public int? OverallRiskRatingAfter { get; set; }
+
+        public int? ResidualValue { get; set; }
+
+        public double? PercentageRedution { get; set; }
+
+        public ResidualRisk? ResidualRisk { get; set; }
         public DateTime PlannedActionDate { get; set; }
         public DateTime? ClosedDate { get; set; }
 

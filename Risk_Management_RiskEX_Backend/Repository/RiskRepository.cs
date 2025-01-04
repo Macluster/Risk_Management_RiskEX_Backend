@@ -79,7 +79,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
           Impact = riskDto.Impact,
           Mitigation = riskDto.Mitigation,
           Contingency = riskDto.Contingency,
-          OverallRiskRating = riskDto.OverallRiskRating,
+          OverallRiskRatingBefore = riskDto.OverallRiskRating,
           ResponsibleUserId = riskDto.ResponsibleUserId,
           PlannedActionDate = riskDto.PlannedActionDate,
           DepartmentId = riskDto.DepartmentId,
@@ -187,7 +187,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             Impact = riskDto.Impact,
             Mitigation = riskDto.Mitigation,
             Contingency = riskDto.Contingency,
-            OverallRiskRating = riskDto.OverallRiskRating,
+            OverallRiskRatingBefore = riskDto.OverallRiskRating,
             ResponsibleUserId = riskDto.ResponsibleUserId,
             PlannedActionDate = riskDto.PlannedActionDate,
             DepartmentId = riskDto.DepartmentId,
@@ -244,7 +244,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 Impact = r.Impact,
                 Mitigation = r.Mitigation,
                 Contingency= r.Contingency!=null? r.Contingency:null,
-                OverallRiskRating=   r.OverallRiskRating,
+                OverallRiskRating=   r.OverallRiskRatingBefore,
                 PlannedActionDate = r.PlannedActionDate != null ? r.PlannedActionDate.ToString() : "No planned action date set.",
                 Remarks= r.Remarks!=null?r.Remarks:null,
 
@@ -291,6 +291,62 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
 
+        //public async Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId)
+        //{
+
+
+        //    if (!userId.HasValue)
+        //    {
+        //        Console.WriteLine("No userId provided.");
+        //        return new List<ApprovalDTO>();
+        //    }
+
+        //    // Query the reviews by userId and specific review status values
+        //    var reviews = await _db.Reviews
+        //        .Where(r => r.UserId == userId &&
+        //                    (r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending))
+        //        .Include(r => r.RiskAssessments)
+        //        .ThenInclude(ra => ra.Risk)
+        //        .ToListAsync();
+
+        //    Console.WriteLine($"Found {reviews.Count} reviews for userId {userId.Value}.");
+
+        //    // Check if reviews were found for this user
+        //    if (reviews == null || reviews.Count == 0)
+        //    {
+        //        Console.WriteLine("No reviews found for this user.");
+        //        return new List<ApprovalDTO>();
+        //    }
+
+        //    // Get the unique risks associated with the reviews (where risk is not null)
+        //    var risks = reviews
+        //        .SelectMany(r => r.RiskAssessments)
+        //        .Where(ra => ra.Risk != null)
+        //        .Select(ra => ra.Risk)
+        //        .Distinct()
+        //        .ToList();
+
+        //    Console.WriteLine($"Found {risks.Count} unique risks.");
+
+        //    // Create a list of ApprovalDTOs from the unique risks
+        //    var approvalDTOs = risks.Select(risk => new ApprovalDTO
+        //    {
+        //        RiskId = risk.RiskId,
+        //        RiskName = risk.RiskName,
+        //        Description = risk.Description,
+        //        RiskType = risk.RiskType,
+        //        OverallRiskRating = risk.OverallRiskRatingBefore,
+        //        PlannedActionDate = risk.PlannedActionDate,
+        //        RiskStatus = risk.RiskStatus
+        //    }).ToList();
+
+        //    return approvalDTOs;
+        //}
+
+
+
+
+
 
 
 
@@ -319,7 +375,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 existingRisk.Impact = riskDto.Impact;
                 existingRisk.Mitigation = riskDto.Mitigation;
                 existingRisk.Contingency = riskDto.Contingency;
-                existingRisk.OverallRiskRating = riskDto.OverallRiskRating;
+                existingRisk.OverallRiskRatingBefore = riskDto.OverallRiskRating;
                 existingRisk.ResponsibleUserId = riskDto.ResponsibleUserId;
                 existingRisk.PlannedActionDate = riskDto.PlannedActionDate;
                 existingRisk.DepartmentId = riskDto.DepartmentId;
@@ -460,7 +516,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     existingRisk.Impact = riskDto.Impact;
                     existingRisk.Mitigation = riskDto.Mitigation;
                     existingRisk.Contingency = riskDto.Contingency;
-                    existingRisk.OverallRiskRating = riskDto.OverallRiskRating;
+                    existingRisk.OverallRiskRatingBefore = riskDto.OverallRiskRating;
                     existingRisk.ResponsibleUserId = riskDto.ResponsibleUserId;
                     existingRisk.PlannedActionDate = riskDto.PlannedActionDate;
                     existingRisk.DepartmentId = riskDto.DepartmentId;
@@ -549,16 +605,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 }
             }
         }
-
-
-
-
-
-
-
-
-
-
 
         public async Task<Risk> UpdateQualityRiskAsync(int riskId, RiskUpdateDTO riskUpdateDto)
         {
@@ -771,7 +817,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
         public async Task<ICollection<int>> GetOverallRiskRating()
         {
              return await _db.Set<Risk>()
-            .Select(r => r.OverallRiskRating)
+            .Select(r => r.OverallRiskRatingBefore)
             .ToListAsync();
         }
 
@@ -779,7 +825,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
         {
           return await _db.Set<Risk>()
          .Where(r => r.Id == id)
-         .Select(r => (int?)r.OverallRiskRating)
+         .Select(r => (int?)r.OverallRiskRatingBefore)
          .FirstOrDefaultAsync();
 
         }
@@ -811,15 +857,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
           .Select(r => new
           {
             RiskType = r.RiskType.ToString(),
-            OverallRiskRating = r.OverallRiskRating,
+            OverallRiskRating = r.OverallRiskRatingBefore,
             RiskCategory = r.RiskType == RiskType.Quality
-                  ? (r.OverallRiskRating <= 8 ? "Low" :
-                     r.OverallRiskRating >= 10 && r.OverallRiskRating <= 32 ? "Moderate" :
-                     r.OverallRiskRating >= 40 ? "Critical" : "Uncategorized")
+                  ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
+                     r.OverallRiskRatingBefore >= 10 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
+                     r.OverallRiskRatingBefore >= 40 ? "Critical" : "Uncategorized")
                   : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
-                  ? (r.OverallRiskRating <= 45 ? "Low" :
-                     r.OverallRiskRating >= 46 && r.OverallRiskRating <= 69 ? "Moderate" :
-                     r.OverallRiskRating >= 70 ? "Critical" : "Uncategorized")
+                  ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
+                     r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
+                     r.OverallRiskRatingBefore >= 70 ? "Critical" : "Uncategorized")
                   : "Uncategorized"
           })
           .GroupBy(r => r.RiskCategory)
@@ -856,15 +902,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
       {
         r.DepartmentId,
         r.RiskType,
-        r.OverallRiskRating,
+        r.OverallRiskRatingBefore,
         RiskCategory = r.RiskType == RiskType.Quality
-              ? (r.OverallRiskRating <= 8 ? "Low" :
-                 r.OverallRiskRating >= 10 && r.OverallRiskRating <= 32 ? "Moderate" :
-                 r.OverallRiskRating >= 40 ? "Critical" : "Uncategorized")
+              ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
+                 r.OverallRiskRatingBefore >= 10 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
+                 r.OverallRiskRatingBefore >= 40 ? "Critical" : "Uncategorized")
               : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
-              ? (r.OverallRiskRating <= 45 ? "Low" :
-                 r.OverallRiskRating >= 46 && r.OverallRiskRating <= 69 ? "Moderate" :
-                 r.OverallRiskRating >= 70 ? "Critical" : "Uncategorized")
+              ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
+                 r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
+                 r.OverallRiskRatingBefore >= 70 ? "Critical" : "Uncategorized")
               : "Uncategorized"
       })
       .GroupBy(r => new { r.DepartmentId, r.RiskCategory })
@@ -925,14 +971,14 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             if (id == null)
             {
-                var highestRatedRisk = await _db.Risks.OrderByDescending(r => r.OverallRiskRating).ToListAsync();
+                var highestRatedRisk = await _db.Risks.OrderByDescending(r => r.OverallRiskRatingBefore).ToListAsync();
                 var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
 
                 return data;
             }
             else
             {
-                var highestRatedRisk = await _db.Risks.Where(e=>e.DepartmentId==id).OrderByDescending(r => r.OverallRiskRating).ToListAsync();
+                var highestRatedRisk = await _db.Risks.Where(e=>e.DepartmentId==id).OrderByDescending(r => r.OverallRiskRatingBefore).ToListAsync();
                 var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
 
                 return data;
