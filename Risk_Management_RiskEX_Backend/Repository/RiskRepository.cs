@@ -14,6 +14,7 @@ using System.Security.Claims;
 
 namespace Risk_Management_RiskEX_Backend.Repository
 {
+
   public class RiskRepository : IRiskRepository
   {
     private readonly ApplicationDBContext _db;
@@ -284,57 +285,57 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
 
-        public async Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId)
-        {
+        //public async Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId)
+        //{
 
 
-            if (!userId.HasValue)
-            {
-                Console.WriteLine("No userId provided.");
-                return new List<ApprovalDTO>();
-            }
+        //    if (!userId.HasValue)
+        //    {
+        //        Console.WriteLine("No userId provided.");
+        //        return new List<ApprovalDTO>();
+        //    }
 
-            // Query the reviews by userId and specific review status values
-            var reviews = await _db.Reviews
-                .Where(r => r.UserId == userId &&
-                            (r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending))
-                .Include(r => r.RiskAssessments)
-                .ThenInclude(ra => ra.Risk)
-                .ToListAsync();
+        //    // Query the reviews by userId and specific review status values
+        //    var reviews = await _db.Reviews
+        //        .Where(r => r.UserId == userId &&
+        //                    (r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending))
+        //        .Include(r => r.RiskAssessments)
+        //        .ThenInclude(ra => ra.Risk)
+        //        .ToListAsync();
 
-            Console.WriteLine($"Found {reviews.Count} reviews for userId {userId.Value}.");
+        //    Console.WriteLine($"Found {reviews.Count} reviews for userId {userId.Value}.");
 
-            // Check if reviews were found for this user
-            if (reviews == null || reviews.Count == 0)
-            {
-                Console.WriteLine("No reviews found for this user.");
-                return new List<ApprovalDTO>();
-            }
+        //    // Check if reviews were found for this user
+        //    if (reviews == null || reviews.Count == 0)
+        //    {
+        //        Console.WriteLine("No reviews found for this user.");
+        //        return new List<ApprovalDTO>();
+        //    }
 
-            // Get the unique risks associated with the reviews (where risk is not null)
-            var risks = reviews
-                .SelectMany(r => r.RiskAssessments)
-                .Where(ra => ra.Risk != null)
-                .Select(ra => ra.Risk)
-                .Distinct()
-                .ToList();
+        //    // Get the unique risks associated with the reviews (where risk is not null)
+        //    var risks = reviews
+        //        .SelectMany(r => r.RiskAssessments)
+        //        .Where(ra => ra.Risk != null)
+        //        .Select(ra => ra.Risk)
+        //        .Distinct()
+        //        .ToList();
 
-            Console.WriteLine($"Found {risks.Count} unique risks.");
+        //    Console.WriteLine($"Found {risks.Count} unique risks.");
 
-            // Create a list of ApprovalDTOs from the unique risks
-            var approvalDTOs = risks.Select(risk => new ApprovalDTO
-            {
-                RiskId = risk.RiskId,
-                RiskName = risk.RiskName,
-                Description = risk.Description,
-                RiskType = risk.RiskType,
-                OverallRiskRating = risk.OverallRiskRatingBefore,
-                PlannedActionDate = risk.PlannedActionDate,
-                RiskStatus = risk.RiskStatus
-            }).ToList();
+        //    // Create a list of ApprovalDTOs from the unique risks
+        //    var approvalDTOs = risks.Select(risk => new ApprovalDTO
+        //    {
+        //        RiskId = risk.RiskId,
+        //        RiskName = risk.RiskName,
+        //        Description = risk.Description,
+        //        RiskType = risk.RiskType,
+        //        OverallRiskRating = risk.OverallRiskRatingBefore,
+        //        PlannedActionDate = risk.PlannedActionDate,
+        //        RiskStatus = risk.RiskStatus
+        //    }).ToList();
 
-            return approvalDTOs;
-        }
+        //    return approvalDTOs;
+        //}
 
 
 
