@@ -79,12 +79,23 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 }
                 else
                 {
+                    // Department user role
                     if (user.Department != null)
                     {
                         claims.Add(new Claim(ClaimTypes.Role, "DepartmentUser"));
+
+                        // Special EMT department role
+                        if (user.Department.DepartmentName.Equals("EMT", StringComparison.OrdinalIgnoreCase))
+                        {
+                            claims.Add(new Claim(ClaimTypes.Role, "EMTUser"));
+                        }
+
+                        // Project user role
                         if (user.Projects != null && user.Projects.Any())
                         {
                             claims.Add(new Claim(ClaimTypes.Role, "ProjectUsers"));
+
+                            // Add projects as a JSON claim
                             var projectsJson = JsonSerializer.Serialize(user.Projects.Select(p => new { p.Id, p.Name }));
                             claims.Add(new Claim("Projects", projectsJson));
                         }

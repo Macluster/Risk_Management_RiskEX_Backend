@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models.DTO;
 
@@ -9,10 +10,12 @@ namespace Risk_Management_RiskEX_Backend.Controllers
     public class ReviewerController : ControllerBase
     {
         private readonly IReviewerRepository _reviewerRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ReviewerController(IReviewerRepository reviewerRepository)
+        public ReviewerController(IReviewerRepository reviewerRepository, IHttpContextAccessor httpContextAccessor)
         {
             _reviewerRepository = reviewerRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet("getAllReviewers")]
@@ -20,7 +23,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         {
             try
             {
-                var reviewers = await _reviewerRepository.GetAllReviewersAsync();
+                var reviewers = await _reviewerRepository.GetAllReviewersAsync(_httpContextAccessor);
 
                 var response = new AllReviewersResponseDto
                 {

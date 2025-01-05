@@ -74,6 +74,19 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
             return Ok("Review status updated successfully.");
         }
+
+        [HttpPost("update-External-review-status")]
+        public async Task<IActionResult> UpdateReviewStatus(int riskId, string approvalStatus)
+        {
+            var result = await _approvalRepository.UpdateReviewStatusAsync(riskId, approvalStatus);
+            if (result)
+            {
+                return Ok(new { message = "Review status updated successfully." });
+            }
+            return BadRequest(new { message = "Invalid request. Unable to update review status." });
+        }
+
+
         [HttpPut("update-comment-by-risk")]
         public async Task<IActionResult> UpdateCommentByRiskId([FromQuery] int riskId, [FromBody] string comments)
         {
