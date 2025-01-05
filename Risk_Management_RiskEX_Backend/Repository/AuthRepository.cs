@@ -135,6 +135,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
             }
         }
 
+        public async Task<String> RegisterUser(LoginRequestDTO loginRequestDTO)
+        {
+            return "";
+
+        }
+
+
+
+
 
     }
 }
