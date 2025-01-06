@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models.DTO;
+using Risk_Management_RiskEX_Backend.Repository;
 
 namespace Risk_Management_RiskEX_Backend.Controllers
 {
@@ -136,6 +137,26 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpGet("users-by-projects")]
+        public async Task<IActionResult> GetUsersByProjects([FromQuery] int[] projectIds)
+        {
+            try
+            {
+                var users = await _userRepository.GetUsersByProjects(projectIds);
+
+                if (!users.Any())
+                {
+                    return NotFound("No users found for the provided project IDs.");
+                }
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occurred in GetUsersByProjects: {ex.Message}");
+                return StatusCode(500, "Internal server error.");
             }
         }
 

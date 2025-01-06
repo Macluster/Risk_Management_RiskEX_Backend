@@ -12,7 +12,6 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
 
         IEnumerable<User> GetUsersByDepartment(int departmentId);
 
-        IEnumerable<User> GetUsersByProject(int projectId);
-
+        IEnumerable<User> GetUsersByProjects(IEnumerable<int> projectIds);
     }
 }
