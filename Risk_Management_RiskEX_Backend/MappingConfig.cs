@@ -35,7 +35,9 @@ namespace Risk_Management_RiskEX_Backend
                      dest.OverallRiskRating = src.OverallRiskRatingAfter.HasValue ? src.OverallRiskRatingAfter.Value: src.OverallRiskRatingBefore;});
             // Map Risk entity to RiskDetailsDTO
             CreateMap<Risk, RiskDetailsDTO>()
+
                 .ForMember(dest => dest.ReviewerName, opt => opt.Ignore()) // ReviewerName comes from Review.User
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.RiskAssessments.FirstOrDefault().Risk.Id)) 
                 .ForMember(dest => dest.ReviewerDepartment, opt => opt.Ignore()); // ReviewerDepartment comes from Review.User.Department
 
             // Map Review to RiskDetailsDTO
