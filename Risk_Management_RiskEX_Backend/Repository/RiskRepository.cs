@@ -842,13 +842,13 @@ namespace Risk_Management_RiskEX_Backend.Repository
         {
             if (id == null)
             {
-                var highestRatedRisk = await _db.Risks.OrderByDescending(r => r.OverallRiskRatingBefore).ToListAsync();
+                var highestRatedRisk = await _db.Risks.OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
                 var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
                 return data;
             }
             else
             {
-                var highestRatedRisk = await _db.Risks.Where(e => e.DepartmentId == id).OrderByDescending(r => r.OverallRiskRatingBefore).ToListAsync();
+                var highestRatedRisk = await _db.Risks.Where(e => e.DepartmentId == id).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
                 var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
                 return data;
             }
