@@ -60,13 +60,11 @@ builder.Services.AddScoped<IAssessmentMatrixLikelihoodRepository, AssessmentMatr
 builder.Services.AddScoped<IGetUserRepository, GetUserRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
-<<<<<<< HEAD
-=======
+
 builder.Services.AddScoped<IApprovalRepository, ApprovalsRepository>();
 builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 
 
->>>>>>> b4606717b95db919482c9f262e8404d221d507e6
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
