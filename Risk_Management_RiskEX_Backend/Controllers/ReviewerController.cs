@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Risk_Management_RiskEX_Backend.Interfaces;
+using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Models.DTO;
 
 namespace Risk_Management_RiskEX_Backend.Controllers
@@ -35,6 +36,21 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("gettheReviewer/{id}")]
+        public async Task<ActionResult<ReviewerDTO>> GettheReviewer(int id)
+        {
+            try
+            {
+                var reviewer = await _reviewerRepository.getthereviwer(id);
+                return Ok(reviewer);
+            }
+            catch (Exception ex)
+            {
+                //return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, $"Internal server error: {ex.InnerException?.Message ?? ex.Message}");
             }
         }
 
