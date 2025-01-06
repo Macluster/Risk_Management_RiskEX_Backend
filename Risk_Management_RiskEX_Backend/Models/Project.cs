@@ -21,5 +21,7 @@ namespace Risk_Management_RiskEX_Backend.Models
      
 
         public ICollection<Risk> Risks { get; set; }
+
+        public ICollection<User> Users { get; set; }
     }
 }
