@@ -6,10 +6,11 @@ namespace Risk_Management_RiskEX_Backend.Models
     public class User : BaseEntity
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Email { get; set; }
 
-        [StringLength(30)]
+        [StringLength(200)]
         public string? Password { get; set; }
 
         [StringLength(30)]
@@ -17,8 +18,11 @@ namespace Risk_Management_RiskEX_Backend.Models
         public int DepartmentId { get; set; }
         public bool IsActive { get; set; }
 
+
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
+
+
 
 
         public ICollection<Risk> ResponsibleRisks { get; set; }

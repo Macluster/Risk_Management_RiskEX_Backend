@@ -8,5 +8,6 @@
         public string AssessmentBasis { get; set; }
         public string Reviewer { get; set; } // Combine User/ExternalReviewer info as needed
         public string ReviewStatus { get; set; }
+        public bool IsMitigated { get; set; }
     }
 }

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Risk_Management_RiskEX_Backend.Interfaces;
+using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Models.DTO;
 
 namespace Risk_Management_RiskEX_Backend.Controllers
@@ -9,10 +11,12 @@ namespace Risk_Management_RiskEX_Backend.Controllers
     public class ReviewerController : ControllerBase
     {
         private readonly IReviewerRepository _reviewerRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ReviewerController(IReviewerRepository reviewerRepository)
+        public ReviewerController(IReviewerRepository reviewerRepository, IHttpContextAccessor httpContextAccessor)
         {
             _reviewerRepository = reviewerRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet("getAllReviewers")]
@@ -20,7 +24,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         {
             try
             {
-                var reviewers = await _reviewerRepository.GetAllReviewersAsync();
+                var reviewers = await _reviewerRepository.GetAllReviewersAsync(_httpContextAccessor);
 
                 var response = new AllReviewersResponseDto
                 {
@@ -32,6 +36,21 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("gettheReviewer/{id}")]
+        public async Task<ActionResult<ReviewerDTO>> GettheReviewer(int id)
+        {
+            try
+            {
+                var reviewer = await _reviewerRepository.getthereviwer(id);
+                return Ok(reviewer);
+            }
+            catch (Exception ex)
+            {
+                //return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, $"Internal server error: {ex.InnerException?.Message ?? ex.Message}");
             }
         }
 

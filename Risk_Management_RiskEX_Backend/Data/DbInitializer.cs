@@ -39,7 +39,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Email = "admin@gmail.com",
                     Password = "admin@123", // In production, use hashed passwords
                     FullName = "System Admin",
-                    DepartmentId = 1,
+                    DepartmentId = 17,
                     IsActive = true,
                     //CreatedBy = 1,
                     //UpdatedBy = 1,
