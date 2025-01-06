@@ -6,7 +6,7 @@
        public int Id { get; set; }
        public string RiskName { get; set; }
        public DateTime PlannedActionDate { get; set; }
-       public int OverallRiskRating { get; set; }
+       public int OverallRiskRatingBefore { get; set; }
 
 
     }
