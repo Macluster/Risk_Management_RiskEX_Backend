@@ -16,10 +16,17 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
         public string Impact { get; set; }
         public string Mitigation { get; set; }
         public string? Contingency { get; set; }
-        public int OverallRiskRating { get; set; }
+        public int? OverallRiskRatingAfter { get; set; }
+        public int? OverallRiskRatingBefore { get; set; }
         public int ResponsibleUserId { get; set; }
         public string ResponsibleUser { get; set; }
         //public string Reviewer { get; set; }
+
+        public int? ResidualValue { get; set; }
+
+        public double? PercentageRedution { get; set; }
+
+        public string? ResidualRisk { get; set; }
         public DateTime? PlannedActionDate { get; set; }
         public DateTime? ClosedDate { get; set; }
         public string RiskResponse { get; set; }
