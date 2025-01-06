@@ -367,7 +367,11 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return risks;
         }
 
-
-
+        //public async Task<int> GetLastestRiskId()
+        //{
+        //    return await _context.Risks
+        //    .OrderByDescending(r => r.CreatedAt) 
+        //    .FirstOrDefaultAsync();
+        //}
     }
 }
