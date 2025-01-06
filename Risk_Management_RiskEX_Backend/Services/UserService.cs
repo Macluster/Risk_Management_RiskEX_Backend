@@ -26,13 +26,24 @@ namespace Risk_Management_RiskEX_Backend.Services
             // Example: Save username and hashedPassword in the Users table
         }
 
+        public string GetHashedPassword(string password)
+        {
+            // Hash the password before storing it
+            string hashedPassword = _passwordService.HashPassword(password);
+            return hashedPassword;
+
+
+            // Store username and hashedPassword in the database
+            // Example: Save username and hashedPassword in the Users table
+        }
+
         // Verify user login
         public async Task<LoginResponseDTO> Login( LoginRequestDTO model)
         {
             // Hash the password before storing it
-            string hashedPassword = _passwordService.HashPassword(model.Password);
-            model.Password = hashedPassword;
-            var loginResponse = await _authRepository.LoginUser(model);
+       
+            
+            var loginResponse = await _authRepository.LoginUser(model,_passwordService);
 
             return loginResponse;
 
