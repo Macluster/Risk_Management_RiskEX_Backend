@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Risk_Management_RiskEX_Backend.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using Risk_Management_RiskEX_Backend.Services;
 
 namespace Risk_Management_RiskEX_Backend.Repository
 {
@@ -35,7 +36,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
-        public async Task<LoginResponseDTO> LoginUser(LoginRequestDTO loginRequestDTO)
+        public async Task<LoginResponseDTO> LoginUser(LoginRequestDTO loginRequestDTO,PasswordService _passwordService)
         {
             try
             {
@@ -54,7 +55,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     throw new UnauthorizedAccessException("Your account has been deactivated.Please contact the admin.");
                 }
 
-                if (user.Password != loginRequestDTO.Password)
+                // Hash the password before storing it
+                bool isPasswordVerified = _passwordService.VerifyPassword(user.Password,loginRequestDTO.Password);
+                
+
+
+                if (!isPasswordVerified)
                 {
                     return null;
                 }
@@ -134,6 +140,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 throw;
             }
         }
+
+        public async Task<String> RegisterUser(LoginRequestDTO loginRequestDTO)
+        {
+            return "";
+
+        }
+
+
+
 
 
     }

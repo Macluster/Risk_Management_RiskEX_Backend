@@ -54,9 +54,9 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
-        [HttpGet("GetEmailAndPasswordOfAUser/{id}")]
+        [HttpGet("GetEmailAndNameOfAUser/{id}")]
 
-        public async Task<IActionResult> GetEmailAndPasswordOfAUser(int id)
+        public async Task<IActionResult> GetEmailAndNameOfAUser(int id)
         {
 
             var result = await _userRepository.GetNameAndEmailOfAUser(id);
