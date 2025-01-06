@@ -15,13 +15,16 @@ namespace Risk_Management_RiskEX_Backend.Repository
         private readonly IMapper _mapper;
         private readonly ILogger<UserRepository> _logger;
         private readonly IEmailService _emailService;
+        private readonly UserService _userService;
 
-        public UserRepository(ApplicationDBContext db, IMapper mapper, ILogger<UserRepository> logger, IEmailService emailService)
+
+        public UserRepository(ApplicationDBContext db, IMapper mapper, ILogger<UserRepository> logger, IEmailService emailService, UserService userService)
         {
             _db = db;
             _mapper = mapper;
             _logger = logger;
             _emailService = emailService;
+            _userService = userService;
         }
 
         public async Task<int> AddUserToDepartment(UsersDTO userDto)
@@ -62,6 +65,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     user.CreatedAt = DateTime.UtcNow;
                     user.UpdatedAt = DateTime.UtcNow;
                     user.IsActive = true;
+                    var hashedPassword = _userService.GetHashedPassword(DEFAULT_PASSWORD);
+                    user.Password = hashedPassword;
 
                     // Handle project associations if provided
                     if (userDto.ProjectNames != null && userDto.ProjectNames.Any())
