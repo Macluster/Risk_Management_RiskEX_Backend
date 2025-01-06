@@ -45,15 +45,15 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
         }
 
-        [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromServices] IAuthRepository _authRepository, [FromBody] LoginRequestDTO model)
+       [HttpPost("GetHashedPassword")]
+        public async Task<IActionResult> GetHashedpassword([FromServices] IAuthRepository _authRepository, [FromBody] LoginRequestDTO model)
         {
 
             try
             {
 
 
-                var loginResponse =  _userService.Register(model);
+                var loginResponse =  _userService.GetHashedPassword(model.Password);
                 if (loginResponse == null)
                 {
                     return BadRequest(new { message = "Invalid email or password" });
