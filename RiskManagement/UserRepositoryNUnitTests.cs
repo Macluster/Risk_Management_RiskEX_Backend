@@ -12,6 +12,7 @@ using Risk_Management_RiskEX_Backend.Models.DTO;
 using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Repository;
 using Microsoft.AspNetCore.Http;
+using Risk_Management_RiskEX_Backend.Services;
 
 
 namespace RiskManagement
@@ -23,6 +24,7 @@ namespace RiskManagement
         private IMapper _mapper;
         private ILogger<UserRepository> _logger;
         private IEmailService _emailService;
+        private UserService _userService;
         private UserRepository _userRepository;
         private Department _testDepartment;
         private Project _testProject;
@@ -59,7 +61,7 @@ namespace RiskManagement
             // Create simple email service
             _emailService = new SimpleEmailService();
 
-            _userRepository = new UserRepository(_context, _mapper, _logger, _emailService);
+            _userRepository = new UserRepository(_context, _mapper, _logger, _emailService, _userService);
 
             // Seed test data
             await SeedTestData();
