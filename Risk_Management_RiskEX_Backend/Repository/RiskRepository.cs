@@ -63,7 +63,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     Impact = riskDto.Impact,
                     Mitigation = riskDto.Mitigation,
                     Contingency = riskDto.Contingency,
-                    OverallRiskRatingBefore = riskDto.OverallRiskRating,
+                    OverallRiskRatingBefore = riskDto.OverallRiskRatingBefore,
                     ResponsibleUserId = riskDto.ResponsibleUserId,
                     PlannedActionDate = riskDto.PlannedActionDate,
                     DepartmentId = riskDto.DepartmentId,
@@ -153,7 +153,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         Impact = riskDto.Impact,
                         Mitigation = riskDto.Mitigation,
                         Contingency = riskDto.Contingency,
-                        OverallRiskRatingBefore = riskDto.OverallRiskRating,
+                        OverallRiskRatingBefore = riskDto.OverallRiskRatingBefore,
                         ResponsibleUserId = riskDto.ResponsibleUserId,
                         PlannedActionDate = riskDto.PlannedActionDate,
                         DepartmentId = riskDto.DepartmentId,
@@ -302,7 +302,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
                 existingRisk.Contingency = riskDto.Contingency;
 
-                existingRisk.OverallRiskRatingBefore = riskDto.OverallRiskRating;
+                existingRisk.OverallRiskRatingBefore = riskDto.OverallRiskRatingBefore;
 
                 existingRisk.ResponsibleUserId = riskDto.ResponsibleUserId;
 
@@ -430,7 +430,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     existingRisk.Impact = riskDto.Impact;
                     existingRisk.Mitigation = riskDto.Mitigation;
                     existingRisk.Contingency = riskDto.Contingency;
-                    existingRisk.OverallRiskRatingBefore = riskDto.OverallRiskRating;
+                    existingRisk.OverallRiskRatingBefore = riskDto.OverallRiskRatingBefore;
                     existingRisk.ResponsibleUserId = riskDto.ResponsibleUserId;
                     existingRisk.PlannedActionDate = riskDto.PlannedActionDate;
                     existingRisk.DepartmentId = riskDto.DepartmentId;
@@ -526,15 +526,19 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         throw new KeyNotFoundException($"Risk with ID {riskId} not found.");
                     }
                     // Update Risk properties 
-                    if (riskUpdateDto.ClosedDate.HasValue)
-                    {
-                        existingRisk.ClosedDate = riskUpdateDto.ClosedDate.Value;
+                    
+                    
+                        existingRisk.ClosedDate = riskUpdateDto.ClosedDate;
                         existingRisk.RiskStatus = RiskStatus.close; // Set status to closed 
-                    }
-                    if (riskUpdateDto.RiskResponseId.HasValue)
-                    {
-                        existingRisk.RiskResponseId = riskUpdateDto.RiskResponseId.Value;
-                    }
+                        existingRisk.RiskResponseId = riskUpdateDto.RiskResponseId;
+                        existingRisk.OverallRiskRatingAfter=riskUpdateDto.OverallRiskRatingAfter;
+                        existingRisk.PercentageRedution=riskUpdateDto.PercentageRedution;
+                        existingRisk.ResidualRisk=riskUpdateDto.ResidualRisk;
+                        existingRisk.ResidualValue=riskUpdateDto.ResidualValue;
+                        existingRisk.Remarks=riskUpdateDto.Remarks;
+                     
+                    
+                    
                     // Handle RiskAssessments and their Reviews 
                     foreach (var assessmentDto in riskUpdateDto.RiskAssessments)
                     {
@@ -604,15 +608,14 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         throw new KeyNotFoundException($"Risk with ID {riskId} not found.");
                     }
                     // Update Risk properties 
-                    if (riskUpdateDto.ClosedDate.HasValue)
-                    {
-                        existingRisk.ClosedDate = riskUpdateDto.ClosedDate.Value;
-                        existingRisk.RiskStatus = RiskStatus.close; // Set status to closed 
-                    }
-                    if (riskUpdateDto.RiskResponseId.HasValue)
-                    {
-                        existingRisk.RiskResponseId = riskUpdateDto.RiskResponseId.Value;
-                    }
+                    existingRisk.ClosedDate = riskUpdateDto.ClosedDate;
+                    existingRisk.RiskStatus = RiskStatus.close; // Set status to closed 
+                    existingRisk.RiskResponseId = riskUpdateDto.RiskResponseId;
+                    existingRisk.OverallRiskRatingAfter = riskUpdateDto.OverallRiskRatingAfter;
+                    existingRisk.PercentageRedution = riskUpdateDto.PercentageRedution;
+                    existingRisk.ResidualRisk = riskUpdateDto.ResidualRisk;
+                    existingRisk.ResidualValue = riskUpdateDto.ResidualValue;
+                    existingRisk.Remarks = riskUpdateDto.Remarks;
                     // Initialize a shared review if provided 
                     int sharedReviewId = 0;
                     if (riskUpdateDto.RiskAssessments.Any() && riskUpdateDto.RiskAssessments[0].Review != null)
@@ -841,13 +844,13 @@ namespace Risk_Management_RiskEX_Backend.Repository
         {
             if (id == null)
             {
-                var highestRatedRisk = await _db.Risks.OrderByDescending(r => r.OverallRiskRatingBefore).ToListAsync();
+                var highestRatedRisk = await _db.Risks.OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
                 var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
                 return data;
             }
             else
             {
-                var highestRatedRisk = await _db.Risks.Where(e => e.DepartmentId == id).OrderByDescending(r => r.OverallRiskRatingBefore).ToListAsync();
+                var highestRatedRisk = await _db.Risks.Where(e => e.DepartmentId == id).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
                 var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
                 return data;
             }

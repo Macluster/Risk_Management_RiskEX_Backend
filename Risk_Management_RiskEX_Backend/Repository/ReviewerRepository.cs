@@ -83,6 +83,36 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return users.Concat(externalReviewers).ToList();
         }
 
+        public async Task<List<ReviewerDTO>> getthereviwer(int id)
+        {
+            if (id == null)
+            {
+                return new List<ReviewerDTO>();
+            }
 
+            var reviewers = await _db.Risks
+                .Where(r => r.Id == id)
+                .Include(r => r.RiskAssessments)
+                    .ThenInclude(a => a.Review)
+                .SelectMany(r => r.RiskAssessments) 
+                .Select(review => new ReviewerDTO
+                {
+                    Id = review.Review.Id,
+                   
+                    FullName = review.Review.UserId == null
+                        ? review.Review.ExternalReviewer.FullName
+                        : review.Review.User.FullName, 
+                    Email = review.Review.UserId == null
+                        ? review.Review.ExternalReviewer.Email
+                        : review.Review.User.Email, 
+                    Type = review.Review.UserId == null ? "External" : "Internal"
+      
+                })
+                .Distinct()
+                .ToListAsync();
+
+            return reviewers;
+
+        }
     }
 }
