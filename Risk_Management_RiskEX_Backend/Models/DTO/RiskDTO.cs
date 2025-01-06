@@ -9,7 +9,7 @@
         public string Impact { get; set; }
         public string Mitigation { get; set; }
         public string? Contingency { get; set; }
-        public int OverallRiskRating { get; set; }
+        public int OverallRiskRatingBefore { get; set; }
         public int ResponsibleUserId { get; set; }
         public DateTime PlannedActionDate { get; set; }
         public int DepartmentId { get; set; }
