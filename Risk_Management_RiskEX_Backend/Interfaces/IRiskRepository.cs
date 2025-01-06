@@ -15,7 +15,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
 
        
         //Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int userId);
-        Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId);
+        //Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId);
 
 
         Task<Risk> AddQualityRiskAsync(RiskDTO riskDto);

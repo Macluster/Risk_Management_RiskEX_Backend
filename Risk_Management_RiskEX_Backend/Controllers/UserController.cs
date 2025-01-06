@@ -25,11 +25,9 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         public async Task<IActionResult> AddUserToDepartment([FromBody] UsersDTO userDto)
         {
             // Get the current user's ID from your authentication context
-            int? currentUserId = User.Identity.IsAuthenticated
-                ? int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
-                : null;
+          
 
-            var result = await _userRepository.AddUserToDepartment(userDto, currentUserId);
+            var result = await _userRepository.AddUserToDepartment(userDto);
 
             if (result!=0)
             {
@@ -94,6 +92,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
                 var result = users.Select(u => new
                 {
+                    u.Id,
                     u.FullName,
                     u.Email,
                     u.IsActive,
@@ -124,6 +123,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
                 var result = users.Select(u => new
                 {
+                    u.Id,
                     u.FullName,
                     u.Email,
                     u.IsActive,
@@ -138,6 +138,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
 
 
