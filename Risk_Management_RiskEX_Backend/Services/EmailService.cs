@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Mail;
 using Risk_Management_RiskEX_Backend.Interfaces;
+using Risk_Management_RiskEX_Backend.Models;
 
 namespace Risk_Management_RiskEX_Backend.Services
 {
@@ -26,9 +27,12 @@ namespace Risk_Management_RiskEX_Backend.Services
             smtpClient.Credentials =  new NetworkCredential(email, password);
 
             var message = new MailMessage(email!, receptor, subject, body);
+            message.IsBodyHtml = true;
             await smtpClient.SendMailAsync(message);
 
 
         }
+
+       
     }
 }
