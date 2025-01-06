@@ -42,7 +42,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     Description = ra.Risk.Description,
                     RiskType = ra.Risk.RiskType,  // Keep enum as it is
                     PlannedActionDate = ra.Risk.PlannedActionDate,
-                    OverallRiskRating = ra.Risk.OverallRiskRatingAfter.HasValue ? ra.Risk.OverallRiskRatingBefore : ra.Risk.OverallRiskRatingAfter,
+                    OverallRiskRating = ra.Risk.OverallRiskRatingAfter ?? ra.Risk.OverallRiskRatingBefore,
                     RiskStatus = ra.Risk.RiskStatus,  // Keep enum as it is
                     ReviewerName = r.UserId.HasValue ? r.User.FullName : r.ExternalReviewer.FullName,
                     ReviewerDepartment = r.UserId.HasValue ? r.User.Department.DepartmentName : r.ExternalReviewer.Department.DepartmentName
@@ -68,6 +68,64 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
+        //public async Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId)
+        //{
+        //    if (!userId.HasValue)
+        //    {
+        //        Console.WriteLine("No userId provided.");
+        //        return new List<ApprovalDTO>();
+        //    }
+
+        //    // Query the reviews by userId and specific review status values
+        //    var reviews = await _db.Reviews
+        //        .Where(r => r.UserId == userId &&
+        //                    (r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending))
+        //        .Include(r => r.RiskAssessments)
+        //        .ThenInclude(ra => ra.Risk)
+        //        .ThenInclude(risk => risk.Department)
+
+        //        .ToListAsync();
+
+        //    Console.WriteLine($"Found {reviews.Count} reviews for userId {userId.Value}.");
+
+        //    // Check if reviews were found for this user
+        //    if (reviews == null || reviews.Count == 0)
+        //    {
+        //        Console.WriteLine("No reviews found for this user.");
+        //        return new List<ApprovalDTO>();
+        //    }
+
+        //    // Get the unique risks associated with the reviews (where risk is not null)
+        //    var risks = reviews
+        //        .SelectMany(r => r.RiskAssessments)
+        //        .Where(ra => ra.Risk != null)
+        //        .Select(ra => ra.Risk)
+        //        .Distinct()
+        //        .ToList();
+
+        //    Console.WriteLine($"Found {risks.Count} unique risks.");
+
+        //    // Create a list of ApprovalDTOs from the unique risks
+        //    var approvalDTOs = risks.Select(risk => new ApprovalDTO
+        //    {
+        //        Id = risk.Id, 
+        //        RiskId = risk.RiskId,
+        //        RiskName = risk.RiskName,
+        //        Description = risk.Description,
+
+        //        RiskType = Enum.GetName(typeof(RiskType), risk.RiskType) ?? "Unknown",
+        //        OverallRiskRating = risk.OverallRiskRatingAfter ?? risk.OverallRiskRatingBefore,
+
+        //        //RiskType = risk.RiskType,
+        //        //OverallRiskRating = risk.OverallRiskRatingBefore,
+
+        //        PlannedActionDate = risk.PlannedActionDate,
+        //        RiskStatus = Enum.GetName(typeof(RiskStatus), risk.RiskStatus) ?? "Unknown",
+        //    }).ToList();
+
+        //    return approvalDTOs;
+        //}
+
         public async Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId)
         {
             if (!userId.HasValue)
@@ -82,6 +140,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             (r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending))
                 .Include(r => r.RiskAssessments)
                 .ThenInclude(ra => ra.Risk)
+                .ThenInclude(risk => risk.Department) // Ensure Department is included
                 .ToListAsync();
 
             Console.WriteLine($"Found {reviews.Count} reviews for userId {userId.Value}.");
@@ -106,24 +165,19 @@ namespace Risk_Management_RiskEX_Backend.Repository
             // Create a list of ApprovalDTOs from the unique risks
             var approvalDTOs = risks.Select(risk => new ApprovalDTO
             {
-                Id = risk.Id, 
+                Id = risk.Id,
                 RiskId = risk.RiskId,
                 RiskName = risk.RiskName,
                 Description = risk.Description,
-
                 RiskType = Enum.GetName(typeof(RiskType), risk.RiskType) ?? "Unknown",
-                OverallRiskRating = risk.OverallRiskRatingAfter.HasValue ? risk.OverallRiskRatingBefore : risk.OverallRiskRatingAfter,
-
-                //RiskType = risk.RiskType,
-                //OverallRiskRating = risk.OverallRiskRatingBefore,
-
+                OverallRiskRating = risk.OverallRiskRatingAfter ?? risk.OverallRiskRatingBefore,
                 PlannedActionDate = risk.PlannedActionDate,
-                RiskStatus = Enum.GetName(typeof(RiskStatus), risk.RiskType) ?? "Unknown",
+                RiskStatus = Enum.GetName(typeof(RiskStatus), risk.RiskStatus) ?? "Unknown",
+                DepartmentName = risk.Department?.DepartmentName ?? "No Department" // Include DepartmentName
             }).ToList();
 
             return approvalDTOs;
         }
-
 
 
 

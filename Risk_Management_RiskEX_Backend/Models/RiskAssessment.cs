@@ -7,6 +7,7 @@ namespace Risk_Management_RiskEX_Backend.Models
     public class RiskAssessment : BaseEntity
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int Likelihood { get; set; }
         public int Impact { get; set; }

@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Risk_Management_RiskEX_Backend.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using Risk_Management_RiskEX_Backend.Services;
 
 namespace Risk_Management_RiskEX_Backend.Repository
 {
@@ -35,7 +36,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
-        public async Task<LoginResponseDTO> LoginUser(LoginRequestDTO loginRequestDTO)
+        public async Task<LoginResponseDTO> LoginUser(LoginRequestDTO loginRequestDTO,PasswordService _passwordService)
         {
             try
             {
@@ -54,7 +55,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     throw new UnauthorizedAccessException("Your account has been deactivated.Please contact the admin.");
                 }
 
-                if (user.Password != loginRequestDTO.Password)
+                // Hash the password before storing it
+                bool isPasswordVerified = _passwordService.VerifyPassword(user.Password,loginRequestDTO.Password);
+                
+
+
+                if (!isPasswordVerified)
                 {
                     return null;
                 }
@@ -79,12 +85,23 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 }
                 else
                 {
+                    // Department user role
                     if (user.Department != null)
                     {
                         claims.Add(new Claim(ClaimTypes.Role, "DepartmentUser"));
+
+                        // Special EMT department role
+                        if (user.Department.DepartmentName.Equals("EMT", StringComparison.OrdinalIgnoreCase))
+                        {
+                            claims.Add(new Claim(ClaimTypes.Role, "EMTUser"));
+                        }
+
+                        // Project user role
                         if (user.Projects != null && user.Projects.Any())
                         {
                             claims.Add(new Claim(ClaimTypes.Role, "ProjectUsers"));
+
+                            // Add projects as a JSON claim
                             var projectsJson = JsonSerializer.Serialize(user.Projects.Select(p => new { p.Id, p.Name }));
                             claims.Add(new Claim("Projects", projectsJson));
                         }
@@ -123,6 +140,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 throw;
             }
         }
+
+        public async Task<String> RegisterUser(LoginRequestDTO loginRequestDTO)
+        {
+            return "";
+
+        }
+
+
+
 
 
     }

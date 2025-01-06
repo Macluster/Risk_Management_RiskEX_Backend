@@ -7,6 +7,7 @@ namespace Risk_Management_RiskEX_Backend.Models
     public class Risk : BaseEntity
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [StringLength(20)]

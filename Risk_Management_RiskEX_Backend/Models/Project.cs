@@ -6,6 +6,7 @@ namespace Risk_Management_RiskEX_Backend.Models
     public class Project : BaseEntity
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Name { get; set; }
         public int DepartmentId { get; set; }
@@ -20,5 +21,7 @@ namespace Risk_Management_RiskEX_Backend.Models
      
 
         public ICollection<Risk> Risks { get; set; }
+
+        public ICollection<User> Users { get; set; }
     }
 }

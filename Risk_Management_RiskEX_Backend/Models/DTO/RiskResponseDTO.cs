@@ -22,6 +22,11 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
         public UserResponseDTO ResponsibleUser { get; set; }
         public DepartmentDTO Department { get; set; }
         public ProjectResponseDTO Project { get; set; }
+        public int? ResidualValue { get; set; }
+
+        public double? PercentageRedution { get; set; }
+
+        public string? ResidualRisk { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? CreatedAt { get; set; }
         public string UpdatedBy { get; set; }
