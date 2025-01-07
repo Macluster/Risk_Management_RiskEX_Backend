@@ -55,15 +55,15 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
         }
 
-        [HttpGet("project/{projectId}")]
-        public IActionResult GetUsersByProject(int projectId)
+        [HttpGet("projects")]
+        public IActionResult GetUsersByProjects([FromQuery] IEnumerable<int> projectIds)
         {
             try
             {
-                var users = _getUserRepository.GetUsersByProject(projectId);
+                var users = _getUserRepository.GetUsersByProjects(projectIds);
                 if (!users.Any())
                 {
-                    return NotFound($"No users found for project with ID {projectId}.");
+                    return NotFound($"No users found for the provided project IDs.");
                 }
                 return Ok(users);
             }

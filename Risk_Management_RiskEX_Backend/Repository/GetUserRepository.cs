@@ -39,13 +39,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return _db.Users.Where(u => u.DepartmentId == departmentId).ToList();
         }
 
-        public IEnumerable<User> GetUsersByProject(int projectId)
+        public IEnumerable<User> GetUsersByProjects(IEnumerable<int> projectIds)
         {
-           
             return _db.Projects
-                             .Where(p => p.Id == projectId)
-                             .Select(p => p.User)
-                             .ToList();
+                      .Where(p => projectIds.Contains(p.Id)) // Filters by multiple project IDs
+                      .SelectMany(p => p.Users)  // If a project can have multiple users
+                      .ToList();
         }
 
     }
