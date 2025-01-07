@@ -82,7 +82,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                 new AssessmentBasis
                 {
                     Id = 3,
-                    Basis = "Privacy",
+                    Basis = "Availability",
  
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
@@ -90,7 +90,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                 new AssessmentBasis
                 {
                     Id = 4,
-                    Basis = "Quality",
+                    Basis = "Privacy",
 
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
