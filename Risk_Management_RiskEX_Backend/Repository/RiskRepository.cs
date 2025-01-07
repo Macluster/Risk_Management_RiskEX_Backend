@@ -239,9 +239,9 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 ResidualRisk = r.ResidualRisk.ToString(),
                 ResidualValue = r.ResidualValue,
                 PercentageRedution = r.PercentageRedution,
-                CreatedBy = new UserResponseDTO {  Id=r.CreatedBy.Id,FullName = r.CreatedBy.FullName,Email=r.CreatedBy.Email },
+                CreatedBy =  new UserResponseDTO {  Id= r.CreatedBy!=null? r.CreatedBy.Id:0,FullName = r.CreatedBy != null ? r.CreatedBy.FullName : " " ,Email= r.CreatedBy != null ? r.CreatedBy.Email:""   },
                 CreatedAt = r.CreatedAt,
-                UpdatedBy = new UserResponseDTO { Id = r.UpdatedBy.Id, FullName = r.UpdatedBy.FullName, Email = r.UpdatedBy.Email },
+                UpdatedBy = new UserResponseDTO { Id = r.UpdatedBy != null ? r.UpdatedBy.Id : 0, FullName = r.UpdatedBy != null ? r.UpdatedBy.FullName : " ", Email = r.UpdatedBy != null ? r.UpdatedBy.Email : "" },
 
                 UpdatedAt = r.UpdatedAt
             })
