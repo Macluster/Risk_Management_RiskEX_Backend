@@ -40,11 +40,11 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
         [HttpGet("gettheReviewer/{id}")]
-        public async Task<ActionResult<ReviewerDTO>> GettheReviewer(int id)
+        public async Task<ActionResult<ReviewerDTO>> GettheReviewer(int id,[FromQuery]string reviewStatus)
         {
             try
             {
-                var reviewer = await _reviewerRepository.getthereviwer(id);
+                var reviewer = await _reviewerRepository.getthereviwer(id, reviewStatus);
                 return Ok(reviewer);
             }
             catch (Exception ex)
