@@ -27,9 +27,9 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
         public double? PercentageRedution { get; set; }
 
         public string? ResidualRisk { get; set; }
-        public string CreatedBy { get; set; }
+        public UserResponseDTO CreatedBy { get; set; }
         public DateTime? CreatedAt { get; set; }
-        public string UpdatedBy { get; set; }
+        public UserResponseDTO UpdatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
 }

@@ -196,9 +196,50 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 .Where(u => u.Department.DepartmentName == departmentName) 
                 .ToListAsync();
         }
-        
-    
 
+
+        public async Task<List<dynamic>> GetUsersByProjects(int[] projectIds)
+        {
+            var users = await _db.Users
+        .Where(u => u.Projects.Any(p => projectIds.Contains(p.Id))) // Filter users by project IDs
+        .Select(u => new
+        {
+            id = u.Id,
+            fullName = u.FullName,
+            email = u.Email,
+            isActive = u.IsActive,
+            department = u.Department.DepartmentName,
+            projects = u.Projects.Select(p => p.Name).ToList()
+        })
+        .ToListAsync();
+
+            return users.Cast<dynamic>().ToList(); // Cast to dynamic
+        }
+
+
+
+        public async Task<object> GetNameAndEmailOfAUserbyRiskid(int riskId)
+        {
+            if (riskId == null)
+            {
+                return new List<GetUserDTO>();
+            }
+
+            var user = await _db.Risks
+                .Where(r => r.Id == riskId)
+                .Include(r => r.CreatedBy)
+                .Select(r => new 
+                {
+                    Id = r.CreatedBy.Id,
+                    Name = r.CreatedBy.FullName,
+                    Email = r.CreatedBy.Email,
+
+                })
+                .ToListAsync();
+
+            return user;
+
+        }
     }
 }
 
