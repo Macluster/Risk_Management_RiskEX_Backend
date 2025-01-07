@@ -696,25 +696,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
             };
         }
 
-
-
-        public async Task<ICollection<int>> GetOverallRiskRating()
-        {
-            return await _db.Set<Risk>()
-           .Select(r => r.OverallRiskRatingBefore)
-           .ToListAsync();
-        }
-
-
-        public async Task<object> GetOverallRiskRating(int id)
-        {
-            return await _db.Set<Risk>()
-           .Where(r => r.Id == id)
-           .Select(r => (int?)r.OverallRiskRatingBefore)
-           .FirstOrDefaultAsync();
-        }
-
-
         public async Task<object> GetRiskByAssigneeId(int id)
         {
             var result = await _db.Risks.Where(e => e.ResponsibleUserId == id).Select(r => new RiskForApprovalDTO
@@ -735,50 +716,64 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return Risks;
         }
 
-        //public Task<ICollection<int>> GetRiskCategoryCounts() 
-        //{ 
-        //  throw new NotImplementedException(); 
-        //} 
-
-        public async Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCounts()
+        public async Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCounts(int?id)
         {
-            var riskCategoryCounts = await _db.Set<Risk>()
-                .Select(r => new
-                {
-                    RiskType = r.RiskType.ToString(),
-                    OverallRiskRating = r.OverallRiskRatingBefore,
-                    RiskCategory = r.RiskType == RiskType.Quality
-                        ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
-                           r.OverallRiskRatingBefore >= 10 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
-                           r.OverallRiskRatingBefore >= 40 ? "Critical" : "Uncategorized")
-                        : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
-                        ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
-                           r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
-                           r.OverallRiskRatingBefore >= 70 ? "Critical" : "Uncategorized")
-                        : "Uncategorized"
-                })
-                .GroupBy(r => r.RiskCategory)
-                .Select(g => new RiskCategoryCountDTO
-                {
-                    RiskCategory = g.Key,
-                    Count = g.Count()
-                })
-                .ToListAsync();
-            return riskCategoryCounts;
-        }
 
+            if (id == null)
+            {
+               var riskCategoryCounts = await _db.Set<Risk>()
+              .Select(r => new
+              {
+                  RiskType = r.RiskType.ToString(),
+                  OverallRiskRating = r.OverallRiskRatingBefore,
+                  RiskCategory = r.RiskType == RiskType.Quality
+                      ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
+                         r.OverallRiskRatingBefore >= 10 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
+                         r.OverallRiskRatingBefore >= 40 ? "Critical" : "Uncategorized")
+                      : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
+                      ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
+                         r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
+                         r.OverallRiskRatingBefore >= 70 ? "Critical" : "Uncategorized")
+                      : "Uncategorized"
+              })
+              .GroupBy(r => r.RiskCategory)
+              .Select(g => new RiskCategoryCountDTO
+              {
+                  RiskCategory = g.Key,
+                  Count = g.Count()
+              })
+              .ToListAsync();
+                return riskCategoryCounts;
 
-        public async Task<ICollection<OpenRiskCountByTypeDTO>> GetOpenRiskCountByType()
-        {
-            var riskTypeCounts = await _db.Set<Risk>()
-                .GroupBy(r => r.RiskType)
-                .Select(g => new OpenRiskCountByTypeDTO
-                {
-                    RiskType = g.Key.ToString(),
-                    RiskCount = g.Count()
-                })
-                .ToListAsync();
-            return riskTypeCounts;
+            }
+            else
+            {
+                var riskCategoryCounts = await _db.Set<Risk>()
+                     .Where(e => e.DepartmentId == id)
+                      .Select(r => new
+                      {
+                          RiskType = r.RiskType.ToString(),
+                          OverallRiskRating = r.OverallRiskRatingBefore,
+                          RiskCategory = r.RiskType == RiskType.Quality
+                      ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
+                         r.OverallRiskRatingBefore >= 10 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
+                         r.OverallRiskRatingBefore >= 40 ? "Critical" : "Uncategorized")
+                      : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
+                      ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
+                         r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
+                         r.OverallRiskRatingBefore >= 70 ? "Critical" : "Uncategorized")
+                      : "Uncategorized"
+                      })
+              .GroupBy(r => r.RiskCategory)
+              .Select(g => new RiskCategoryCountDTO
+              {
+                  RiskCategory = g.Key,
+                  Count = g.Count()
+              })
+              .ToListAsync();
+                return riskCategoryCounts;
+            }
+          
         }
 
 
@@ -855,6 +850,46 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 return data;
             }
         }
+
+        public async Task<ICollection<OpenRiskCountByTypeDTO>> GetOpenRiskCountByType(int? id)
+        {
+
+            if (id == null)
+            {
+                var riskTypeCounts = await _db.Set<Risk>()
+               .GroupBy(r => r.RiskType)
+               .Select(g => new OpenRiskCountByTypeDTO
+               {
+                   RiskType = g.Key.ToString(),
+                   RiskCount = g.Count()
+               })
+               .ToListAsync();
+                return riskTypeCounts;
+
+            }
+            else
+            {
+
+                var riskTypeCounts = await _db.Set<Risk>()
+               .Where(e => e.DepartmentId == id)
+               .GroupBy(r => r.RiskType)
+               .Select(g => new OpenRiskCountByTypeDTO
+               {
+                   RiskType = g.Key.ToString(),
+                   RiskCount = g.Count()
+               })
+               .ToListAsync();
+                return riskTypeCounts;
+
+            }
+           
+        }
+
+       
+        
+
+
+
     }
 }
 
