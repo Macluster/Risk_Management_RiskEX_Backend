@@ -233,15 +233,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
                 }).ToList(),
-                ResponsibleUser = r.ResponsibleUser != null ? new UserResponseDTO { Id = r.ResponsibleUser.Id, FullName = r.ResponsibleUser.FullName } : null,
+                ResponsibleUser = r.ResponsibleUser != null ? new UserResponseDTO { Id = r.ResponsibleUser.Id, FullName = r.ResponsibleUser.FullName,Email=r.ResponsibleUser.Email } : null,
                 Department = new DepartmentDTO { Id = r.Department.Id, Name = r.Department.DepartmentName },
                 Project = r.Project != null ? new ProjectResponseDTO { Id = r.Project.Id, ProjectName = r.Project.Name } : null,
                 ResidualRisk = r.ResidualRisk.ToString(),
                 ResidualValue = r.ResidualValue,
                 PercentageRedution = r.PercentageRedution,
-                CreatedBy = r.CreatedBy.FullName,
+                CreatedBy =  new UserResponseDTO {  Id= r.CreatedBy!=null? r.CreatedBy.Id:0,FullName = r.CreatedBy != null ? r.CreatedBy.FullName : " " ,Email= r.CreatedBy != null ? r.CreatedBy.Email:""   },
                 CreatedAt = r.CreatedAt,
-                UpdatedBy = r.UpdatedBy != null ? r.UpdatedBy.FullName : null,
+                UpdatedBy = new UserResponseDTO { Id = r.UpdatedBy != null ? r.UpdatedBy.Id : 0, FullName = r.UpdatedBy != null ? r.UpdatedBy.FullName : " ", Email = r.UpdatedBy != null ? r.UpdatedBy.Email : "" },
 
                 UpdatedAt = r.UpdatedAt
             })
@@ -253,7 +253,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
         public async Task<Risk> EditQualityRiskAsync(int id, RiskDTO riskDto)
-
         {
 
             // Start a transaction to ensure atomicity 
@@ -717,7 +716,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<object> GetRiskByAssigneeId(int id)
         {
-            var result = await _db.Risks.Where(e => e.ResponsibleUserId == id).Select(r => new RiskForApprovalDTO
+            var result = await _db.Risks.Where(e => e.ResponsibleUserId == id).Where(e=>e.RiskStatus==RiskStatus.open).Select(r => new RiskForApprovalDTO
             {
                 Id =r.Id,
                 RiskId =r.RiskId,
@@ -726,7 +725,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 RiskType =r.RiskType.ToString(),
                 OverallRiskRating =r.OverallRiskRatingAfter.HasValue?r.OverallRiskRatingAfter.Value:r.OverallRiskRatingBefore,
                 PlannedActionDate =r.PlannedActionDate,
-                RiskStatus =r.RiskStatus
+                RiskStatus =r.RiskStatus.ToString()
 
              }).ToListAsync();
 
