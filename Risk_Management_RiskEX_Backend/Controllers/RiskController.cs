@@ -235,39 +235,9 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
-        [HttpGet("OverallRiskRating")]
-        public async Task<IActionResult> GetOverallRiskRatings()
-        {
-            var riskRating = await _riskRepository.GetOverallRiskRating();
-            return Ok(riskRating);
-        }
+           
 
-        [HttpGet("OverallRiskRating/{id}")]
-        public async Task<IActionResult> GetOverallRiskRatingById(int id)
-        {
-            var riskRating = await _riskRepository.GetOverallRiskRating(id);
-            return Ok(riskRating);
-        }
-
-        [HttpGet("RiskCategory-Counts")]
-        public async Task<IActionResult> GetRiskCategoryCounts()
-        {
-            var categoryCounts = await _riskRepository.GetRiskCategoryCounts();
-            return Ok(categoryCounts);
-        }
-
-        [HttpGet("OpenRisk-Counts")]
-        public async Task<IActionResult> GetOpenRiskCountByType()
-        {
-            var riskTypeCounts = await _riskRepository.GetOpenRiskCountByType();
-            return Ok(riskTypeCounts);
-
-
-            //var result = await _riskRepository.GetOpenRiskCountByType();     
-            //return Ok(result);
-
-        }
-
+       
         [HttpGet("RiskCategoryCountByDepartment")]
         public async Task<IActionResult> GetRiskCategoryCountsForDepartments([FromQuery] List<int> departmentIds)
         {
@@ -276,9 +246,13 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
+<<<<<<< HEAD
 
 
         [HttpPut("edit/quality/{id}")]
+=======
+        [HttpPut("quality/{id}")]
+>>>>>>> 512589cd3c768a1a517555a1249c44de6d12cb0c
         public async Task<IActionResult> EditQualityRiskAsync(int id, [FromBody] RiskDTO riskDto)
         {
 
@@ -486,6 +460,21 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
             var risks = await _riskRepository.GetRiskWithHeighestOverallRationg(id);
             return Ok(risks);
+        }
+
+        [HttpGet("CountOfRiskType(Open)")]
+        public async Task<IActionResult> GetOpenRiskCountByType(int? id)
+        {
+            var riskTypeCounts = await _riskRepository.GetOpenRiskCountByType(id);
+            return Ok(riskTypeCounts);
+
+        }
+
+        [HttpGet("RiskCategory-Counts")]
+        public async Task<IActionResult> GetRiskCategoryCounts(int?id)
+        {
+            var categoryCounts = await _riskRepository.GetRiskCategoryCounts(id);
+            return Ok(categoryCounts);
         }
     }
 }
