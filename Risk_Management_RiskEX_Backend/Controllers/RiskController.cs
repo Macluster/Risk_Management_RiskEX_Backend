@@ -87,8 +87,8 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         {
             try
             {
-                await _riskRepository.AddSecurityOrPrivacyRiskAsync(riskDto);
-                return CreatedAtAction(nameof(AddRisk), new { }, riskDto);
+                var newRisk=  await _riskRepository.AddSecurityOrPrivacyRiskAsync(riskDto);
+                return CreatedAtAction(nameof(AddRisk), new { id = newRisk.Id }, newRisk);
             }
             catch (Exception ex)
             {
@@ -171,7 +171,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
 
         [HttpPut("quality/{id}")]
-        public async Task<IActionResult> EditQualityRiskAsync(int riskId, [FromBody] RiskDTO riskDto)
+        public async Task<IActionResult> EditQualityRiskAsync(int id, [FromBody] RiskDTO riskDto)
         {
 
 
@@ -182,12 +182,12 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
             try
             {
-                var updatedRisk = await _riskRepository.EditQualityRiskAsync(riskId, riskDto);
+                var updatedRisk = await _riskRepository.EditQualityRiskAsync(id, riskDto);
                 return Ok(updatedRisk);
             }
             catch (KeyNotFoundException ex)
             {
-                _logger.LogWarning(ex, $"Risk with ID {riskId} not found.");
+                _logger.LogWarning(ex, $"Risk with ID {id} not found.");
                 return NotFound(new { Message = ex.Message });
             }
             catch (DbUpdateException ex)
@@ -197,7 +197,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred in EditQualityRiskAsync for RiskId: {RiskId}. RiskDTO: {@RiskDto}", riskId, riskDto);
+                _logger.LogError(ex, "An error occurred in EditQualityRiskAsync for RiskId: {RiskId}. RiskDTO: {@RiskDto}", id, riskDto);
                 throw; // Re-throw the exception for the controller to handle.
             }
         }
@@ -206,7 +206,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
 
 
-        [HttpPut("/{id}")]
+        [HttpPut("SecurityOrPrivacy/{id}")]
         public async Task<IActionResult> EditSecurityOrPrivacyRiskAsync(int id, [FromBody] RiskDTO riskDto)
         {
             if (riskDto == null)
