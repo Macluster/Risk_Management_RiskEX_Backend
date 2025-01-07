@@ -5,6 +5,7 @@ using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Models.DTO;
+using System.Threading.Tasks;
 
 namespace Risk_Management_RiskEX_Backend.Repository
 {
@@ -30,8 +31,22 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
                 throw new KeyNotFoundException("Department not found.");
             }
+            // Input validation
+            if (string.IsNullOrWhiteSpace(externalReviewerDTO.Email))
+            {
+                //_logger.LogError("User email cannot be empty.");
+                return 0;
+            }
 
-           
+            // Check for existing user
+            var existingUser = await _db.Users.FirstOrDefaultAsync(u => u.Email == externalReviewerDTO.Email);
+            if (existingUser != null)
+            {
+                //_logger.LogError($"User with email {userDto.Email} already exists.");
+                return 0;
+            }
+
+
             var externalReviewer = new ExternalReviewer
             {
                 FullName = externalReviewerDTO.FullName,
@@ -83,18 +98,23 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return users.Concat(externalReviewers).ToList();
         }
 
-        public async Task<List<ReviewerDTO>> getthereviwer(int id)
+        public async Task<List<ReviewerDTO>> getthereviwer(int id, string reviewStatus)
         {
             if (id == null)
             {
                 return new List<ReviewerDTO>();
+            }
+            if (!Enum.TryParse(reviewStatus, true, out ReviewStatus status))
+            {
+                throw new ArgumentException($"Invalid RiskType value: {reviewStatus}");
             }
 
             var reviewers = await _db.Risks
                 .Where(r => r.Id == id)
                 .Include(r => r.RiskAssessments)
                     .ThenInclude(a => a.Review)
-                .SelectMany(r => r.RiskAssessments) 
+                .SelectMany(r => r.RiskAssessments)
+                .Where(a => a.Review != null && a.Review.ReviewStatus == status)
                 .Select(review => new ReviewerDTO
                 {
                     Id = review.Review.Id,

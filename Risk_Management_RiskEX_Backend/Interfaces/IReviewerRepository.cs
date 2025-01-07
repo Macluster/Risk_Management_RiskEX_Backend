@@ -8,7 +8,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
     {
         Task<List<ReviewerDTO>> GetAllReviewersAsync([FromServices] IHttpContextAccessor httpContextAccessor);
         Task<int> AddNewReviewer(ExternalReviewerDTO externalReviewerDTO);
-        Task<List<ReviewerDTO>> getthereviwer(int id);
+        Task<List<ReviewerDTO>> getthereviwer(int id,string reviewStatus);
 
     }
 }
