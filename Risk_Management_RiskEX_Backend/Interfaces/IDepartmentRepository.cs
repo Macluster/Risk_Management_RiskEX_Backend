@@ -8,5 +8,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task<IEnumerable<Department>> GetAllDepartments();
         Task<bool> AddDepartment(DepartmentDTO departmentDto);
 
+        Task<bool> UpdateDepartment(DepartmentDTO departmentDto);
+
     }
 }

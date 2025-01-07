@@ -8,10 +8,13 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task<int> AddUserToDepartment(UsersDTO userDto);
         Task<bool> ChangeUserActiveStatus(int id, bool isActive);
         Task<Object> GetNameAndEmailOfAUser(int userId);
+        Task<Object> GetNameAndEmailOfAUserbyRiskid(int riskId);
         Task<Object> GetInfoOfAssigneeByRiskId(int riskId);
         Task<List<User>> GetAllUsersWithDetailsAsync();
         //Task<IEnumerable<object>> GetUsersByDepartmentNameAsync(string departmentName);
         Task<List<User>> GetUsersByDepartmentNameAsync(string departmentName);
+
+        Task<List<dynamic>> GetUsersByProjects(int[] projectIds);
 
 
 
