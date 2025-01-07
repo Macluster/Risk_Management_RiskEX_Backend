@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
@@ -62,7 +63,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
 
 
-        [HttpPost("Quality")]
+        [HttpPost("add/quality")]
         public async Task<IActionResult> AddQualityRisk([FromBody] RiskDTO riskDto)
         {
             try
@@ -73,16 +74,68 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 // Return the newly created Risk object as a response
                 return CreatedAtAction(nameof(AddQualityRisk), new { id = newRisk.Id }, newRisk);
             }
-            catch (Exception ex)
+            catch (ValidationException valEx)
             {
-                // Log the error or handle it as needed
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error occurred: {ex.Message}");
+                var errors = new Dictionary<string, List<string>>();
+
+                foreach (var failure in valEx.ValidationResult.MemberNames)
+                {
+                    if (!errors.ContainsKey(failure))
+                    {
+                        errors[failure] = new List<string>();
+                    }
+                    errors[failure].Add(valEx.ValidationResult.ErrorMessage);
+                }
+
+                return BadRequest(new
+                {
+                    message = "Validation failed. Please correct the errors and try again.",
+                    errors = errors
+                });
+            }
+            catch (DbUpdateException dbEx)  // Handle database errors specifically
+            {
+                string errorMessage = dbEx.InnerException?.Message ?? dbEx.Message;
+
+                // Common DB error handling
+                string userFriendlyMessage;
+                if (errorMessage.Contains("Cannot insert the value NULL", StringComparison.OrdinalIgnoreCase))
+                {
+                    userFriendlyMessage = "Please fill in all required fields.";
+                }
+                else if (errorMessage.Contains("FOREIGN KEY constraint", StringComparison.OrdinalIgnoreCase))
+                {
+                    userFriendlyMessage = "There seems to be a problem with a related record. Please check your input.";
+                }
+                else if (errorMessage.Contains("UNIQUE constraint", StringComparison.OrdinalIgnoreCase))
+                {
+                    userFriendlyMessage = "Duplicate entry: The data you're trying to save already exists.";
+                }
+                else
+                {
+                    userFriendlyMessage = "A database error occurred while saving your data. Please try again.";
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    message = userFriendlyMessage,
+                    details = errorMessage
+                });
+            }
+            catch (Exception ex) // General error handling
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    message = "An unexpected error occurred. Please try again later.",
+                    details = ex.Message
+                });
             }
         }
 
 
 
-        [HttpPost("security")]
+
+        [HttpPost("add/securityOrPrivacy")]
         public async Task<IActionResult> AddRisk([FromBody] RiskDTO riskDto)
         {
             try
@@ -90,11 +143,66 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 var newRisk=  await _riskRepository.AddSecurityOrPrivacyRiskAsync(riskDto);
                 return CreatedAtAction(nameof(AddRisk), new { id = newRisk.Id }, newRisk);
             }
-            catch (Exception ex)
+            catch (ValidationException valEx)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                var errors = new Dictionary<string, List<string>>();
+
+                foreach (var failure in valEx.ValidationResult.MemberNames)
+                {
+                    if (!errors.ContainsKey(failure))
+                    {
+                        errors[failure] = new List<string>();
+                    }
+                    errors[failure].Add(valEx.ValidationResult.ErrorMessage);
+                }
+
+                return BadRequest(new
+                {
+                    message = "Validation failed. Please correct the errors and try again.",
+                    errors = errors
+                });
+            }
+            catch (DbUpdateException dbEx)  // Handle database errors specifically
+            {
+                string errorMessage = dbEx.InnerException?.Message ?? dbEx.Message;
+
+                // Common DB error handling
+                string userFriendlyMessage;
+                if (errorMessage.Contains("Cannot insert the value NULL", StringComparison.OrdinalIgnoreCase))
+                {
+                    userFriendlyMessage = "Please fill in all required fields.";
+                }
+                else if (errorMessage.Contains("FOREIGN KEY constraint", StringComparison.OrdinalIgnoreCase))
+                {
+                    userFriendlyMessage = "There seems to be a problem with a related record. Please check your input.";
+                }
+                else if (errorMessage.Contains("UNIQUE constraint", StringComparison.OrdinalIgnoreCase))
+                {
+                    userFriendlyMessage = "Duplicate entry: The data you're trying to save already exists.";
+                }
+                else
+                {
+                    userFriendlyMessage = "A database error occurred while saving your data. Please try again.";
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    message = userFriendlyMessage,
+                    details = errorMessage
+                });
+            }
+            catch (Exception ex) // General error handling
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    message = "An unexpected error occurred. Please try again later.",
+                    details = ex.Message
+                });
             }
         }
+
+
+
         [HttpGet("id")]
         public async Task<IActionResult> GetRisksById(int id)
         {
@@ -138,7 +246,13 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
+<<<<<<< HEAD
+
+
+        [HttpPut("edit/quality/{id}")]
+=======
         [HttpPut("quality/{id}")]
+>>>>>>> 512589cd3c768a1a517555a1249c44de6d12cb0c
         public async Task<IActionResult> EditQualityRiskAsync(int id, [FromBody] RiskDTO riskDto)
         {
 
@@ -174,7 +288,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
 
 
-        [HttpPut("SecurityOrPrivacy/{id}")]
+        [HttpPut("edit/SecurityOrPrivacy/{id}")]
         public async Task<IActionResult> EditSecurityOrPrivacyRiskAsync(int id, [FromBody] RiskDTO riskDto)
         {
             if (riskDto == null)
@@ -196,10 +310,30 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 // Return the updated risk in the response
                 return Ok(updatedRisk);
             }
-            catch (Exception ex)
+            catch (DbUpdateException dbEx)  // Handle database errors specifically
             {
-                // Return an internal server error if something goes wrong
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    message = "Database update error occurred.",
+                    details = dbEx.InnerException?.Message ?? dbEx.Message
+                });
+            }
+            catch (ArgumentNullException argEx) // Handle missing required data
+            {
+                return BadRequest(new
+                {
+                    message = "Invalid input. Required fields are missing.",
+                    details = argEx.Message
+                });
+            }
+            catch (Exception ex) // General error handling
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    message = "An unexpected error occurred.",
+                    details = ex.Message,
+                    stackTrace = ex.StackTrace // Include stack trace for debugging
+                });
             }
         }
 
@@ -207,7 +341,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
 
 
-        [HttpPut("update/Quality/{riskId}")]
+        [HttpPut("update/quality/{riskId}")]
         public async Task<IActionResult> UpdateQualityRisk(int riskId, [FromBody] RiskUpdateDTO riskUpdateDto)
         {
             if (riskUpdateDto == null)
@@ -249,7 +383,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
 
 
-        [HttpPut("update/{riskId}")]
+        [HttpPut("update/securityOrPrivacy/{riskId}")]
         public async Task<IActionResult> UpdateSecurityOrPrivacyRisk(int riskId, [FromBody] RiskUpdateDTO riskUpdateDto)
         {
             if (riskUpdateDto == null)
