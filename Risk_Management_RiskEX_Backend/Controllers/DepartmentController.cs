@@ -52,5 +52,30 @@ namespace RiskManagement_Department_API.Controllers
             }
         }
 
+
+        [HttpPut("Department")]
+        public async Task<IActionResult> UpdateDepartment([FromServices] IDepartmentRepository _departmentRepository, [FromBody] DepartmentDTO departmentDto)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(departmentDto.Name))
+                {
+                    return BadRequest(new { message = "Department name is required." });
+                }
+
+                var result = await _departmentRepository.UpdateDepartment(departmentDto);
+                if (result)
+                {
+                    return Ok(new { message = "Department updated successfully." });
+                }
+
+                return BadRequest(new { message = "not able to update" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while adding the department." });
+            }
+        }
+
     }
 }
