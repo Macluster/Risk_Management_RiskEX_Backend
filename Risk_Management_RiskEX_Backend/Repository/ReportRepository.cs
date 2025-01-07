@@ -68,6 +68,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         UpdatedAt = r.UpdatedAt.ToString()
 
                     })
+                    .OrderByDescending(r => r.CreatedAt)
                     .ToListAsync();
 
                 return reports;
@@ -127,6 +128,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         UpdatedBy = r.UpdatedBy.FullName,
                         UpdatedAt = r.UpdatedAt.ToString()
                     })
+                    .OrderByDescending(r => r.CreatedAt)
                     .ToListAsync();
 
                 return reports;
@@ -187,6 +189,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         UpdatedBy = r.UpdatedBy.FullName,
                         UpdatedAt = r.UpdatedAt.ToString()
                     })
+                    .OrderByDescending(r => r.CreatedAt)
                     .ToListAsync();
 
                 return reports;
@@ -253,6 +256,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         UpdatedBy = r.UpdatedBy.FullName,
                         UpdatedAt = r.UpdatedAt.ToString()
                     })
+                    .OrderByDescending(r => r.CreatedAt)
                     .ToListAsync();
 
                 return reports;
@@ -305,73 +309,137 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     UpdatedBy = r.UpdatedBy.FullName,
                     UpdatedAt = r.UpdatedAt.ToString()
                 })
+                .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();
 
             return reports;
         }
 
-        public async Task<List<ReportDTO>> GetRisksByUserProjects(List<int> projectIds)
+        public async Task<List<ReportDTO>> GetRisksByUserProjects(List<int> projectIds, String riskStatus)
         {
-            if (projectIds == null || !projectIds.Any())
+            if (string.IsNullOrWhiteSpace(riskStatus))
             {
-                return new List<ReportDTO>(); // Return an empty list if no projects are associated
+                if (projectIds == null || !projectIds.Any())
+                {
+                    return new List<ReportDTO>(); // Return an empty list if no projects are associated
+                }
+
+                // Fetch all risks associated with the given project IDs
+                var risks = await _context.Risks
+                    .Where(r => r.ProjectId.HasValue && projectIds.Contains(r.ProjectId.Value)) // Handle nullable ProjectId
+                    .Select(r => new ReportDTO
+                    {
+
+                        Id = r.Id,
+                        RiskId = r.RiskId,
+                        RiskName = r.RiskName,
+                        Description = r.Description,
+                        RiskType = r.RiskType.ToString(),
+                        Impact = r.Impact,
+                        Mitigation = r.Mitigation,
+                        Contingency = r.Contingency,
+                        OverallRiskRatingBefore = r.OverallRiskRatingBefore,
+                        OverallRiskRatingAfter = r.OverallRiskRatingAfter,
+                        ResponsibleUserId = r.ResponsibleUserId,
+                        ResponsibleUser = r.ResponsibleUser.FullName,
+                        ResidualValue = r.ResidualValue,
+                        PercentageRedution = r.PercentageRedution,
+                        ResidualRisk = r.ResidualRisk.ToString(),
+                        PlannedActionDate = r.PlannedActionDate,
+                        ClosedDate = r.ClosedDate,
+                        RiskResponse = r.RiskResponseData.Name,
+                        RiskStatus = r.RiskStatus.ToString(),
+                        Remarks = r.Remarks,
+                        DepartmentId = r.DepartmentId,
+                        ProjectId = r.ProjectId ?? 0,
+                        DepartmentName = r.Department.DepartmentName,
+                        RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentReportDTO
+                        {
+                            Id = ra.Id,
+                            MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
+                            MatrixImpact = ra.MatrixImpact.AssessmentFactor,
+                            AssessmentBasis = ra.AssessmentBasis.Basis,
+                            Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                            ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
+                            IsMitigated = ra.IsMitigated
+                        }).ToList(),
+                        Email = r.ResponsibleUser.Email,
+                        CreatedBy = r.CreatedBy.FullName,
+                        CreatedAt = r.CreatedAt.ToString(),
+                        UpdatedBy = r.UpdatedBy.FullName,
+                        UpdatedAt = r.UpdatedAt.ToString()
+                    })
+                    .OrderByDescending(r => r.CreatedAt)
+                    .ToListAsync();
+
+                return risks;
+            }
+            else
+            {
+                if (projectIds == null || !projectIds.Any())
+                {
+                    return new List<ReportDTO>(); // Return an empty list if no projects are associated
+                }
+                if (!Enum.TryParse(riskStatus, true, out RiskStatus status))
+                {
+                    throw new ArgumentException($"Invalid RiskType value: {riskStatus}");
+                }
+
+                // Fetch all risks associated with the given project IDs
+                var risks = await _context.Risks
+                    .Where(r => r.ProjectId.HasValue && projectIds.Contains(r.ProjectId.Value)) // Handle nullable ProjectId
+                    .Where(r => r.RiskStatus == status)
+                    .Select(r => new ReportDTO
+                    {
+
+                        Id = r.Id,
+                        RiskId = r.RiskId,
+                        RiskName = r.RiskName,
+                        Description = r.Description,
+                        RiskType = r.RiskType.ToString(),
+                        Impact = r.Impact,
+                        Mitigation = r.Mitigation,
+                        Contingency = r.Contingency,
+                        OverallRiskRatingBefore = r.OverallRiskRatingBefore,
+                        OverallRiskRatingAfter = r.OverallRiskRatingAfter,
+                        ResponsibleUserId = r.ResponsibleUserId,
+                        ResponsibleUser = r.ResponsibleUser.FullName,
+                        ResidualValue = r.ResidualValue,
+                        PercentageRedution = r.PercentageRedution,
+                        ResidualRisk = r.ResidualRisk.ToString(),
+                        PlannedActionDate = r.PlannedActionDate,
+                        ClosedDate = r.ClosedDate,
+                        RiskResponse = r.RiskResponseData.Name,
+                        RiskStatus = r.RiskStatus.ToString(),
+                        Remarks = r.Remarks,
+                        DepartmentId = r.DepartmentId,
+                        ProjectId = r.ProjectId ?? 0,
+                        DepartmentName = r.Department.DepartmentName,
+                        RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentReportDTO
+                        {
+                            Id = ra.Id,
+                            MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
+                            MatrixImpact = ra.MatrixImpact.AssessmentFactor,
+                            AssessmentBasis = ra.AssessmentBasis.Basis,
+                            Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                            ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
+                            IsMitigated = ra.IsMitigated
+                        }).ToList(),
+                        Email = r.ResponsibleUser.Email,
+                        CreatedBy = r.CreatedBy.FullName,
+                        CreatedAt = r.CreatedAt.ToString(),
+                        UpdatedBy = r.UpdatedBy.FullName,
+                        UpdatedAt = r.UpdatedAt.ToString()
+                    })
+                    .OrderByDescending(r => r.CreatedAt)
+                    .ToListAsync();
+
+                return risks;
             }
 
-            // Fetch all risks associated with the given project IDs
-            var risks = await _context.Risks
-                .Where(r => r.ProjectId.HasValue && projectIds.Contains(r.ProjectId.Value)) // Handle nullable ProjectId
-                .Select(r => new ReportDTO
-                {
-
-                    Id = r.Id,
-                    RiskId = r.RiskId,
-                    RiskName = r.RiskName,
-                    Description = r.Description,
-                    RiskType = r.RiskType.ToString(),
-                    Impact = r.Impact,
-                    Mitigation = r.Mitigation,
-                    Contingency = r.Contingency,
-                    OverallRiskRatingBefore = r.OverallRiskRatingBefore,
-                    OverallRiskRatingAfter = r.OverallRiskRatingAfter,
-                    ResponsibleUserId = r.ResponsibleUserId,
-                    ResponsibleUser = r.ResponsibleUser.FullName,
-                    ResidualValue = r.ResidualValue,
-                    PercentageRedution = r.PercentageRedution,
-                    ResidualRisk = r.ResidualRisk.ToString(),
-                    PlannedActionDate = r.PlannedActionDate,
-                    ClosedDate = r.ClosedDate,
-                    RiskResponse = r.RiskResponseData.Name,
-                    RiskStatus = r.RiskStatus.ToString(),
-                    Remarks = r.Remarks,
-                    DepartmentId = r.DepartmentId,
-                    ProjectId = r.ProjectId ?? 0,
-                    DepartmentName = r.Department.DepartmentName,
-                    RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentReportDTO
-                    {
-                        Id = ra.Id,
-                        MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
-                        MatrixImpact = ra.MatrixImpact.AssessmentFactor,
-                        AssessmentBasis = ra.AssessmentBasis.Basis,
-                        Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
-                        ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
-                        IsMitigated = ra.IsMitigated
-                    }).ToList(),
-                    Email = r.ResponsibleUser.Email,
-                    CreatedBy = r.CreatedBy.FullName,
-                    CreatedAt = r.CreatedAt.ToString(),
-                    UpdatedBy = r.UpdatedBy.FullName,
-                    UpdatedAt = r.UpdatedAt.ToString()
-                })
-                .ToListAsync();
-
-            return risks;
         }
 
-        //public async Task<int> GetLastestRiskId()
-        //{
-        //    return await _context.Risks
-        //    .OrderByDescending(r => r.CreatedAt) 
-        //    .FirstOrDefaultAsync();
-        //}
+
+        
     }
 }
