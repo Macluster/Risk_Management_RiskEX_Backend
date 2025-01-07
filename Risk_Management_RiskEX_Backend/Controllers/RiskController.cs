@@ -246,13 +246,8 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
-<<<<<<< HEAD
 
-
-        [HttpPut("edit/quality/{id}")]
-=======
         [HttpPut("quality/{id}")]
->>>>>>> 512589cd3c768a1a517555a1249c44de6d12cb0c
         public async Task<IActionResult> EditQualityRiskAsync(int id, [FromBody] RiskDTO riskDto)
         {
 
