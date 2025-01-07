@@ -524,10 +524,16 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     {
                         throw new KeyNotFoundException($"Risk with ID {riskId} not found.");
                     }
+
+                    if (existingRisk.RiskStatus == RiskStatus.close)
+                    {
+                        throw new UnauthorizedAccessException($"Risk with ID {riskId} is already closed and cannot be updated.");
+                    }
+
                     // Update Risk properties 
-                    
-                    
-                        existingRisk.ClosedDate = riskUpdateDto.ClosedDate;
+
+
+                    existingRisk.ClosedDate = riskUpdateDto.ClosedDate;
                         existingRisk.RiskStatus = RiskStatus.close; // Set status to closed 
                         existingRisk.RiskResponseId = riskUpdateDto.RiskResponseId;
                         existingRisk.OverallRiskRatingAfter=riskUpdateDto.OverallRiskRatingAfter;
