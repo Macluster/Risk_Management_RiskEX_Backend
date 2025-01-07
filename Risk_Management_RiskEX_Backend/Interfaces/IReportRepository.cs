@@ -8,7 +8,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task<IEnumerable<ReportDTO>> GetAllRisk(String riskStatus);
         Task<IEnumerable<ReportDTO>> GetAllRiskByDepartmentId(int id, String riskStatus);
         Task<IEnumerable<ReportDTO>> GetAllClosedRisk();
-        Task<List<ReportDTO>> GetRisksByUserProjects(List<int> projectIds);
+        Task<List<ReportDTO>> GetRisksByUserProjects(List<int> projectIds, String riskStatus);
         //Task<int>  GetLastestRiskId();
     }
 }
