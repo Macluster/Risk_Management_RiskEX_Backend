@@ -271,17 +271,29 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
         public async Task<bool> UpdateReviewCommentByRiskIdAsync(int riskId, string comments)
         {
-            
-            var review = await _db.Set<RiskAssessment>()
-                                       .Where(ra => ra.RiskId == riskId)
-                                       .Select(ra => ra.Review)
-                                       .FirstOrDefaultAsync();
-
+            var review = await GetReviewByRiskIdAsync(riskId);
             if (review == null)
-                return false; 
+                return false;
+
+            if (review.Count() == 1)
+            {
+                review.ElementAt(0).Comments = comments;
+            }
+            else if(review.Count() == 2)
+            {
+                review.ElementAt(1).Comments = comments;
+            }
+
+            //    var review = await _db.Set<RiskAssessment>()
+            //                           .Where(ra => ra.RiskId == riskId)
+            //                           .Select(ra => ra.Review)
+            //                           .FirstOrDefaultAsync();
+
+            //if (review == null)
+            //    return false; 
 
             
-            review.Comments = comments;
+            //review.Comments = comments;
 
             
             await _db.SaveChangesAsync();
