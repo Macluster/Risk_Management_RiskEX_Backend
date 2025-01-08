@@ -820,9 +820,9 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
-        public async Task<Object> RiskApproachingDeadline(int? id)
+        public async Task<Object> RiskApproachingDeadline(List<int> departmentIds)
         {
-            if (id == null)
+            if (departmentIds.Count()==0)
             {
                 var closestRisks = await _db.Risks
                 .ToListAsync();
@@ -836,7 +836,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             else
             {
                 var closestRisks = await _db.Risks
-                .Where(e => e.DepartmentId == id)
+                .Where(e => departmentIds.Contains(e.DepartmentId))
                 .ToListAsync();
                 var closestRisksSorted = closestRisks
                 .OrderBy(r => Math.Abs((r.PlannedActionDate - DateTime.Now).Ticks))
@@ -848,9 +848,9 @@ namespace Risk_Management_RiskEX_Backend.Repository
             }
         }
 
-        public async Task<object> GetRiskWithHeighestOverallRationg(int? id)
+        public async Task<object> GetRiskWithHeighestOverallRationg(List<int> departmentIds)
         {
-            if (id == null)
+            if (departmentIds.Count()==0)
             {
                 var highestRatedRisk = await _db.Risks.OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
                 var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
@@ -858,16 +858,16 @@ namespace Risk_Management_RiskEX_Backend.Repository
             }
             else
             {
-                var highestRatedRisk = await _db.Risks.Where(e => e.DepartmentId == id).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
+                var highestRatedRisk = await _db.Risks.Where(e => departmentIds.Contains(e.DepartmentId)).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
                 var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
                 return data;
             }
         }
 
-        public async Task<ICollection<OpenRiskCountByTypeDTO>> GetOpenRiskCountByType(int? id)
+        public async Task<ICollection<OpenRiskCountByTypeDTO>> GetOpenRiskCountByType(List<int> departmentIds)
         {
 
-            if (id == null)
+            if (departmentIds.Count()==0)
             {
                 var riskTypeCounts = await _db.Set<Risk>()
                .GroupBy(r => r.RiskType)
@@ -884,7 +884,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
 
                 var riskTypeCounts = await _db.Set<Risk>()
-               .Where(e => e.DepartmentId == id)
+               .Where(e => departmentIds.Contains(e.DepartmentId))
                .GroupBy(r => r.RiskType)
                .Select(g => new OpenRiskCountByTypeDTO
                {
