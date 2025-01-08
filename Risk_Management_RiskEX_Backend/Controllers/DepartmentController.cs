@@ -53,7 +53,7 @@ namespace RiskManagement_Department_API.Controllers
         }
 
 
-        [HttpPut("Department")]
+        [HttpPut]
         public async Task<IActionResult> UpdateDepartment([FromServices] IDepartmentRepository _departmentRepository, [FromBody] DepartmentUpdateDTO departmentDto)
         {
             try
@@ -74,6 +74,24 @@ namespace RiskManagement_Department_API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "An error occurred while adding the department." });
+            }
+        }
+
+        [HttpGet("{departmentName}")]
+        public async Task<IActionResult> GetDepartmentByName(string departmentName)
+        {
+            try
+            {
+                var department = await _departmentRepository.GetDepartmentByName(departmentName);
+                return Ok(new
+                {
+                    name = department.DepartmentName,
+                    departmentCode = department.DepartmentCode
+                });
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
             }
         }
 

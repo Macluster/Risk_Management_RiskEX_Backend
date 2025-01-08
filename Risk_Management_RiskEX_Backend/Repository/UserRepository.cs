@@ -196,7 +196,14 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 .Where(u => u.Department.DepartmentName == departmentName) 
                 .ToListAsync();
         }
-
+        public async Task<List<User>> GetUsersByDepartmentIdAsync(int departmentId)
+        {
+            return await _db.Users
+                .Include(u => u.Department)
+                .Include(u => u.Projects)
+                .Where(u => u.Department.Id == departmentId)
+                .ToListAsync();
+        }
 
         public async Task<List<dynamic>> GetUsersByProjects(int[] projectIds)
         {

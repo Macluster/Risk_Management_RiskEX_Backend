@@ -55,7 +55,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
-        [HttpPut("Project/{id}")]
+        [HttpPut("{id}")]
         [Authorize]
         public async Task<IActionResult> UpdateProject([FromServices] IProjectRepository _projectRepository, [FromBody] ProjectUpdateRequestDTO projectDto,int id)
         {
@@ -74,6 +74,26 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
 
             return StatusCode(500, new { message = "An error occurred while updating the project." });
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProjectById(int id)
+        {
+            try
+            {
+                var project = await _projectRepository.GetProjectById(id);
+                return Ok(new
+                {
+                    id = project.Id,
+                    name = project.Name,
+                    projectCode = project.ProjectCode,
+                    departmentName = project.Department.DepartmentName
+                });
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
 
     }

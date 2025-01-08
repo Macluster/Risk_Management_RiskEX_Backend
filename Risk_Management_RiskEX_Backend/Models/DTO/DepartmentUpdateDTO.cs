@@ -3,7 +3,9 @@
     public class DepartmentUpdateDTO
     {
 
-        public string DepartmentName;
-        public string NewDepartmentName;
+        public string DepartmentName { get; set; }
+        public string NewDepartmentName { get; set; }
+
+        public string NewDepartmentCode { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace Risk_Management_RiskEX_Backend.Models
 {
 
-    public abstract class BaseEntity:TimeStamps
+    public abstract class BaseEntity : TimeStamps
     {
         public int? CreatedById { get; set; }
         [ForeignKey("CreatedById")]
@@ -18,41 +18,41 @@ namespace Risk_Management_RiskEX_Backend.Models
 
 
     public enum RiskType
-        {
-            Quality=1,
-            Security=2,
-            Privacy=3
-           
-        }
+    {
+        Quality = 1,
+        Security = 2,
+        Privacy = 3
 
-        public enum RiskResponses
-        {
-            Accept=1,
-            Mitigate=2,
-            Transfer=3,
-            Avoid=4
-        }
+    }
 
-        public enum RiskStatus
-        {
-            open=1,
-            close=2  
-        }
+    public enum RiskResponses
+    {
+        Accept = 1,
+        Mitigate = 2,
+        Transfer = 3,
+        Avoid = 4
+    }
 
-        public enum ReviewStatus
-        {
+    public enum RiskStatus
+    {
+        open = 1,
+        close = 2
+    }
+
+    public enum ReviewStatus
+    {
         ReviewPending = 1,
         ReviewCompleted = 2,
         ApprovalPending = 3,
         ApprovalCompleted = 4,
-        Rejected=5,
+        Rejected = 5,
         HasValue = 6
-        }
-        public enum ResidualRisk
-            {
-                Low = 1,
-                Medium = 2,
-                High = 3
-            }
+    }
+    public enum ResidualRisk
+    {
+        Low = 1,
+        Medium = 2,
+        High = 3
+    }
 }
 
