@@ -25,13 +25,13 @@ namespace Risk_Management_RiskEX_Backend.Repository
                .Select(e => new
                {
                    actionBy = responsiblePerson,
-                   isReviewed = true,
+                   isReviewed = e.Review.ReviewStatus,
                    date = e.Review.CreatedAt,
                }).FirstOrDefaultAsync();
                   return assessments != null ? assessments : new
                 {
                     actionBy = responsiblePerson,
-                    isReviewed = false,
+                    isReviewed = 1,
                     date ="...",
                 };
             }
@@ -42,13 +42,13 @@ namespace Risk_Management_RiskEX_Backend.Repository
              .Select(e => new
              {
                  actionBy = responsiblePerson,
-                 isReviewed = true,
+                 isReviewed = e.Review.ReviewStatus,
                  date = e.Review.CreatedAt,
              }).FirstOrDefaultAsync();
                 return assessments != null ? assessments : new
                 {
                     actionBy = responsiblePerson,
-                    isReviewed = false,
+                    isReviewed = 1,
                     date = "...",
                 };
             }

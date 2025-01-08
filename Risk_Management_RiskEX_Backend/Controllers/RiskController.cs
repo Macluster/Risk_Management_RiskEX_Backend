@@ -246,6 +246,10 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3db0ddc7daa75d3e4ff759c245fd5288e09fa8a2
 
 
         [HttpPut("edit/quality/{id}")]

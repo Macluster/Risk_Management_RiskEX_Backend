@@ -31,7 +31,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             return await _db.Projects
                             .Where(p => p.DepartmentId == department.Id)
-                            .Select(p => new { p.Id, p.Name })
+                            .Select(p => new { p.Id, p.Name,p.ProjectCode })
                             .ToListAsync();
         }
 
@@ -58,19 +58,13 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     return false;
                 }
 
-                //// Check if user exists
-                //var userExists = await _db.Users
-                //    .AnyAsync(u => u.Id == projectDto.UserId);
-
-                //if (!userExists)
-                //{
-                //    return false;
-                //}
+               
 
                 // Map and set up the project
                 var project = _mapper.Map<Project>(projectDto);
                 project.DepartmentId = department.Id;
                 project.Name = projectDto.ProjectName;
+                project.ProjectCode = projectDto.ProjectCode;
                 project.CreatedAt = DateTime.UtcNow;
                 project.UpdatedAt = DateTime.UtcNow;
 
@@ -85,11 +79,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
             }
         }
 
-        public async Task<bool> UpdateProjectById(ProjectDTO projectDto,int id)
+        public async Task<bool> UpdateProjectById(ProjectUpdateRequestDTO projectDto)
         {
-           var project= await  _db.Projects.FirstOrDefaultAsync(e => e.Id == id);
+           var project= await  _db.Projects.FirstOrDefaultAsync(e => e.Name==projectDto.ProjectName);
 
-            project.Name=projectDto.ProjectName;
+            project.Name=projectDto.NewProjectName;
+            project.ProjectCode = projectDto.ProjectCode;
             await _db.SaveChangesAsync();
 
             return true;
