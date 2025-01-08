@@ -61,10 +61,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
             }
         }
 
-        public async Task<bool> UpdateDepartment(DepartmentDTO departmentDto)
+        public async Task<bool> UpdateDepartment(DepartmentUpdateDTO departmentUpdateDTO)
         {
-            var department= await  _db.Departments.FirstOrDefaultAsync(e=>e.Id==departmentDto.Id);
-            department.DepartmentName=departmentDto.Name;
+            var department= await  _db.Departments.FirstOrDefaultAsync(e=>e.DepartmentName==departmentUpdateDTO.DepartmentName);
+            department.DepartmentName = departmentUpdateDTO.NewDepartmentName;
 
             await _db.SaveChangesAsync();
 

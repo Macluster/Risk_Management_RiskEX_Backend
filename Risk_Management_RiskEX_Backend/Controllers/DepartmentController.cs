@@ -54,11 +54,11 @@ namespace RiskManagement_Department_API.Controllers
 
 
         [HttpPut("Department")]
-        public async Task<IActionResult> UpdateDepartment([FromServices] IDepartmentRepository _departmentRepository, [FromBody] DepartmentDTO departmentDto)
+        public async Task<IActionResult> UpdateDepartment([FromServices] IDepartmentRepository _departmentRepository, [FromBody] DepartmentUpdateDTO departmentDto)
         {
             try
             {
-                if (string.IsNullOrEmpty(departmentDto.Name))
+                if (string.IsNullOrEmpty(departmentDto.DepartmentName))
                 {
                     return BadRequest(new { message = "Department name is required." });
                 }
