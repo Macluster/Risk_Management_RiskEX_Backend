@@ -201,7 +201,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return await _db.Users
                 .Include(u => u.Department)
                 .Include(u => u.Projects)
-                .Where(u => u.Department.Id == departmentId)
+                .Where(u => u.Department.Id == departmentId && u.Email != "admin@gmail.com")
                 .ToListAsync();
         }
 
