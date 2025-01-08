@@ -101,7 +101,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                throw new Exception("An unexpected error occurred while adding risk: " + ex.Message, ex);
+
+               
+              
+
+                // Throw a user-friendly message
+                throw new Exception("An unexpected error occurred while processing your request.Please ensure all mandatory fields are filled. If the issue persists, contact the administrator or Please try again later");
             }
         }
 

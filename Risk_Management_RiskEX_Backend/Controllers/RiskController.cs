@@ -126,8 +126,8 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    message = "An unexpected error occurred. Please try again later.",
-                    details = ex.Message
+                    message = "An unexpected error occurred while processing your request.Please ensure all mandatory fields are filled. If the issue persists, contact the administrator or Please try again later",
+                    //details = ex.Message
                 });
             }
         }
