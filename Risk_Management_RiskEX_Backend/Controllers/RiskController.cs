@@ -246,13 +246,10 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
-<<<<<<< HEAD
 
 
         [HttpPut("edit/quality/{id}")]
-=======
-        [HttpPut("quality/{id}")]
->>>>>>> 512589cd3c768a1a517555a1249c44de6d12cb0c
+
         public async Task<IActionResult> EditQualityRiskAsync(int id, [FromBody] RiskDTO riskDto)
         {
 
@@ -475,6 +472,27 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         {
             var categoryCounts = await _riskRepository.GetRiskCategoryCounts(id);
             return Ok(categoryCounts);
+        }
+
+
+
+
+        [HttpGet("riskid/new/{departmentId}")]
+        public async Task<ActionResult<string>> SetAndGetRiskId(int departmentId)
+        {
+            try
+            {
+                string riskId = await _riskRepository.SetAndGetRiskIdByDepartmentAsync( departmentId);
+                return Ok(new { riskId = riskId });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }
