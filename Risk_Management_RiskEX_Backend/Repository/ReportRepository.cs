@@ -58,7 +58,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             AssessmentBasis = ra.AssessmentBasis.Basis,
                             Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
                             ReviewStatus = ra.Review.ReviewStatus.ToString(),
-                            IsMitigated = ra.IsMitigated
+                            IsMitigated = ra.IsMitigated,
+                            RiskFactor = ra.RiskFactor
 
                         }).ToList(),
                         Email = r.ResponsibleUser.Email,
@@ -120,7 +121,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             AssessmentBasis = ra.AssessmentBasis.Basis,
                             Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
                             ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
-                            IsMitigated = ra.IsMitigated
+                            IsMitigated = ra.IsMitigated,
+                            RiskFactor = ra.RiskFactor
                         }).ToList(),
                         Email = r.ResponsibleUser.Email,
                         CreatedBy = r.CreatedBy.FullName,
@@ -181,7 +183,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             AssessmentBasis = ra.AssessmentBasis.Basis,
                             Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
                             ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
-                            IsMitigated = ra.IsMitigated
+                            IsMitigated = ra.IsMitigated,
+                            RiskFactor = ra.RiskFactor
                         }).ToList(),
                         Email = r.ResponsibleUser.Email,
                         CreatedBy = r.CreatedBy.FullName,
@@ -248,7 +251,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             AssessmentBasis = ra.AssessmentBasis.Basis,
                             Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
                             ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
-                            IsMitigated = ra.IsMitigated
+                            IsMitigated = ra.IsMitigated,
+                            RiskFactor = ra.RiskFactor
                         }).ToList(),
                         Email = r.ResponsibleUser.Email,
                         CreatedBy = r.CreatedBy.FullName,
@@ -301,7 +305,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         AssessmentBasis = ra.AssessmentBasis.Basis,
                         Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
                         ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
-                        IsMitigated = ra.IsMitigated
+                        IsMitigated = ra.IsMitigated,
+                        RiskFactor =ra.RiskFactor
                     }).ToList(),
                     Email = r.ResponsibleUser.Email,
                     CreatedBy = r.CreatedBy.FullName,
@@ -361,7 +366,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             AssessmentBasis = ra.AssessmentBasis.Basis,
                             Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
                             ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
-                            IsMitigated = ra.IsMitigated
+                            IsMitigated = ra.IsMitigated,
+                            RiskFactor = ra.RiskFactor
                         }).ToList(),
                         Email = r.ResponsibleUser.Email,
                         CreatedBy = r.CreatedBy.FullName,
@@ -423,7 +429,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             AssessmentBasis = ra.AssessmentBasis.Basis,
                             Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
                             ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
-                            IsMitigated = ra.IsMitigated
+                            IsMitigated = ra.IsMitigated,
+                            RiskFactor = ra.RiskFactor
                         }).ToList(),
                         Email = r.ResponsibleUser.Email,
                         CreatedBy = r.CreatedBy.FullName,
