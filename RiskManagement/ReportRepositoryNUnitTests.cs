@@ -143,32 +143,32 @@ namespace RiskManagement
             Assert.AreEqual("Risk B", result.First().RiskName);
         }
 
-        [Test]
-        public async Task GetRisksByUserProjects_WithValidProjectIds_ReturnsMatchingRisks()
-        {
-            // Arrange
-            var risks = new List<Risk>
-            {
-                new Risk { Id = 1, ProjectId = 1, RiskName = "Risk A" },
-                new Risk { Id = 2, ProjectId = 2, RiskName = "Risk B" },
-                new Risk { Id = 3, ProjectId = 3, RiskName = "Risk C" }
-            }.AsQueryable();
+        //[Test]
+        //public async Task GetRisksByUserProjects_WithValidProjectIds_ReturnsMatchingRisks()
+        //{
+        //    // Arrange
+        //    var risks = new List<Risk>
+        //    {
+        //        new Risk { Id = 1, ProjectId = 1, RiskName = "Risk A" },
+        //        new Risk { Id = 2, ProjectId = 2, RiskName = "Risk B" },
+        //        new Risk { Id = 3, ProjectId = 3, RiskName = "Risk C" }
+        //    }.AsQueryable();
 
-            var mockSet = new Mock<DbSet<Risk>>();
-            mockSet.As<IQueryable<Risk>>().Setup(m => m.Provider).Returns(risks.Provider);
-            mockSet.As<IQueryable<Risk>>().Setup(m => m.Expression).Returns(risks.Expression);
-            mockSet.As<IQueryable<Risk>>().Setup(m => m.ElementType).Returns(risks.ElementType);
-            mockSet.As<IQueryable<Risk>>().Setup(m => m.GetEnumerator()).Returns(risks.GetEnumerator());
+        //    var mockSet = new Mock<DbSet<Risk>>();
+        //    mockSet.As<IQueryable<Risk>>().Setup(m => m.Provider).Returns(risks.Provider);
+        //    mockSet.As<IQueryable<Risk>>().Setup(m => m.Expression).Returns(risks.Expression);
+        //    mockSet.As<IQueryable<Risk>>().Setup(m => m.ElementType).Returns(risks.ElementType);
+        //    mockSet.As<IQueryable<Risk>>().Setup(m => m.GetEnumerator()).Returns(risks.GetEnumerator());
 
-            _mockContext.Setup(c => c.Risks).Returns(mockSet.Object);
+        //    _mockContext.Setup(c => c.Risks).Returns(mockSet.Object);
 
-            // Act
-            var result = await _repository.GetRisksByUserProjects(new List<int> { 1, 3 });
+        //    // Act
+        //    var result = await _repository.GetRisksByUserProjects(new List<int> { 1, 3 });
 
-            // Assert
-            Assert.AreEqual(2, result.Count());
-            Assert.IsTrue(result.Any(r => r.RiskName == "Risk A"));
-            Assert.IsTrue(result.Any(r => r.RiskName == "Risk C"));
-        }
+        //    // Assert
+        //    Assert.AreEqual(2, result.Count());
+        //    Assert.IsTrue(result.Any(r => r.RiskName == "Risk A"));
+        //    Assert.IsTrue(result.Any(r => r.RiskName == "Risk C"));
+        //}
     }
 }

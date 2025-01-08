@@ -10,6 +10,8 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
 
         Task<bool> UpdateProjectById(ProjectUpdateRequestDTO projectDto);
 
+        Task<Project> GetProjectById(int id);
+
 
     }
 }
