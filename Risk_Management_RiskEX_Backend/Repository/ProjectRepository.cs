@@ -79,11 +79,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
             }
         }
 
-        public async Task<bool> UpdateProjectById(ProjectDTO projectDto,int id)
+        public async Task<bool> UpdateProjectById(ProjectUpdateRequestDTO projectDto)
         {
-           var project= await  _db.Projects.FirstOrDefaultAsync(e => e.Id == id);
+           var project= await  _db.Projects.FirstOrDefaultAsync(e => e.Name==projectDto.ProjectName);
 
-            project.Name=projectDto.ProjectName;
+            project.Name=projectDto.NewProjectName;
+            project.ProjectCode = projectDto.ProjectCode;
             await _db.SaveChangesAsync();
 
             return true;

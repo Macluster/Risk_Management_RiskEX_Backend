@@ -36,6 +36,8 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task<ICollection<OpenRiskCountByTypeDTO>> GetOpenRiskCountByType(int? id);
         Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCounts(int?id);
 
+        Task<string> SetAndGetRiskIdByDepartmentAsync(int departmentId);
+
 
 
     }

@@ -57,7 +57,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
         [HttpPut("Project/{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateProject([FromServices] IProjectRepository _projectRepository, [FromBody] ProjectDTO projectDto,int id)
+        public async Task<IActionResult> UpdateProject([FromServices] IProjectRepository _projectRepository, [FromBody] ProjectUpdateRequestDTO projectDto,int id)
         {
             if (string.IsNullOrEmpty(projectDto.ProjectName))
             {
@@ -66,7 +66,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
           
 
-            var result = await _projectRepository.UpdateProjectById(projectDto,id);
+            var result = await _projectRepository.UpdateProjectById(projectDto);
 
             if (result)
             {
