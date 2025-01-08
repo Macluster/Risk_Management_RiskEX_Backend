@@ -801,8 +801,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 r.OverallRiskRatingBefore,
                 RiskCategory = r.RiskType == RiskType.Quality
                     ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
-                       r.OverallRiskRatingBefore >= 10 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
-                       r.OverallRiskRatingBefore >= 40 ? "Critical" : null)
+                       r.OverallRiskRatingBefore > 8 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
+                       r.OverallRiskRatingBefore >= 32 ? "Critical" : null)
                     : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
                     ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
                        r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
