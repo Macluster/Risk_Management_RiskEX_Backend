@@ -36,6 +36,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 .Where(r => r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending)
                 .SelectMany(r => r.RiskAssessments.Select(ra => new
                 {
+                    Id =ra.Risk.Id,
                     RiskId = ra.Risk.RiskId,
                     RiskName = ra.Risk.RiskName,
                     RiskDepartment = ra.Risk.Department.DepartmentName,
@@ -47,11 +48,14 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     ReviewerName = r.UserId.HasValue ? r.User.FullName : r.ExternalReviewer.FullName,
                     ReviewerDepartment = r.UserId.HasValue ? r.User.Department.DepartmentName : r.ExternalReviewer.Department.DepartmentName
                 }))
+                 .GroupBy(r => r.Id) // Group by the risk Id to ensure distinct records
+                .Select(g => g.First()) // Select the first record from each group
                 .ToListAsync();
 
             // After fetching the data, convert enums to strings in memory
             var riskDetails = risks.Select(r => new RiskDetailsDTO
             {
+                Id = r.Id,
                 RiskId = r.RiskId,
                 RiskName = r.RiskName,
                 RiskDepartment = r.RiskDepartment,
