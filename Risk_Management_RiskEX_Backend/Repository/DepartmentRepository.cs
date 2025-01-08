@@ -47,6 +47,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 // Map the DTO to the entity
                 var department = _mapper.Map<Department>(departmentDto);
                 department.DepartmentName = departmentDto.Name;
+                department.DepartmentCode = departmentDto.DepartmentCode;
 
                 // Add the entity to the database
                 await _db.Departments.AddAsync(department);
