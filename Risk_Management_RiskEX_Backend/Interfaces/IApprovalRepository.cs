@@ -7,7 +7,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
     {
         Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId);
         Task<IEnumerable<RiskDetailsDTO>> GetRiskDetailsToReviewAsync();
-        Task<Review> GetReviewByRiskIdAsync(int riskId);
+        Task<IEnumerable<Review>> GetReviewByRiskIdAsync(int riskId);
         Task<bool> UpdateReviewStatusAsync(int riskId, string approvalStatus);
         Task<bool> UpdateReviewCommentByRiskIdAsync(int riskId, string comments);
 
