@@ -65,12 +65,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
         public async Task<List<ReviewerDTO>> GetAllReviewersAsync([FromServices] IHttpContextAccessor httpContextAccessor)
         {
             // Get the current user's role from the token
-            var currentUserRole = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role)?.Value;
+            //var currentUserRole = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role)?.Value;
 
-            if (currentUserRole?.ToLower() == "admin")
-            {
-                return new List<ReviewerDTO>();  
-            }
+            //if (currentUserRole?.ToLower() == "admin")
+            //{
+            //    return new List<ReviewerDTO>();  
+            //}
 
             var users = await _db.Users
                 .Where(u => u.IsActive

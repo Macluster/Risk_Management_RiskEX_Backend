@@ -739,13 +739,16 @@ namespace Risk_Management_RiskEX_Backend.Repository
                   RiskCategory = r.RiskType == RiskType.Quality
                       ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
                          r.OverallRiskRatingBefore >= 10 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
-                         r.OverallRiskRatingBefore >= 40 ? "Critical" : "Uncategorized")
+                         r.OverallRiskRatingBefore >= 40 ? "Critical" : null)
                       : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
                       ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
                          r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
-                         r.OverallRiskRatingBefore >= 70 ? "Critical" : "Uncategorized")
-                      : "Uncategorized"
+                         r.OverallRiskRatingBefore >= 70 ? "Critical" :null)
+                      :null
               })
+               .Where(r => r.RiskCategory != null)  // Exclude any risk that doesn't fall into the 3 categories
+               .Where(r => r.RiskCategory == "Low" || r.RiskCategory == "Moderate" || r.RiskCategory == "Critical")  // Only include Low, Moderate, or Critical categories
+
               .GroupBy(r => r.RiskCategory)
               .Select(g => new RiskCategoryCountDTO
               {
@@ -774,6 +777,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
                          r.OverallRiskRatingBefore >= 70 ? "Critical" : "Uncategorized")
                       : "Uncategorized"
                       })
+
+                      .Where(r => r.RiskCategory != null)  // Exclude any risk that doesn't fall into the 3 categories
+                      .Where(r => r.RiskCategory == "Low" || r.RiskCategory == "Moderate" || r.RiskCategory == "Critical")  // Only include Low, Moderate, or Critical categories
+
               .GroupBy(r => r.RiskCategory)
               .Select(g => new RiskCategoryCountDTO
               {
@@ -781,9 +788,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
                   Count = g.Count()
               })
               .ToListAsync();
-                return riskCategoryCounts;
+               return riskCategoryCounts;              
             }
-          
+           
+
         }
 
 
@@ -799,12 +807,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 RiskCategory = r.RiskType == RiskType.Quality
                     ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
                        r.OverallRiskRatingBefore >= 10 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
-                       r.OverallRiskRatingBefore >= 40 ? "Critical" : "Uncategorized")
+                       r.OverallRiskRatingBefore >= 40 ? "Critical" : null)
                     : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
                     ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
                        r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
-                       r.OverallRiskRatingBefore >= 70 ? "Critical" : "Uncategorized")
-                    : "Uncategorized"
+                       r.OverallRiskRatingBefore >= 70 ? "Critical" : null)
+                    : null
             })
                 .GroupBy(r => new { r.DepartmentId, r.RiskCategory })
                 .Select(g => new RiskCategoryCountDTO

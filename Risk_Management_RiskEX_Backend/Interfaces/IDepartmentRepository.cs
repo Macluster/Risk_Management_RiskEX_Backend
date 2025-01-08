@@ -10,5 +10,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
 
         Task<bool> UpdateDepartment(DepartmentUpdateDTO departmentUpdateDTO);
 
+        Task<Department> GetDepartmentByName(string departmentName);
+
     }
 }

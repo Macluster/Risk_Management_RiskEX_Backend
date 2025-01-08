@@ -14,6 +14,8 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         //Task<IEnumerable<object>> GetUsersByDepartmentNameAsync(string departmentName);
         Task<List<User>> GetUsersByDepartmentNameAsync(string departmentName);
 
+        Task<List<User>> GetUsersByDepartmentIdAsync(int departmentId);
+
         Task<List<dynamic>> GetUsersByProjects(int[] projectIds);
 
 

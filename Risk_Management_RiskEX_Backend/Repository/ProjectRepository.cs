@@ -84,11 +84,24 @@ namespace Risk_Management_RiskEX_Backend.Repository
            var project= await  _db.Projects.FirstOrDefaultAsync(e => e.Name==projectDto.ProjectName);
 
             project.Name=projectDto.NewProjectName;
-            project.ProjectCode = projectDto.ProjectCode;
+            project.ProjectCode = projectDto.NewProjectCode;
             await _db.SaveChangesAsync();
 
             return true;
 
+        }
+        public async Task<Project> GetProjectById(int id)
+        {
+            var project = await _db.Projects
+                .Include(p => p.Department)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (project == null)
+            {
+                throw new Exception("Project does not exist.");
+            }
+
+            return project;
         }
     }
 }

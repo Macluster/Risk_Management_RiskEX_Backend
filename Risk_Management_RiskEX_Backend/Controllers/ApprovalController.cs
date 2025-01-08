@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models.DTO;
-using Risk_Management_RiskEX_Backend.Repository;
 
 namespace Risk_Management_RiskEX_Backend.Controllers
 {
