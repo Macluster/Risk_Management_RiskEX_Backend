@@ -18,9 +18,14 @@ namespace Risk_Management_RiskEX_Backend.Models
         public int DepartmentId { get; set; }
         public bool IsActive { get; set; }
 
+        public int? projectId { get; set; }
 
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
+
+        [ForeignKey("projectId")]
+        public virtual Project Project { get; set; }
+
 
 
 

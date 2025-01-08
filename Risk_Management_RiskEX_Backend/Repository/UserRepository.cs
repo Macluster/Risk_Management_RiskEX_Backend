@@ -197,6 +197,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 .ToListAsync();
         }
 
+
         public async Task<List<dynamic>> GetUsersByProjects(int[] projectIds)
         {
             var users = await _db.Users
@@ -217,6 +218,28 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
 
+        public async Task<object> GetNameAndEmailOfAUserbyRiskid(int riskId)
+        {
+            if (riskId == null)
+            {
+                return new List<GetUserDTO>();
+            }
+
+            var user = await _db.Risks
+                .Where(r => r.Id == riskId)
+                .Include(r => r.CreatedBy)
+                .Select(r => new 
+                {
+                    Id = r.CreatedBy.Id,
+                    Name = r.CreatedBy.FullName,
+                    Email = r.CreatedBy.Email,
+
+                })
+                .ToListAsync();
+
+            return user;
+
+        }
     }
 }
 

@@ -54,5 +54,27 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             return StatusCode(500, new { message = "An error occurred while adding the project." });
         }
 
+
+        [HttpPut("Project/{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateProject([FromServices] IProjectRepository _projectRepository, [FromBody] ProjectUpdateRequestDTO projectDto,int id)
+        {
+            if (string.IsNullOrEmpty(projectDto.ProjectName))
+            {
+                return BadRequest(new { message = "Project name is required." });
+            }
+
+          
+
+            var result = await _projectRepository.UpdateProjectById(projectDto);
+
+            if (result)
+            {
+                return Ok(new { message = "Project Updated successfully." });
+            }
+
+            return StatusCode(500, new { message = "An error occurred while updating the project." });
+        }
+
     }
 }

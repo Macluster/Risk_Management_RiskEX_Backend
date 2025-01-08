@@ -8,6 +8,8 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task<IEnumerable<object>> GetProjectsByDepartment(string departmentName);
         Task<bool> AddProjectToDepartment(ProjectDTO projectDto);
 
+        Task<bool> UpdateProjectById(ProjectUpdateRequestDTO projectDto);
+
 
     }
 }

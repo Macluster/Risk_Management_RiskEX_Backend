@@ -64,14 +64,14 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
         }
         [HttpGet("projectrisks")]
-        public async Task<IActionResult> GetRisksForUser([FromQuery] List<int> projectIds)
+        public async Task<IActionResult> GetRisksForUser([FromQuery] List<int> projectIds, string? riskStatus = null)
         {
             if (projectIds == null || !projectIds.Any())
             {
                 return NotFound("No projects associated with this user.");
             }
 
-            var risks = await _reportService.GetRisksByUserProjects(projectIds);
+            var risks = await _reportService.GetRisksByUserProjects(projectIds, riskStatus);
             return Ok(risks);
         }
 

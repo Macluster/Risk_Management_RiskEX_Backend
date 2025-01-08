@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models.DTO;
+using Risk_Management_RiskEX_Backend.Services;
 
 namespace Risk_Management_RiskEX_Backend.Controllers
 {
@@ -17,7 +18,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
         [HttpPost("ChangePassword/{userId}")]
-        public async Task<IActionResult> ChangePassword(int userId, [FromBody] ChangePasswordRequestDTO request)
+        public async Task<IActionResult> ChangePassword(int userId, [FromBody] ChangePasswordRequestDTO request, PasswordService _passwordService)
         {
             // Validate request
             if (string.IsNullOrEmpty(request.CurrentPassword) || string.IsNullOrEmpty(request.NewPassword) || string.IsNullOrEmpty(request.ConfirmPassword))
@@ -37,14 +38,15 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return NotFound(new { message = "User not found." });
             }
 
+            bool isPasswordVerified = _passwordService.VerifyPassword(user.Password, request.CurrentPassword);
             // Check if the current password matches the stored password (hashing recommended)
-            if (user.Password != request.CurrentPassword) // Replace this with password hashing logic
+            if (!isPasswordVerified) // Replace this with password hashing logic
             {
                 return BadRequest(new { message = "Incorrect current password." });
             }
 
             // Update the password
-            user.Password = request.NewPassword; // Replace this with password hashing logic
+            user.Password=_passwordService.HashPassword(request.NewPassword) ; // Replace this with password hashing logic
             await _accountRepository.UpdateUserPasswordAsync(user);
 
             return Ok(new { message = "Password changed successfully." });

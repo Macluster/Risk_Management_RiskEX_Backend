@@ -2,6 +2,7 @@
 {
     public class RiskDetailsDTO
     {
+        public int Id { get; set; }
         public string RiskId { get; set; }
         public string RiskName { get; set; }
         public string RiskDepartment { get; set; }
