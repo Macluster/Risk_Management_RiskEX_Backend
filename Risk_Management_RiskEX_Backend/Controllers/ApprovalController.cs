@@ -36,6 +36,23 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             return Ok(risks);
         }
 
+        [HttpGet("reiviews{riskId}")]
+        public async Task<ActionResult<IEnumerable<ApprovalDTO>>> GetReviewByRiskIdAsync(int riskId)
+        {
+            
+
+            // Fetch risks using the repository
+            var risks = await _approvalRepository.GetReviewByRiskIdAsync(riskId);
+
+            if (risks == null || !risks.Any())
+            {
+                return NotFound("No risks found for the provided reviewer ID.");
+            }
+
+            // Return the risks in ApprovalDTO format
+            return Ok(risks);
+        }
+
         [HttpGet("RisksToBeReviewed")]
         public async Task<IActionResult> GetRiskDetails()
         {
@@ -111,30 +128,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
-        //[HttpPut("update-review/{riskId}")]
-        //public async Task<IActionResult> UpdateReviewStatusAndComments(int riskId, [FromBody] ReviewUpdateDTO updateRequest)
-        //{
-        //    if (updateRequest == null)
-        //    {
-        //        return BadRequest("Invalid data.");
-        //    }
 
-        //    // Call the method to update the review status
-        //    bool statusUpdated = await _approvalRepository.UpdateReviewStatusAsync(riskId, updateRequest.ApprovalStatus);
-        //    if (!statusUpdated)
-        //    {
-        //        return NotFound("Risk or review not found for status update.");
-        //    }
-
-        //    // Call the method to update the review comment
-        //    bool commentUpdated = await _approvalRepository.UpdateReviewCommentByRiskIdAsync(riskId, updateRequest.Comments);
-        //    if (!commentUpdated)
-        //    {
-        //        return NotFound("Risk or review not found for comment update.");
-        //    }
-
-        //    return Ok("Review status and comments updated successfully.");
-        //}
 
         [HttpPut("update-review/{riskId}")]
         public async Task<IActionResult> UpdateReviewStatusAndComments(int riskId, [FromBody] ReviewUpdateDTO updateRequest)

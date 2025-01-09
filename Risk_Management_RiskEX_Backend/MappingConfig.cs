@@ -132,6 +132,7 @@ namespace Risk_Management_RiskEX_Backend
             CreateMap<ExternalReviewerDTO, ExternalReviewer>().ReverseMap();
             CreateMap< AssigneeResponseDTO,User>().ReverseMap();
             CreateMap<RiskForApprovalDTO, Risk>().ReverseMap();
+            CreateMap<GetAllRiskAssignedDTO, Risk>().ReverseMap();
             CreateMap<RiskMinimalInfoDTO, Risk>().ReverseMap();
 
 
