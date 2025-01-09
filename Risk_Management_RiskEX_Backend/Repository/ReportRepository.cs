@@ -53,7 +53,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
                             MatrixImpact = ra.MatrixImpact.AssessmentFactor,
                             AssessmentBasis = ra.AssessmentBasis.Basis,
-                            Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                            Reviewer = ra.Review.User.FullName != null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
                             ReviewStatus = ra.Review.ReviewStatus.ToString(),
                             IsMitigated = ra.IsMitigated,
                             RiskFactor = ra.RiskFactor
@@ -111,7 +111,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
                             MatrixImpact = ra.MatrixImpact.AssessmentFactor,
                             AssessmentBasis = ra.AssessmentBasis.Basis,
-                            Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                            Reviewer = ra.Review.User.FullName != null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
                             ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
                             IsMitigated = ra.IsMitigated,
                             RiskFactor = ra.RiskFactor
@@ -173,7 +173,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
                             MatrixImpact = ra.MatrixImpact.AssessmentFactor,
                             AssessmentBasis = ra.AssessmentBasis.Basis,
-                            Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                            Reviewer = ra.Review.User.FullName != null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
                             ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
                             IsMitigated = ra.IsMitigated,
                             RiskFactor = ra.RiskFactor
@@ -236,7 +236,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
                             MatrixImpact = ra.MatrixImpact.AssessmentFactor,
                             AssessmentBasis = ra.AssessmentBasis.Basis,
-                            Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                            Reviewer = ra.Review.User.FullName != null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
                             ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
                             IsMitigated = ra.IsMitigated,
                             RiskFactor = ra.RiskFactor
@@ -290,7 +290,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
                         MatrixImpact = ra.MatrixImpact.AssessmentFactor,
                         AssessmentBasis = ra.AssessmentBasis.Basis,
-                        Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                        Reviewer = ra.Review.User.FullName != null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
                         ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
                         IsMitigated = ra.IsMitigated,
                         RiskFactor =ra.RiskFactor
@@ -350,7 +350,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
                             MatrixImpact = ra.MatrixImpact.AssessmentFactor,
                             AssessmentBasis = ra.AssessmentBasis.Basis,
-                            Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                            Reviewer = ra.Review.User.FullName != null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
                             ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
                             IsMitigated = ra.IsMitigated,
                             RiskFactor = ra.RiskFactor
@@ -412,7 +412,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
                             MatrixImpact = ra.MatrixImpact.AssessmentFactor,
                             AssessmentBasis = ra.AssessmentBasis.Basis,
-                            Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                            Reviewer = ra.Review.User.FullName != null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
                             ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
                             IsMitigated = ra.IsMitigated,
                             RiskFactor = ra.RiskFactor
