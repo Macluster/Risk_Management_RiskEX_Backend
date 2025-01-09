@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Risk_Management_RiskEX_Backend.Interfaces;
-using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Models.DTO;
-using Risk_Management_RiskEX_Backend.Repository;
 
 namespace Risk_Management_RiskEX_Backend.Controllers
 {
-    // ReportController.cs
+
     [ApiController]
     [Route("api/[controller]")]
     public class ReportController : ControllerBase
@@ -28,7 +26,6 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
             catch (Exception ex)
             {
-                //return StatusCode(500, $"Internal server error: {ex.Message}");
                 return StatusCode(500, $"Internal server error: {ex.InnerException?.Message ?? ex.Message}");
             }
         }
@@ -43,7 +40,6 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
             catch (Exception ex)
             {
-                //return StatusCode(500, $"Internal server error: {ex.Message}");
                 return StatusCode(500, $"Internal server error: {ex.InnerException?.Message ?? ex.Message}");
             }
         }
@@ -59,7 +55,6 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
             catch (Exception ex)
             {
-                //return StatusCode(500, $"Internal server error: {ex.Message}");
                 return StatusCode(500, $"Internal server error: {ex.InnerException?.Message ?? ex.Message}");
             }
         }
