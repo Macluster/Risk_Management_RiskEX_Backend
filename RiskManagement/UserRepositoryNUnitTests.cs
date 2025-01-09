@@ -134,7 +134,7 @@ namespace RiskManagement
                 FullName = "New User",
                 Email = "new@test.com",
                 DepartmentName = "Non-Existent Department",
-                ProjectNames = new List<string> { "Test Project" }
+                ProjectIds = new List<int> { 1 }
             };
 
             // Act
@@ -154,7 +154,7 @@ namespace RiskManagement
                 FullName = "New User",
                 Email = "new@test.com",
                 DepartmentName = department.DepartmentName,
-                ProjectNames = new List<string> { "Non-Existent Project" }
+                ProjectIds = new List<int> { 1 }
             };
 
             // Act

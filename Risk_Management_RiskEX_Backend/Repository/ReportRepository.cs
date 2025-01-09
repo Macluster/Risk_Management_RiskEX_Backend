@@ -326,12 +326,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
                 if (projectIds == null || !projectIds.Any())
                 {
-                    return new List<ReportDTO>(); // Return an empty list if no projects are associated
+                    return new List<ReportDTO>(); 
                 }
 
                 // Fetch all risks associated with the given project IDs
                 var risks = await _context.Risks
-                    .Where(r => r.ProjectId.HasValue && projectIds.Contains(r.ProjectId.Value)) // Handle nullable ProjectId
+                    .Where(r => r.ProjectId.HasValue && projectIds.Contains(r.ProjectId.Value)) 
                     .Select(r => new ReportDTO
                     {
 

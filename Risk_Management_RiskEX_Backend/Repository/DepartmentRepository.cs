@@ -58,7 +58,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
                 // Log the exception (consider logging to a logging framework in production)
                 Console.WriteLine($"Error adding department: {ex.Message}");
-                throw; // Rethrow the exception to allow the controller or calling method to handle it
+                throw;
             }
         }
 
