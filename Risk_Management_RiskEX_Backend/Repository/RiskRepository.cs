@@ -222,6 +222,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         ReviewStatus = ra.Review.ReviewStatus.ToString(),
                         Comments = ra.Review.Comments,
                         ReviewerName = ra.Review.ExternalReviewer == null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
+
                     } : null,
                     AssessmentBasis = ra.AssessmentBasis != null ? new AssessmentBasisResponseDTO { Id = ra.AssessmentBasis.Id, Basis = ra.AssessmentBasis.Basis } : null,
                     RiskFactor = ra.RiskFactor,
