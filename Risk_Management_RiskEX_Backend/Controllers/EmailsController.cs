@@ -47,6 +47,8 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             await emailService.SendEmail(receptor, subject, body);
             return Ok();
         }
+
+
         //[HttpPost("send-assignment-email")]
         //public async Task<IActionResult> SendAssignmentEmail(int riskId)
         //{
