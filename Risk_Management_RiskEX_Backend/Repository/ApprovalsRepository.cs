@@ -17,12 +17,26 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<IEnumerable<Review>> GetReviewByRiskIdAsync(int riskId)
         {
+            // Fetch the risk with its assessments and reviews
             var risk = await _db.Risks
                 .Include(r => r.RiskAssessments)
                 .ThenInclude(ra => ra.Review)
                 .FirstOrDefaultAsync(r => r.Id == riskId);
 
-            return risk?.RiskAssessments?.Select(ra => ra.Review).ToList();
+            if (risk == null || risk.RiskAssessments == null)
+            {
+                return Enumerable.Empty<Review>();
+            }
+
+            // Select distinct reviews based on Review.Id
+            var distinctReviews = risk.RiskAssessments
+                .Where(ra => ra.Review != null) // Ensure Review is not null
+                .Select(ra => ra.Review)
+                .GroupBy(review => review.Id)
+                .Select(group => group.First())
+                .ToList();
+
+            return distinctReviews;
         }
 
         public async Task<IEnumerable<RiskDetailsDTO>> GetRiskDetailsToReviewAsync()
@@ -271,17 +285,29 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
         public async Task<bool> UpdateReviewCommentByRiskIdAsync(int riskId, string comments)
         {
-            
-            var review = await _db.Set<RiskAssessment>()
-                                       .Where(ra => ra.RiskId == riskId)
-                                       .Select(ra => ra.Review)
-                                       .FirstOrDefaultAsync();
-
+            var review = await GetReviewByRiskIdAsync(riskId);
             if (review == null)
-                return false; 
+                return false;
+
+            if (review.Count() == 1)
+            {
+                review.ElementAt(0).Comments = comments;
+            }
+            else if(review.Count() == 2)
+            {
+                review.ElementAt(1).Comments = comments;
+            }
+
+            //    var review = await _db.Set<RiskAssessment>()
+            //                           .Where(ra => ra.RiskId == riskId)
+            //                           .Select(ra => ra.Review)
+            //                           .FirstOrDefaultAsync();
+
+            //if (review == null)
+            //    return false; 
 
             
-            review.Comments = comments;
+            //review.Comments = comments;
 
             
             await _db.SaveChangesAsync();
