@@ -317,11 +317,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 }
 
                 var risks = await _context.Risks
-<<<<<<< HEAD
                     .Where(r => r.ProjectId.HasValue && projectIds.Contains(r.ProjectId.Value)) 
-=======
-                    .Where(r => r.ProjectId.HasValue && projectIds.Contains(r.ProjectId.Value))
->>>>>>> 11e3266f68f345f6b1e69dc794bbfb4aa7eb3a7b
+
                     .Select(r => new ReportDTO
                     {
 
