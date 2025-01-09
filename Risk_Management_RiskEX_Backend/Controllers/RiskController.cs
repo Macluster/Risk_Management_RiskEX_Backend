@@ -444,26 +444,51 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
         }
 
-        [HttpGet("GetRiskApproachingDeadline")]
-        public async Task<IActionResult> RiskApproachingDeadline(int? id)
+
+        [HttpGet("GetAllRisksAssigned")]
+        public async Task<IActionResult> GetAllRisksAssigned()
         {
 
-            var risks = await _riskRepository.RiskApproachingDeadline(id);
+
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+
+            try
+            {
+               
+
+                var risks = await _riskRepository.GetAllRiskAssigned();
+                    return Ok(risks);
+              
+            }
+            catch (Exception e)
+            {
+                return Ok("No user with the given Id");
+            }
+
+
+        }
+
+        [HttpGet("GetRiskApproachingDeadline")]
+        public async Task<IActionResult> RiskApproachingDeadline([FromQuery] List<int> departmentIds)
+        {
+
+            var risks = await _riskRepository.RiskApproachingDeadline(departmentIds);
             return Ok(risks);
         }
 
         [HttpGet("GetRiskWithHeighestOverallRationg")]
-        public async Task<IActionResult> GetRiskWithHeighestOverallRationg(int? id)
+        public async Task<IActionResult> GetRiskWithHeighestOverallRationg([FromQuery] List<int> departmentIds)
         {
 
-            var risks = await _riskRepository.GetRiskWithHeighestOverallRationg(id);
+            var risks = await _riskRepository.GetRiskWithHeighestOverallRationg(departmentIds);
             return Ok(risks);
         }
 
         [HttpGet("CountOfRiskType(Open)")]
-        public async Task<IActionResult> GetOpenRiskCountByType(int? id)
+        public async Task<IActionResult> GetOpenRiskCountByType([FromQuery] List<int> departmentIds)
         {
-            var riskTypeCounts = await _riskRepository.GetOpenRiskCountByType(id);
+            var riskTypeCounts = await _riskRepository.GetOpenRiskCountByType(departmentIds);
             return Ok(riskTypeCounts);
 
         }
