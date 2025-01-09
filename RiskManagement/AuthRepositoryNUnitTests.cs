@@ -1,25 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Risk_Management_RiskEX_Backend.Data;
-using Risk_Management_RiskEX_Backend.Models.DTO;
 using Risk_Management_RiskEX_Backend.Models;
+using Risk_Management_RiskEX_Backend.Models.DTO;
 using Risk_Management_RiskEX_Backend.Repository;
 using Risk_Management_RiskEX_Backend.Services;
-using Microsoft.AspNetCore.Http;
-using DotNetEnv;
 
 namespace RiskManagement
 {
     [TestFixture]
-
-    public class AuthRepositoryNUnitTests
+    public class AuthRepositoryTests
     {
         private AuthRepository _authRepository;
         private ApplicationDBContext _dbContext;
@@ -27,176 +22,221 @@ namespace RiskManagement
         private IMapper _mapper;
         private ILogger<AuthRepository> _logger;
         private IConfiguration _configuration;
+        private const string TEST_SECRET_KEY = "your_test_secret_key_that_is_at_least_32_characters_long";
+
+        [OneTimeSetUp]
+        public void OneTimeSetup()
+        {
+            Environment.SetEnvironmentVariable("API_SECRET", TEST_SECRET_KEY);
+        }
 
         [SetUp]
         public void Setup()
         {
-            // Load environment variables
-            DotNetEnv.Env.Load();
-
-            // Retrieve API_SECRET from environment variables
-
-            var secretKey = Environment.GetEnvironmentVariable("API_SECRET");
-            if (string.IsNullOrEmpty(secretKey))
-            {
-                throw new InvalidOperationException("API_SECRET is not set in the environment variables.");
-            }
-
-            // Set up in-memory database
             var options = new DbContextOptionsBuilder<ApplicationDBContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
 
-            var httpContextAccessor = new HttpContextAccessor();
+            _dbContext = new ApplicationDBContext(options, new HttpContextAccessor());
 
-            _dbContext = new ApplicationDBContext(options, httpContextAccessor);
-
-            // Set up AutoMapper
-            var config = new MapperConfiguration(cfg => {
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
                 cfg.CreateMap<User, UsersDTO>();
             });
-            _mapper = config.CreateMapper();
+            _mapper = mapperConfig.CreateMapper();
 
-            // Set up logger
             var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
             _logger = loggerFactory.CreateLogger<AuthRepository>();
 
-            // Set up configuration
             var inMemorySettings = new Dictionary<string, string>
             {
-                { "Jwt:Secret", secretKey }
+                {"JWT:Secret", TEST_SECRET_KEY}
             };
             _configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(inMemorySettings)
                 .Build();
 
-            // Set up the password service
             _passwordService = new PasswordService();
-
-            // Initialize repository
             _authRepository = new AuthRepository(_dbContext, _mapper, _logger, _configuration);
 
-            // Seed the database
-            SeedDatabase();
+            SeedTestData();
         }
 
-        private void SeedDatabase()
+        private void SeedTestData()
         {
-            var hashedPassword = _passwordService.HashPassword("Password123!");
+            var hashedPassword = _passwordService.HashPassword("TestPassword123!");
 
-            _dbContext.Users.AddRange(
+            var adminDepartment = new Department { Id = 1, DepartmentName = "AdminDept" };
+            var userDepartment = new Department { Id = 2, DepartmentName = "EMT" };
+            var regularDepartment = new Department { Id = 3, DepartmentName = "Regular" };
+
+            _dbContext.Departments.AddRange(adminDepartment, userDepartment, regularDepartment);
+
+            var project1 = new Project { Id = 1, Name = "Project1", DepartmentId = 1 };
+            var project2 = new Project { Id = 2, Name = "Project2", DepartmentId = 2 };
+            _dbContext.Projects.AddRange(project1, project2);
+
+            var users = new List<User>
+            {
                 new User
                 {
                     Id = 1,
                     Email = "admin@gmail.com",
                     Password = hashedPassword,
-                    IsActive = true,
                     FullName = "Admin User",
-                    Department = new Department { Id = 1, DepartmentName = "AdminDept" },
-                    Projects = new List<Project> { new Project { Id = 1, Name = "Project1" } }
+                    IsActive = true,
+                    DepartmentId = adminDepartment.Id,
+                    Department = adminDepartment
                 },
                 new User
                 {
                     Id = 2,
-                    Email = "user@gmail.com",
+                    Email = "emt@gmail.com",
                     Password = hashedPassword,
+                    FullName = "EMT User",
                     IsActive = true,
-                    FullName = "Normal User",
-                    Department = new Department { Id = 2, DepartmentName = "UserDept" },
-                    Projects = new List<Project> { new Project { Id = 2, Name = "Project2" } }
+                    DepartmentId = userDepartment.Id,
+                    Department = userDepartment,
+                    Projects = new List<Project> { project1 }
+                },
+                new User
+                {
+                    Id = 3,
+                    Email = "inactive@gmail.com",
+                    Password = hashedPassword,
+                    FullName = "Inactive User",
+                    IsActive = false,
+                    DepartmentId = regularDepartment.Id,
+                    Department = regularDepartment
                 }
-            );
+            };
+
+            _dbContext.Users.AddRange(users);
             _dbContext.SaveChanges();
         }
 
-        [Test]
-        public async Task LoginUser_WithValidCredentials_ShouldReturnToken()
+        private IEnumerable<Claim> DecodeToken(string token)
         {
-            // Arrange
-            var loginRequestDTO = new LoginRequestDTO
-            {
-                Email = "admin@gmail.com",
-                Password = "Password123!"
-            };
-
-            // Act
-            var result = await _authRepository.LoginUser(loginRequestDTO, _passwordService);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Token);
-            Assert.AreEqual("admin@gmail.com", result.User.Email);
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+            return jwtToken.Claims;
         }
 
         [Test]
-        public async Task LoginUser_WithInvalidCredentials_ShouldReturnNull()
+        public async Task LoginUser_WithValidAdminCredentials_ShouldReturnTokenWithAdminRole()
         {
             // Arrange
-            var loginRequestDTO = new LoginRequestDTO
+            var loginRequest = new LoginRequestDTO
             {
                 Email = "admin@gmail.com",
-                Password = "WrongPassword!"
+                Password = "TestPassword123!"
             };
 
             // Act
-            var result = await _authRepository.LoginUser(loginRequestDTO, _passwordService);
+            var result = await _authRepository.LoginUser(loginRequest, _passwordService);
 
             // Assert
-            Assert.IsNull(result);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Token, Is.Not.Null);
+            Assert.That(result.User.Email, Is.EqualTo("admin@gmail.com"));
+
+            var claims = DecodeToken(result.Token);
+            Assert.That(claims.Any(c => c.Type == ClaimTypes.Role && c.Value == "Admin"), Is.True, "Token should contain Admin role");
         }
 
         [Test]
-        public async Task LoginUser_WithNonExistentUser_ShouldReturnNull()
+        public async Task LoginUser_WithValidEMTCredentials_ShouldReturnTokenWithEMTRole()
         {
             // Arrange
-            var loginRequestDTO = new LoginRequestDTO
+            var loginRequest = new LoginRequestDTO
+            {
+                Email = "emt@gmail.com",
+                Password = "TestPassword123!"
+            };
+
+            // Act
+            var result = await _authRepository.LoginUser(loginRequest, _passwordService);
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Token, Is.Not.Null);
+
+            var claims = DecodeToken(result.Token);
+            Assert.That(claims.Any(c => c.Type == ClaimTypes.Role && c.Value == "EMTUser"), Is.True, "Token should contain EMTUser role");
+            Assert.That(claims.Any(c => c.Type == "Projects"), Is.True, "Token should contain Projects claim");
+        }
+
+        [Test]
+        public async Task LoginUser_WithInvalidPassword_ShouldReturnNull()
+        {
+            // Arrange
+            var loginRequest = new LoginRequestDTO
+            {
+                Email = "admin@gmail.com",
+                Password = "WrongPassword123!"
+            };
+
+            // Act
+            var result = await _authRepository.LoginUser(loginRequest, _passwordService);
+
+            // Assert
+            Assert.That(result, Is.Null);
+        }
+
+        [Test]
+        public async Task LoginUser_WithNonexistentEmail_ShouldReturnNull()
+        {
+            // Arrange
+            var loginRequest = new LoginRequestDTO
             {
                 Email = "nonexistent@gmail.com",
-                Password = "Password123!"
+                Password = "TestPassword123!"
             };
 
             // Act
-            var result = await _authRepository.LoginUser(loginRequestDTO, _passwordService);
+            var result = await _authRepository.LoginUser(loginRequest, _passwordService);
 
             // Assert
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
-        public async Task LoginUser_WithDeactivatedUser_ShouldThrowUnauthorizedAccessException()
+        public void LoginUser_WithInactiveUser_ShouldThrowUnauthorizedAccessException()
         {
             // Arrange
-            var user = await _dbContext.Users.FirstAsync(u => u.Email == "user@gmail.com");
-            user.IsActive = false;
-            await _dbContext.SaveChangesAsync();
-
-            var loginRequestDTO = new LoginRequestDTO
+            var loginRequest = new LoginRequestDTO
             {
-                Email = "user@gmail.com",
-                Password = "Password123!"
+                Email = "inactive@gmail.com",
+                Password = "TestPassword123!"
             };
 
             // Act & Assert
-            Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
-                await _authRepository.LoginUser(loginRequestDTO, _passwordService));
+            var exception = Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
+                await _authRepository.LoginUser(loginRequest, _passwordService));
+
+            Assert.That(exception.Message, Is.EqualTo("Your account has been deactivated.Please contact the admin."));
         }
 
         [Test]
-        public async Task LoginUser_WithValidUser_ShouldIncludeProjectClaims()
+        public async Task LoginUser_WithValidProjectUser_ShouldIncludeProjectClaims()
         {
             // Arrange
-            var loginRequestDTO = new LoginRequestDTO
+            var loginRequest = new LoginRequestDTO
             {
-                Email = "user@gmail.com",
-                Password = "Password123!"
+                Email = "emt@gmail.com",
+                Password = "TestPassword123!"
             };
 
             // Act
-            var result = await _authRepository.LoginUser(loginRequestDTO, _passwordService);
+            var result = await _authRepository.LoginUser(loginRequest, _passwordService);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Token.Contains("Project2")); // Check if project claim is included
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Token, Is.Not.Null);
+
+            var claims = DecodeToken(result.Token);
+            Assert.That(claims.Any(c => c.Type == ClaimTypes.Role && c.Value == "ProjectUsers"), Is.True, "Token should contain ProjectUsers role");
+            Assert.That(claims.Any(c => c.Type == "Projects"), Is.True, "Token should contain Projects claim");
         }
 
         [TearDown]
@@ -204,6 +244,12 @@ namespace RiskManagement
         {
             _dbContext.Database.EnsureDeleted();
             _dbContext.Dispose();
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            Environment.SetEnvironmentVariable("API_SECRET", null);
         }
     }
 }
