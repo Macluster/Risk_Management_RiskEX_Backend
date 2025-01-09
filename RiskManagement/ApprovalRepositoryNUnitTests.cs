@@ -1,171 +1,173 @@
-﻿//using Microsoft.AspNetCore.Http;
-//using Microsoft.EntityFrameworkCore;
-//using Risk_Management_RiskEX_Backend.Data;
-//using Risk_Management_RiskEX_Backend.Models;
-//using Risk_Management_RiskEX_Backend.Repository;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Risk_Management_RiskEX_Backend.Data;
+using Risk_Management_RiskEX_Backend.Models;
+using Risk_Management_RiskEX_Backend.Repository;
 
-//namespace RiskManagement
-//{
-//    [TestFixture]
-//    public class ApprovalRepositoryNUnitTests
-//    {
-//        private ApplicationDBContext _context;
-//        private ApprovalsRepository _repository;
+namespace RiskManagement
+{
+    [TestFixture]
+    public class ApprovalRepositoryNUnitTests
+    {
+        private ApplicationDBContext _context;
+        private ApprovalsRepository _repository;
 
-//        [SetUp]
-//        public void SetUp()
-//        {
-//            // Set up in-memory database
-//            var options = new DbContextOptionsBuilder<ApplicationDBContext>()
-//                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-//                .Options;
+        [SetUp]
+        public void SetUp()
+        {
+            // Set up in-memory database
+            var options = new DbContextOptionsBuilder<ApplicationDBContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
 
-//            var httpContextAccessor = new HttpContextAccessor();
-//            _context = new ApplicationDBContext(options,httpContextAccessor);
-//            _repository = new ApprovalsRepository(_context);
-
-
+            var httpContextAccessor = new HttpContextAccessor();
+            _context = new ApplicationDBContext(options, httpContextAccessor);
+            //_repository = new ApprovalsRepository(_context);
 
 
-//            // Seed the database with test data
-//            SeedData();
-//        }
 
-//        [TearDown]
-//        public void TearDown()
-//        {
-//            _context.Database.EnsureDeleted();
-//            _context.Dispose();
-//        }
 
-//        private void SeedData()
-//        {
-//            var departments = new List<Department>
-//    {
-//        new Department { Id = 1, DepartmentName = "IT" },
-//        new Department { Id = 2, DepartmentName = "HR" }
-//    };
+            // Seed the database with test data
+            SeedData();
+        }
 
-//            var users = new List<User>
-//    {
-//        new User { Id = 1, FullName = "John Doe", DepartmentId = 1, Email = "john.doe@example.com" },
-//        new User { Id = 2, FullName = "Jane Smith", DepartmentId = 2, Email = "jane.smith@example.com" }
-//    };
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
+        }
 
-//            var risks = new List<Risk>
-//    {
-//        new Risk
-//        {
-//            Id = 1,
-//            RiskId = "RISK-001",
-//            RiskName = "Test Risk 1",
-//            DepartmentId = 1,
-//            Description = "Test Risk Description",
-//            RiskType = RiskType.Quality,
-//            OverallRiskRatingBefore = 2,
-//            PlannedActionDate = DateTime.UtcNow.AddDays(30),
-//            RiskStatus = RiskStatus.open,
-//            Impact = "High financial impact if unaddressed", // Required property
-//            Mitigation = "Implement additional controls to reduce risk" // Required property
-//        }
-//    };
+        private void SeedData()
+        {
+            var departments = new List<Department>
+    {
+        new Department { Id = 1, DepartmentName = "IT" },
+        new Department { Id = 2, DepartmentName = "HR" }
+    };
 
-//            var riskAssessments = new List<RiskAssessment>
-//    {
-//        new RiskAssessment
-//        {
-//            Id = 1,
-//            RiskId = 1,
-//            Review = new Review
-//            {
-//                Id = 1,
-//                ReviewStatus = ReviewStatus.ReviewPending,
-//                UserId = 1
-//            }
-//        }
-//    };
+            var users = new List<User>
+    {
+        new User { Id = 1, FullName = "John Doe", DepartmentId = 1, Email = "john.doe@example.com" },
+        new User { Id = 2, FullName = "Jane Smith", DepartmentId = 2, Email = "jane.smith@example.com" }
+    };
 
-//            _context.Departments.AddRange(departments);
-//            _context.Users.AddRange(users);
-//            _context.Risks.AddRange(risks);
-//            _context.Assessments.AddRange(riskAssessments);
+            var risks = new List<Risk>
+    {
+        new Risk
+        {
+            Id = 1,
+            RiskId = "RISK-001",
+            RiskName = "Test Risk 1",
+            DepartmentId = 1,
+            Description = "Test Risk Description",
+            RiskType = RiskType.Quality,
+            OverallRiskRatingBefore = 2,
+            PlannedActionDate = DateTime.UtcNow.AddDays(30),
+            RiskStatus = RiskStatus.open,
+            Impact = "High financial impact if unaddressed", // Required property
+            Mitigation = "Implement additional controls to reduce risk" // Required property
+        }
+    };
 
-//            _context.SaveChanges();
-//        }
+            var riskAssessments = new List<RiskAssessment>
+    {
+        new RiskAssessment
+        {
+            Id = 1,
+            RiskId = 1,
+            Review = new Review
+            {
+                Id = 1,
+                ReviewStatus = ReviewStatus.ReviewPending,
+                UserId = 1
+            }
+        }
+    };
 
-//        [Test]
-//        public async Task GetReviewByRiskIdAsync_ShouldReturnReview_WhenRiskExists()
-//        {
-//            // Arrange
-//            var riskId = 1;
+            _context.Departments.AddRange(departments);
+            _context.Users.AddRange(users);
+            _context.Risks.AddRange(risks);
+            _context.Assessments.AddRange(riskAssessments);
 
-//            // Act
-//            var result = await _repository.GetReviewByRiskIdAsync(riskId);
+            _context.SaveChanges();
+        }
 
-//            // Assert
-//            Assert.IsNotNull(result);
-//            Assert.AreEqual(ReviewStatus.ReviewPending, result.ReviewStatus);
-//        }
+        //[Test]
+        //public async Task GetReviewByRiskIdAsync_ShouldReturnReview_WhenRiskExists()
+        //{
+        //    // Arrange
+        //    var riskId = 1;
 
-//        [Test]
-//        public async Task GetRiskDetailsToReviewAsync_ShouldReturnRisks_WhenReviewStatusIsPending()
-//        {
-//            // Act
-//            var result = await _repository.GetRiskDetailsToReviewAsync();
+        //    // Act
+        //    var result = await _repository.GetReviewByRiskIdAsync(riskId);
 
-//            // Assert
-//            Assert.IsNotNull(result);
-//            Assert.IsNotEmpty(result);
-//            Assert.AreEqual(1, result.Count());
-//        }
+        //    // Assert
+        //    Assert.IsNotNull(result);
+        //    Assert.AreEqual(ReviewStatus.ReviewPending, result.ReviewStatus);
+        //}
 
-//        [Test]
-//        public async Task GetRisksByReviewerAsync_ShouldReturnRisks_WhenReviewerExists()
-//        {
-//            // Arrange
-//            var userId = 1;
+        [Test]
+        public async Task GetRiskDetailsToReviewAsync_ShouldReturnRisks_WhenReviewStatusIsPending()
+        {
+            // Act
+            var result = await _repository.GetRiskDetailsToReviewAsync();
 
-//            // Act
-//            var result = await _repository.GetRisksByReviewerAsync(userId);
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsNotEmpty(result);
+            Assert.AreEqual(1, result.Count());
+        }
 
-//            // Assert
-//            Assert.IsNotNull(result);
-//            Assert.IsNotEmpty(result);
-//            Assert.AreEqual(1, result.Count());
-//        }
+        [Test]
+        public async Task GetRisksByReviewerAsync_ShouldReturnRisks_WhenReviewerExists()
+        {
+            // Arrange
+            var userId = 1;
 
-//        [Test]
-//        public async Task UpdateReviewStatusAsync_ShouldUpdateStatus_WhenRiskExists()
-//        {
-//            // Arrange
-//            var riskId = 1;
-//            var approvalStatus = "approved";
+            // Act
+            var result = await _repository.GetRisksByReviewerAsync(userId);
 
-//            // Act
-//            var result = await _repository.UpdateReviewStatusAsync(riskId, approvalStatus);
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsNotEmpty(result);
+            Assert.AreEqual(1, result.Count());
+        }
 
-//            // Assert
-//            Assert.IsTrue(result);
+        //[Test]
+        //public async Task UpdateReviewStatusAsync_ShouldUpdateStatus_WhenRiskExists()
+        //{
+        //    // Arrange
+        //    var riskId = 1;
+        //    var approvalStatus = "approved";
 
-//            var updatedReview = await _repository.GetReviewByRiskIdAsync(riskId);
-//            Assert.AreEqual(ReviewStatus.ReviewCompleted, updatedReview.ReviewStatus);
-//        }
+        //    // Act
+        //    var result = await _repository.UpdateReviewStatusAsync(riskId, approvalStatus);
 
-//        [Test]
-//        public async Task UpdateReviewCommentByRiskIdAsync_ShouldUpdateComment_WhenRiskExists()
-//        {
-//            // Arrange
-//            var riskId = 1;
-//            var comments = "Updated comment";
+        //    // Assert
+        //    Assert.IsTrue(result);
 
-//            // Act
-//            var result = await _repository.UpdateReviewCommentByRiskIdAsync(riskId, comments);
+        //    var updatedReview = await _repository.GetReviewByRiskIdAsync(riskId);
+        //    Assert.AreEqual(ReviewStatus.ReviewCompleted, updatedReview.ReviewStatus);
+        //}
 
-//            // Assert
-//            Assert.IsTrue(result);
+        [Test]
+        public async Task UpdateReviewCommentByRiskIdAsync_ShouldUpdateComment_WhenRiskExists()
+        {
+            // Arrange
+            var riskId = 1;
+            var comments = "Updated comment";
 
-//            var updatedReview = await _repository.GetReviewByRiskIdAsync(riskId);
-//            Assert.AreEqual(comments, updatedReview.Comments);
-//        }
-//    }
-//}
+            // Act
+            var result = await _repository.UpdateReviewCommentByRiskIdAsync(riskId, comments);
+
+            // Assert
+            Assert.IsTrue(result);
+
+            var updatedReview = (await _repository.GetReviewByRiskIdAsync(riskId)).FirstOrDefault();
+            Assert.IsNotNull(updatedReview);
+            Assert.AreEqual(comments, updatedReview.Comments);
+        }
+
+    }
+}
