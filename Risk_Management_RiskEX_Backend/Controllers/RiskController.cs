@@ -444,6 +444,31 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
         }
 
+
+        [HttpGet("GetAllRisksAssigned")]
+        public async Task<IActionResult> GetAllRisksAssigned()
+        {
+
+
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+
+            try
+            {
+               
+
+                var risks = await _riskRepository.GetAllRiskAssigned();
+                    return Ok(risks);
+              
+            }
+            catch (Exception e)
+            {
+                return Ok("No user with the given Id");
+            }
+
+
+        }
+
         [HttpGet("GetRiskApproachingDeadline")]
         public async Task<IActionResult> RiskApproachingDeadline([FromQuery] List<int> departmentIds)
         {

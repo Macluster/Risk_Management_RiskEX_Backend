@@ -35,6 +35,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task<Object> GetRiskWithHeighestOverallRationg(List<int> departmentIds);
         Task<ICollection<OpenRiskCountByTypeDTO>> GetOpenRiskCountByType(List<int> departmentIds);
         Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCounts(int?id);
+        Task<object> GetAllRiskAssigned();
 
         Task<string> SetAndGetRiskIdByDepartmentAsync(int departmentId);
 
