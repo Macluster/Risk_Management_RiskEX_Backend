@@ -3,8 +3,9 @@
     public class ProjectUpdateRequestDTO
     {
 
-       public  string ProjectName;
-       public string ProjectCode;
-       public string NewProjectName;
+        public  string ProjectName {  get; set; }
+        public string NewProjectName { get; set; }
+        public string NewProjectCode { get; set; }
+      
     }
 }

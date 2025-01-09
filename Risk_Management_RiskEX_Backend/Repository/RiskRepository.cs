@@ -222,6 +222,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         ReviewStatus = ra.Review.ReviewStatus.ToString(),
                         Comments = ra.Review.Comments,
                         ReviewerName = ra.Review.ExternalReviewer == null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
+
                     } : null,
                     AssessmentBasis = ra.AssessmentBasis != null ? new AssessmentBasisResponseDTO { Id = ra.AssessmentBasis.Id, Basis = ra.AssessmentBasis.Basis } : null,
                     RiskFactor = ra.RiskFactor,
@@ -734,13 +735,16 @@ namespace Risk_Management_RiskEX_Backend.Repository
                   RiskCategory = r.RiskType == RiskType.Quality
                       ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
                          r.OverallRiskRatingBefore >= 10 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
-                         r.OverallRiskRatingBefore >= 40 ? "Critical" : "Uncategorized")
+                         r.OverallRiskRatingBefore >= 40 ? "Critical" : null)
                       : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
                       ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
                          r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
-                         r.OverallRiskRatingBefore >= 70 ? "Critical" : "Uncategorized")
-                      : "Uncategorized"
+                         r.OverallRiskRatingBefore >= 70 ? "Critical" :null)
+                      :null
               })
+               .Where(r => r.RiskCategory != null)  // Exclude any risk that doesn't fall into the 3 categories
+               .Where(r => r.RiskCategory == "Low" || r.RiskCategory == "Moderate" || r.RiskCategory == "Critical")  // Only include Low, Moderate, or Critical categories
+
               .GroupBy(r => r.RiskCategory)
               .Select(g => new RiskCategoryCountDTO
               {
@@ -769,6 +773,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
                          r.OverallRiskRatingBefore >= 70 ? "Critical" : "Uncategorized")
                       : "Uncategorized"
                       })
+
+                      .Where(r => r.RiskCategory != null)  // Exclude any risk that doesn't fall into the 3 categories
+                      .Where(r => r.RiskCategory == "Low" || r.RiskCategory == "Moderate" || r.RiskCategory == "Critical")  // Only include Low, Moderate, or Critical categories
+
               .GroupBy(r => r.RiskCategory)
               .Select(g => new RiskCategoryCountDTO
               {
@@ -776,9 +784,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
                   Count = g.Count()
               })
               .ToListAsync();
-                return riskCategoryCounts;
+               return riskCategoryCounts;              
             }
-          
+           
+
         }
 
 
@@ -794,12 +803,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 RiskCategory = r.RiskType == RiskType.Quality
                     ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
                        r.OverallRiskRatingBefore >= 10 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
-                       r.OverallRiskRatingBefore >= 40 ? "Critical" : "Uncategorized")
+                       r.OverallRiskRatingBefore >= 40 ? "Critical" : null)
                     : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
                     ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
                        r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
-                       r.OverallRiskRatingBefore >= 70 ? "Critical" : "Uncategorized")
-                    : "Uncategorized"
+                       r.OverallRiskRatingBefore >= 70 ? "Critical" : null)
+                    : null
             })
                 .GroupBy(r => new { r.DepartmentId, r.RiskCategory })
                 .Select(g => new RiskCategoryCountDTO
@@ -890,8 +899,72 @@ namespace Risk_Management_RiskEX_Backend.Repository
            
         }
 
-       
-        
+
+        public async Task<string> SetAndGetRiskIdByDepartmentAsync(int departmentId)
+        {
+            if (departmentId <= 0)
+            {
+                throw new ArgumentException("Valid DepartmentId is required.");
+            }
+
+            // Generate the base RiskId from the department code
+            string baseRiskId = await GenerateBaseRiskId(departmentId);
+
+            // Get the latest 5 Risks for the given department
+            var latestRisks = await _db.Risks
+                .Where(r => r.DepartmentId == departmentId)  // Filter by DepartmentId
+                .OrderByDescending(r => r.RiskId)  // Order by RiskId to get the latest ones
+                .Take(5)  // Limit to the latest 5 entries
+                .ToListAsync();  // Fetch the results
+
+            // If no Risk is found, create a new RiskId starting from _001
+            if (!latestRisks.Any())
+            {
+                return $"{baseRiskId}001";  // Return the base RiskId with 001
+            }
+
+            // Extract the numeric part from the latest RiskId
+            int latestNumber = ExtractNumericPartFromRiskId(latestRisks.First().RiskId, baseRiskId) + 1;
+
+            // Return the new RiskId with the incremented numeric part
+            return $"{baseRiskId}{latestNumber:D3}";  // Return with leading zeros (e.g., D1_001, D1_002, etc.)
+        }
+
+        private async Task<string> GenerateBaseRiskId(int departmentId)
+        {
+            // Generate a base RiskId from the department code (e.g., D1_)
+            var department = await _db.Departments.FirstOrDefaultAsync(d => d.Id == departmentId);  // Fetch department
+            if (department == null)
+            {
+                throw new InvalidOperationException("Department not found.");
+            }
+
+            var departmentCode = department.DepartmentCode;  // Assuming DepartmentCode is the code (e.g., D1, HR_001, etc.)
+
+            // Ensure the department code is in uppercase and followed by an underscore
+            return $"{departmentCode.ToUpper()}_";
+        }
+
+        private int ExtractNumericPartFromRiskId(string riskId, string baseRiskId)
+        {
+            // This method extracts the numeric part of the RiskId after the department prefix.
+            string numericPart = riskId.Substring(baseRiskId.Length);  // Extract the part after the department prefix
+
+            // Ensure that the numeric part is valid and return it as an integer.
+            if (int.TryParse(numericPart, out int result))
+            {
+                return result;
+            }
+
+            // If parsing fails, throw an exception or return a default value (optional).
+            throw new InvalidOperationException("Invalid RiskId format detected.");
+        }
+
+
+
+
+
+
 
 
 

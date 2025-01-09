@@ -47,6 +47,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 // Map the DTO to the entity
                 var department = _mapper.Map<Department>(departmentDto);
                 department.DepartmentName = departmentDto.Name;
+                department.DepartmentCode = departmentDto.DepartmentCode;
 
                 // Add the entity to the database
                 await _db.Departments.AddAsync(department);
@@ -65,10 +66,24 @@ namespace Risk_Management_RiskEX_Backend.Repository
         {
             var department= await  _db.Departments.FirstOrDefaultAsync(e=>e.DepartmentName==departmentUpdateDTO.DepartmentName);
             department.DepartmentName = departmentUpdateDTO.NewDepartmentName;
+            department.DepartmentCode= departmentUpdateDTO.NewDepartmentCode;
 
             await _db.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<Department> GetDepartmentByName(string departmentName)
+        {
+            var department = await _db.Departments
+                .FirstOrDefaultAsync(d => d.DepartmentName == departmentName);
+
+            if (department == null)
+            {
+                throw new Exception("Department does not exist.");
+            }
+
+            return department;
         }
     }
 }

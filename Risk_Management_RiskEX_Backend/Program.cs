@@ -1,16 +1,13 @@
 
 using System.Text;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Risk_Management_RiskEX_Backend;
 using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Interfaces;
-using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Repository;
 using Risk_Management_RiskEX_Backend.Services;
 
@@ -19,9 +16,6 @@ using Risk_Management_RiskEX_Backend.Services;
 DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
-
-
-
 
 //Getting Connection String from Env file adding to db context
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
@@ -37,9 +31,9 @@ builder.Services.AddDbContext<ApplicationDBContext>((serviceProvider, options) =
 
 builder.Services.AddScoped<ApplicationDBContext>((serviceProvider) =>
 {
-    var options = serviceProvider.GetRequiredService<DbContextOptions<ApplicationDBContext>>();
-    var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
-    return new ApplicationDBContext(options, httpContextAccessor);
+   var options = serviceProvider.GetRequiredService<DbContextOptions<ApplicationDBContext>>();
+   var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+   return new ApplicationDBContext(options, httpContextAccessor);
 });
 
 builder.Services.AddTransient<IEmailService, EmailService>();
@@ -49,7 +43,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAutoMapper(typeof(MappingConfig)); 
+builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IRiskRepository, RiskRepository>();
@@ -73,9 +67,14 @@ builder.Services.AddScoped<UserService>();
 
 builder.Services.AddScoped<PasswordService>();
 
+<<<<<<< HEAD
 
 
 builder.Services.AddSwaggerGen(option => {
+=======
+builder.Services.AddSwaggerGen(option =>
+{
+>>>>>>> a4034362876d63aa4ecb6924ae0b82df63496daf
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description =

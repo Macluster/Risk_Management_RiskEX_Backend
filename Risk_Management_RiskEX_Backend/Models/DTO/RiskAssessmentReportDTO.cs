@@ -9,5 +9,6 @@
         public string Reviewer { get; set; } // Combine User/ExternalReviewer info as needed
         public string ReviewStatus { get; set; }
         public bool IsMitigated { get; set; }
+        public int RiskFactor { get; set; }
     }
 }

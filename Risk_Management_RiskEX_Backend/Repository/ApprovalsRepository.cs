@@ -15,14 +15,28 @@ namespace Risk_Management_RiskEX_Backend.Repository
             _db = db;
         }
 
-        public async Task<Review> GetReviewByRiskIdAsync(int riskId)
+        public async Task<IEnumerable<Review>> GetReviewByRiskIdAsync(int riskId)
         {
+            // Fetch the risk with its assessments and reviews
             var risk = await _db.Risks
                 .Include(r => r.RiskAssessments)
                 .ThenInclude(ra => ra.Review)
                 .FirstOrDefaultAsync(r => r.Id == riskId);
 
-            return risk?.RiskAssessments?.Select(ra => ra.Review).FirstOrDefault();
+            if (risk == null || risk.RiskAssessments == null)
+            {
+                return Enumerable.Empty<Review>();
+            }
+
+            // Select distinct reviews based on Review.Id
+            var distinctReviews = risk.RiskAssessments
+                .Where(ra => ra.Review != null) // Ensure Review is not null
+                .Select(ra => ra.Review)
+                .GroupBy(review => review.Id)
+                .Select(group => group.First())
+                .ToList();
+
+            return distinctReviews;
         }
 
         public async Task<IEnumerable<RiskDetailsDTO>> GetRiskDetailsToReviewAsync()
@@ -188,50 +202,112 @@ namespace Risk_Management_RiskEX_Backend.Repository
         public async Task<bool> UpdateReviewStatusAsync(int riskId, string approvalStatus)
         {
             var review = await GetReviewByRiskIdAsync(riskId);
+            Review tempReview = null; 
 
             if (review == null)
             {
                 return false; 
             }
-            switch (approvalStatus.ToLower())
+            if (review.Count() == 1)
             {
-                case "approved":
-                    if (review.ReviewStatus == ReviewStatus.ReviewPending)
-                    {
-                        review.ReviewStatus = ReviewStatus.ReviewCompleted;
-                    }
-                    else if (review.ReviewStatus == ReviewStatus.ApprovalPending)
-                    {
-                        review.ReviewStatus = ReviewStatus.ApprovalCompleted;
-                    }
-                    break;
+                switch (approvalStatus.ToLower())
+                {
+                    case "approved":
+                        if (review.ElementAt(0).ReviewStatus == ReviewStatus.ReviewPending)
+                        {
+                            review.ElementAt(0).ReviewStatus = ReviewStatus.ReviewCompleted;
+                        }
+                        else if (review.ElementAt(0).ReviewStatus == ReviewStatus.ApprovalPending)
+                        {
+                            review.ElementAt(0).ReviewStatus = ReviewStatus.ApprovalCompleted;
+                        }
+                        break;
 
-                case "rejected":
-                    review.ReviewStatus = ReviewStatus.Rejected;
-                    break;
+                    case "rejected":
+                        review.ElementAt(0).ReviewStatus = ReviewStatus.Rejected;
+                        break;
 
-                default:
-                    return false; 
+                    default:
+                        return false;
+                }
+                tempReview = review.ElementAt(0);
             }
+            else
+            {
+                switch (approvalStatus.ToLower())
+                {
+                    case "approved":
+                        if (review.ElementAt(1).ReviewStatus == ReviewStatus.ReviewPending)
+                        {
+                            review.ElementAt(1).ReviewStatus = ReviewStatus.ReviewCompleted;
+                        }
+                        else if (review.ElementAt(1).ReviewStatus == ReviewStatus.ApprovalPending)
+                        {
+                            review.ElementAt(1).ReviewStatus = ReviewStatus.ApprovalCompleted;
+                        }
+                        break;
 
-            _db.Reviews.Update(review);
+                    case "rejected":
+                        review.ElementAt(1).ReviewStatus = ReviewStatus.Rejected;
+                        break;
+
+                    default:
+                        return false;
+                }
+                tempReview = review.ElementAt(1);
+
+            }
+            //switch (approvalStatus.ToLower())
+            //{
+            //    case "approved":
+            //        if (review.ReviewStatus == ReviewStatus.ReviewPending)
+            //        {
+            //            review.ReviewStatus = ReviewStatus.ReviewCompleted;
+            //        }
+            //        else if (review.ReviewStatus == ReviewStatus.ApprovalPending)
+            //        {
+            //            review.ReviewStatus = ReviewStatus.ApprovalCompleted;
+            //        }
+            //        break;
+
+            //    case "rejected":
+            //        review.ReviewStatus = ReviewStatus.Rejected;
+            //        break;
+
+            //    default:
+            //        return false; 
+            //}
+
+            _db.Reviews.Update(tempReview);
             await _db.SaveChangesAsync();
 
             return true;
         }
         public async Task<bool> UpdateReviewCommentByRiskIdAsync(int riskId, string comments)
         {
-            
-            var review = await _db.Set<RiskAssessment>()
-                                       .Where(ra => ra.RiskId == riskId)
-                                       .Select(ra => ra.Review)
-                                       .FirstOrDefaultAsync();
-
+            var review = await GetReviewByRiskIdAsync(riskId);
             if (review == null)
-                return false; 
+                return false;
+
+            if (review.Count() == 1)
+            {
+                review.ElementAt(0).Comments = comments;
+            }
+            else if(review.Count() == 2)
+            {
+                review.ElementAt(1).Comments = comments;
+            }
+
+            //    var review = await _db.Set<RiskAssessment>()
+            //                           .Where(ra => ra.RiskId == riskId)
+            //                           .Select(ra => ra.Review)
+            //                           .FirstOrDefaultAsync();
+
+            //if (review == null)
+            //    return false; 
 
             
-            review.Comments = comments;
+            //review.Comments = comments;
 
             
             await _db.SaveChangesAsync();
