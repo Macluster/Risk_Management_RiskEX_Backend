@@ -17,12 +17,26 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<IEnumerable<Review>> GetReviewByRiskIdAsync(int riskId)
         {
+            // Fetch the risk with its assessments and reviews
             var risk = await _db.Risks
                 .Include(r => r.RiskAssessments)
                 .ThenInclude(ra => ra.Review)
                 .FirstOrDefaultAsync(r => r.Id == riskId);
 
-            return risk?.RiskAssessments?.Select(ra => ra.Review).ToList();
+            if (risk == null || risk.RiskAssessments == null)
+            {
+                return Enumerable.Empty<Review>();
+            }
+
+            // Select distinct reviews based on Review.Id
+            var distinctReviews = risk.RiskAssessments
+                .Where(ra => ra.Review != null) // Ensure Review is not null
+                .Select(ra => ra.Review)
+                .GroupBy(review => review.Id)
+                .Select(group => group.First())
+                .ToList();
+
+            return distinctReviews;
         }
 
         public async Task<IEnumerable<RiskDetailsDTO>> GetRiskDetailsToReviewAsync()
