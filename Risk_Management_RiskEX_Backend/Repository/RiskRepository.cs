@@ -825,7 +825,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
         {
             if (departmentIds.Count()==0)
             {
-                var closestRisks = await _db.Risks
+                var closestRisks = await _db.Risks.Where(e=>e.RiskStatus==RiskStatus.close)
                 .ToListAsync();
                 var closestRisksSorted = closestRisks
                 .OrderBy(r => Math.Abs((r.PlannedActionDate - DateTime.Now).Ticks))
@@ -836,7 +836,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             }
             else
             {
-                var closestRisks = await _db.Risks
+                var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.close)
                 .Where(e => departmentIds.Contains(e.DepartmentId))
                 .ToListAsync();
                 var closestRisksSorted = closestRisks
