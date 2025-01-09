@@ -904,133 +904,216 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
 
-        public async Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCountsByDepartments(List<int> departmentIds)
-        {
-            var query = await _db.Set<Risk>()
-                .Where(r => !departmentIds.Any() || departmentIds.Contains(r.DepartmentId))
-                .Where(r => r.RiskStatus == RiskStatus.open) // Filter by department IDs if provided
-                .Select(r => new
-                {
-                    r.RiskType,
-                    r.OverallRiskRatingBefore,
-                    RiskCategory = r.RiskType == RiskType.Quality
-                        ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
-                           r.OverallRiskRatingBefore >= 9 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
-                           r.OverallRiskRatingBefore >= 33 ? "Critical" : null)
-                        : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
-                        ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
-                           r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
-                           r.OverallRiskRatingBefore >= 70 ? "Critical" : null)
-                        : null
-                })
-                .Where(r => r.RiskCategory != null) // Remove null categories
-                .GroupBy(r => r.RiskCategory)
-                .Select(g => new RiskCategoryCountDTO
-                {
-                    RiskCategory = g.Key,
-                    Count = g.Count()
-                })
-                .ToListAsync(); // Materialize the query
 
-            // Initialize default values for Low, Moderate, Critical
-            var defaultCategories = new List<RiskCategoryCountDTO>
+        public async Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCountsByDepartments(List<int> departmentIds, List<int> projects)
+        {
+
+            if (projects.Count != 0)
+            {
+                var query = await _db.Set<Risk>()
+               .Where(r => !projects.Any() || projects.Contains(r.ProjectId.Value))
+               .Where(r => r.RiskStatus == RiskStatus.open) // Filter by department IDs if provided
+               .Select(r => new
+               {
+                   r.RiskType,
+                   r.OverallRiskRatingBefore,
+                   RiskCategory = r.RiskType == RiskType.Quality
+                       ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
+                          r.OverallRiskRatingBefore >= 9 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
+                          r.OverallRiskRatingBefore >= 33 ? "Critical" : null)
+                       : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
+                       ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
+                          r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
+                          r.OverallRiskRatingBefore >= 70 ? "Critical" : null)
+                       : null
+               })
+               .Where(r => r.RiskCategory != null) // Remove null categories
+               .GroupBy(r => r.RiskCategory)
+               .Select(g => new RiskCategoryCountDTO
+               {
+                   RiskCategory = g.Key,
+                   Count = g.Count()
+               })
+               .ToListAsync(); // Materialize the query
+
+                // Initialize default values for Low, Moderate, Critical
+                var defaultCategories = new List<RiskCategoryCountDTO>
     {
         new RiskCategoryCountDTO { RiskCategory = "Low", Count = 0 },
         new RiskCategoryCountDTO { RiskCategory = "Moderate", Count = 0 },
         new RiskCategoryCountDTO { RiskCategory = "Critical", Count = 0 }
     };
 
-            // Map the query results to the default list
-            foreach (var result in query)
-            {
-                var category = defaultCategories.FirstOrDefault(c => c.RiskCategory == result.RiskCategory);
-                if (category != null)
+                // Map the query results to the default list
+                foreach (var result in query)
                 {
-                    category.Count = result.Count;
+                    var category = defaultCategories.FirstOrDefault(c => c.RiskCategory == result.RiskCategory);
+                    if (category != null)
+                    {
+                        category.Count = result.Count;
+                    }
+                }
+
+                return defaultCategories;
+
+            }
+            else
+            {
+                var query = await _db.Set<Risk>()
+                  .Where(r => !departmentIds.Any() || departmentIds.Contains(r.DepartmentId))
+                  .Where(r => r.RiskStatus == RiskStatus.open) // Filter by department IDs if provided
+                  .Select(r => new
+                  {
+                      r.RiskType,
+                      r.OverallRiskRatingBefore,
+                      RiskCategory = r.RiskType == RiskType.Quality
+                          ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
+                             r.OverallRiskRatingBefore >= 9 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
+                             r.OverallRiskRatingBefore >= 33 ? "Critical" : null)
+                          : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
+                          ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
+                             r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
+                             r.OverallRiskRatingBefore >= 70 ? "Critical" : null)
+                          : null
+                  })
+                  .Where(r => r.RiskCategory != null) // Remove null categories
+                  .GroupBy(r => r.RiskCategory)
+                  .Select(g => new RiskCategoryCountDTO
+                  {
+                      RiskCategory = g.Key,
+                      Count = g.Count()
+                  })
+                  .ToListAsync(); // Materialize the query
+
+                // Initialize default values for Low, Moderate, Critical
+                var defaultCategories = new List<RiskCategoryCountDTO>
+    {
+        new RiskCategoryCountDTO { RiskCategory = "Low", Count = 0 },
+        new RiskCategoryCountDTO { RiskCategory = "Moderate", Count = 0 },
+        new RiskCategoryCountDTO { RiskCategory = "Critical", Count = 0 }
+    };
+
+                // Map the query results to the default list
+                foreach (var result in query)
+                {
+                    var category = defaultCategories.FirstOrDefault(c => c.RiskCategory == result.RiskCategory);
+                    if (category != null)
+                    {
+                        category.Count = result.Count;
+                    }
+                }
+
+                return defaultCategories;
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<Object> RiskApproachingDeadline(List<int> departmentIds, List<int> projects)
+        {
+
+            if (projects.Count() != 0)
+            {
+
+
+
+                var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open)
+                .Where(e => projects.Contains(e.ProjectId.Value))
+                .ToListAsync();
+                var closestRisksSorted = closestRisks
+                .OrderBy(r => Math.Abs((r.PlannedActionDate - DateTime.Now).Ticks))
+                .Take(3)
+                .ToList();
+                var data = _mapper.Map<List<RiskMinimalInfoDTO>>(closestRisksSorted);
+                return data;
+
+
+
+
+
+
+
+            }
+            else
+            {
+                if (departmentIds.Count() == 0)
+                {
+                    var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open)
+                    .ToListAsync();
+                    var closestRisksSorted = closestRisks
+                    .OrderBy(r => Math.Abs((r.PlannedActionDate - DateTime.Now).Ticks))
+                    .Take(3)
+                    .ToList();
+                    var data = _mapper.Map<List<RiskMinimalInfoDTO>>(closestRisksSorted);
+                    return data;
+                }
+                else
+                {
+                    var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open)
+                    .Where(e => departmentIds.Contains(e.DepartmentId))
+                    .ToListAsync();
+                    var closestRisksSorted = closestRisks
+                    .OrderBy(r => Math.Abs((r.PlannedActionDate - DateTime.Now).Ticks))
+                    .Take(3)
+                    .ToList();
+                    var data = _mapper.Map<List<RiskMinimalInfoDTO>>(closestRisksSorted);
+                    return data;
+
                 }
             }
 
-            return defaultCategories;
+
+
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        public async Task<Object> RiskApproachingDeadline(List<int> departmentIds)
+        public async Task<object> GetRiskWithHeighestOverallRationg(List<int> departmentIds, List<int> projectIds)
         {
-            if (departmentIds.Count()==0)
-            {
-                var closestRisks = await _db.Risks.Where(e=>e.RiskStatus==RiskStatus.open)
-                .ToListAsync();
-                var closestRisksSorted = closestRisks
-                .OrderBy(r => Math.Abs((r.PlannedActionDate - DateTime.Now).Ticks))
-                .Take(3)
-                .ToList();
-                var data = _mapper.Map<List<RiskMinimalInfoDTO>>(closestRisksSorted);
-                return data;
-            }
-            else
-            {
-                var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open)
-                .Where(e => departmentIds.Contains(e.DepartmentId))
-                .ToListAsync();
-                var closestRisksSorted = closestRisks
-                .OrderBy(r => Math.Abs((r.PlannedActionDate - DateTime.Now).Ticks))
-                .Take(3)
-                .ToList();
-                var data = _mapper.Map<List<RiskMinimalInfoDTO>>(closestRisksSorted);
-                return data;
 
-            }
-        }
-
-        public async Task<object> GetRiskWithHeighestOverallRationg(List<int> departmentIds)
-        {
-            if (departmentIds.Count()==0)
+            if (projectIds.Count() != 0)
             {
-                var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
+                var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open).Where(e => projectIds.Contains(e.ProjectId.Value)).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
                 var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
                 return data;
             }
             else
             {
-                var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open).Where(e => departmentIds.Contains(e.DepartmentId)).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
-                var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
-                return data;
+
+                if (departmentIds.Count() == 0)
+                {
+                    var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
+                    var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
+                    return data;
+                }
+                else
+                {
+                    var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open).Where(e => departmentIds.Contains(e.DepartmentId)).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
+                    var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
+                    return data;
+                }
             }
+
         }
 
-        public async Task<ICollection<OpenRiskCountByTypeDTO>> GetOpenRiskCountByType(List<int> departmentIds)
+        public async Task<ICollection<OpenRiskCountByTypeDTO>> GetOpenRiskCountByType(List<int> departmentIds, List<int> projectIds)
         {
 
-            if (departmentIds.Count()==0)
-            {
-                var riskTypeCounts = await _db.Set<Risk>().Where(e=>e.RiskStatus==RiskStatus.open)
-               .GroupBy(r => r.RiskType)
-               .Select(g => new OpenRiskCountByTypeDTO
-               {
-                   RiskType = g.Key.ToString(),
-                   RiskCount = g.Count()
-               })
-               .ToListAsync();
-                return riskTypeCounts;
-
-            }
-            else
+            if (projectIds.Count() != 0)
             {
 
                 var riskTypeCounts = await _db.Set<Risk>()
-               .Where(e => departmentIds.Contains(e.DepartmentId)).Where(e => e.RiskStatus == RiskStatus.open)
+               .Where(e => projectIds.Contains(e.ProjectId.Value)).Where(e => e.RiskStatus == RiskStatus.open)
                .GroupBy(r => r.RiskType)
                .Select(g => new OpenRiskCountByTypeDTO
                {
@@ -1039,10 +1122,42 @@ namespace Risk_Management_RiskEX_Backend.Repository
                })
                .ToListAsync();
                 return riskTypeCounts;
-
             }
-           
+            else
+            {
+                if (departmentIds.Count() == 0)
+                {
+                    var riskTypeCounts = await _db.Set<Risk>().Where(e => e.RiskStatus == RiskStatus.open)
+                   .GroupBy(r => r.RiskType)
+                   .Select(g => new OpenRiskCountByTypeDTO
+                   {
+                       RiskType = g.Key.ToString(),
+                       RiskCount = g.Count()
+                   })
+                   .ToListAsync();
+                    return riskTypeCounts;
+
+                }
+                else
+                {
+
+                    var riskTypeCounts = await _db.Set<Risk>()
+                   .Where(e => departmentIds.Contains(e.DepartmentId)).Where(e => e.RiskStatus == RiskStatus.open)
+                   .GroupBy(r => r.RiskType)
+                   .Select(g => new OpenRiskCountByTypeDTO
+                   {
+                       RiskType = g.Key.ToString(),
+                       RiskCount = g.Count()
+                   })
+                   .ToListAsync();
+                    return riskTypeCounts;
+
+                }
+            }
+
+
         }
+
 
 
         public async Task<string> SetAndGetRiskIdByDepartmentAsync(int departmentId)
