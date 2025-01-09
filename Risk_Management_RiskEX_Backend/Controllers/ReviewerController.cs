@@ -40,7 +40,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
         [HttpGet("gettheReviewer/{id}")]
-        public async Task<ActionResult<ReviewerDTO>> GettheReviewer(int id,[FromQuery]string reviewStatus)
+        public async Task<IActionResult> GettheReviewer(int id,[FromQuery]string reviewStatus)
         {
             try
             {

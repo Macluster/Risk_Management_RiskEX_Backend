@@ -15,11 +15,13 @@ namespace Risk_Management_RiskEX_Backend.Repository
     {
         private readonly ApplicationDBContext _db;
         private readonly IMapper _mapper;
+        private readonly IReviewRepository _reviewRepository;
 
-       public RiskRepository(ApplicationDBContext db, IMapper mapper)
+       public RiskRepository(ApplicationDBContext db, IMapper mapper, IReviewRepository reviewRepository)
         {
-           _db = db;
-           _mapper = mapper;
+            _db = db;
+            _mapper = mapper;
+            _reviewRepository = reviewRepository;
         }
         public async Task<ICollection<Risk>> GetRisksByType(RiskType riskType)
         {
@@ -726,19 +728,27 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<object> GetRiskByAssigneeId(int id)
         {
-            var result = await _db.Risks.Where(e => e.ResponsibleUserId == id).Where(e=>e.RiskStatus==RiskStatus.open).Select(r => new RiskForApprovalDTO
-            {
-                Id =r.Id,
-                RiskId =r.RiskId,
-                RiskName =r.RiskName,
-                Description=r.Description,
-                DepartmentName=r.Department.DepartmentName,
-                RiskType =r.RiskType.ToString(),
-                OverallRiskRating =r.OverallRiskRatingAfter.HasValue?r.OverallRiskRatingAfter.Value:r.OverallRiskRatingBefore,
-                PlannedActionDate =r.PlannedActionDate,
-                RiskStatus =r.RiskStatus.ToString()
 
-             }).ToListAsync();
+
+            var result = await _db.Risks
+      .Where(e => e.ResponsibleUserId == id)
+      .Where(e => e.RiskStatus == RiskStatus.open)
+      .Where(e => e.RiskAssessments.Any(ra => ra.Review != null && ra.Review.ReviewStatus == ReviewStatus.ReviewCompleted))
+      .Include(e => e.RiskAssessments)
+      .ThenInclude(e => e.Review)
+      .Select(r => new RiskForApprovalDTO
+      {
+          Id = r.Id,
+          RiskId = r.RiskId,
+          RiskName = r.RiskName,
+          Description = r.Description,
+          RiskType = r.RiskType.ToString(),
+          OverallRiskRating = r.OverallRiskRatingAfter.HasValue ? r.OverallRiskRatingAfter.Value : r.OverallRiskRatingBefore,
+          PlannedActionDate = r.PlannedActionDate,
+          RiskStatus = r.RiskStatus.ToString()
+      })
+      .ToListAsync();
+
 
 
             var Risks = _mapper.Map<List<RiskForApprovalDTO>>(result);
