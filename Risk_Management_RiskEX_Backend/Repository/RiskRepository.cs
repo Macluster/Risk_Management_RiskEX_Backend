@@ -15,11 +15,13 @@ namespace Risk_Management_RiskEX_Backend.Repository
     {
         private readonly ApplicationDBContext _db;
         private readonly IMapper _mapper;
+        private readonly IReviewRepository _reviewRepository;
 
-       public RiskRepository(ApplicationDBContext db, IMapper mapper)
+       public RiskRepository(ApplicationDBContext db, IMapper mapper, IReviewRepository reviewRepository)
         {
-           _db = db;
-           _mapper = mapper;
+            _db = db;
+            _mapper = mapper;
+            _reviewRepository = reviewRepository;
         }
         public async Task<ICollection<Risk>> GetRisksByType(RiskType riskType)
         {
@@ -726,19 +728,27 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<object> GetRiskByAssigneeId(int id)
         {
-            var result = await _db.Risks.Where(e => e.ResponsibleUserId == id).Where(e=>e.RiskStatus==RiskStatus.open).Select(r => new RiskForApprovalDTO
-            {
-                Id =r.Id,
-                RiskId =r.RiskId,
-                RiskName =r.RiskName,
-                Description=r.Description,
-                DepartmentName=r.Department.DepartmentName,
-                RiskType =r.RiskType.ToString(),
-                OverallRiskRating =r.OverallRiskRatingAfter.HasValue?r.OverallRiskRatingAfter.Value:r.OverallRiskRatingBefore,
-                PlannedActionDate =r.PlannedActionDate,
-                RiskStatus =r.RiskStatus.ToString()
 
-             }).ToListAsync();
+
+            var result = await _db.Risks
+      .Where(e => e.ResponsibleUserId == id)
+      .Where(e => e.RiskStatus == RiskStatus.open)
+      .Where(e => e.RiskAssessments.Any(ra => ra.Review != null && ra.Review.ReviewStatus == ReviewStatus.ReviewCompleted))
+      .Include(e => e.RiskAssessments)
+      .ThenInclude(e => e.Review)
+      .Select(r => new RiskForApprovalDTO
+      {
+          Id = r.Id,
+          RiskId = r.RiskId,
+          RiskName = r.RiskName,
+          Description = r.Description,
+          RiskType = r.RiskType.ToString(),
+          OverallRiskRating = r.OverallRiskRatingAfter.HasValue ? r.OverallRiskRatingAfter.Value : r.OverallRiskRatingBefore,
+          PlannedActionDate = r.PlannedActionDate,
+          RiskStatus = r.RiskStatus.ToString()
+      })
+      .ToListAsync();
+
 
 
             var Risks = _mapper.Map<List<RiskForApprovalDTO>>(result);
@@ -757,8 +767,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                   OverallRiskRating = r.OverallRiskRatingBefore,
                   RiskCategory = r.RiskType == RiskType.Quality
                       ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
-                         r.OverallRiskRatingBefore >= 10 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
-                         r.OverallRiskRatingBefore >= 40 ? "Critical" : null)
+                         r.OverallRiskRatingBefore >= 9 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
+                         r.OverallRiskRatingBefore >= 33 ? "Critical" : null)
                       : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
                       ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
                          r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
@@ -788,8 +798,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                           OverallRiskRating = r.OverallRiskRatingBefore,
                           RiskCategory = r.RiskType == RiskType.Quality
                       ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
-                         r.OverallRiskRatingBefore >= 10 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
-                         r.OverallRiskRatingBefore >= 40 ? "Critical" : "Uncategorized")
+                         r.OverallRiskRatingBefore >= 9 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
+                         r.OverallRiskRatingBefore >= 33 ? "Critical" : "Uncategorized")
                       : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
                       ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
                          r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
@@ -814,34 +824,146 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
+        //public async Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCountsByDepartments(List<int> departmentIds)
+        //{
+        //    var query = _db.Set<Risk>()
+        //    .Where(r => !departmentIds.Any() || departmentIds.Contains(r.DepartmentId)).Where(e => e.RiskStatus == RiskStatus.open) // Filter by department IDs if provided 
+        //    .Select(r => new
+        //    {
+        //        r.DepartmentId,
+        //        r.RiskType,
+        //        r.OverallRiskRatingBefore,
+        //        RiskCategory = r.RiskType == RiskType.Quality
+        //            ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
+        //               r.OverallRiskRatingBefore >= 9 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
+        //               r.OverallRiskRatingBefore >= 33 ? "Critical" : null)
+        //            : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
+        //            ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
+        //               r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
+        //               r.OverallRiskRatingBefore >= 70 ? "Critical" : null)
+        //            : null
+        //    })
+        //        .GroupBy(r => new { r.DepartmentId, r.RiskCategory })
+        //        .Select(g => new RiskCategoryCountDTO
+        //        {
+
+        //            RiskCategory = g.Key.RiskCategory,
+        //            Count = g.Count()
+        //        });
+
+
+        //    List<RiskCategoryCountDTO> list = [
+        //          new RiskCategoryCountDTO
+        //    {
+
+        //        RiskCategory ="Low",
+        //        Count =0
+        //    },
+        //     new RiskCategoryCountDTO
+        //    {
+
+        //        RiskCategory = "Moderate",
+        //        Count = 0
+        //    },
+        //     new RiskCategoryCountDTO
+        //    {
+        //        RiskCategory = "Critical",
+        //        Count =0
+        //    }
+        //         ];
+
+
+
+
+
+        //    foreach(RiskCategoryCountDTO q in query)
+        //    {
+        //        if(q.RiskCategory=="Low")
+        //        {
+        //            list.ElementAt(0).Count++;  
+        //        }
+        //        if (q.RiskCategory == "Moderate")
+        //        {
+        //            list.ElementAt(1).Count++;
+        //        }
+        //        if (q.RiskCategory == "Critical")
+        //        {
+        //            list.ElementAt(2).Count++;
+        //        }
+
+
+
+        //    }
+
+
+        //    return list;
+        //}
+
+
+
+
+
+
         public async Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCountsByDepartments(List<int> departmentIds)
         {
-            var query = _db.Set<Risk>()
-            .Where(r => !departmentIds.Any() || departmentIds.Contains(r.DepartmentId)).Where(e => e.RiskStatus == RiskStatus.open) // Filter by department IDs if provided 
-            .Select(r => new
-            {
-                r.DepartmentId,
-                r.RiskType,
-                r.OverallRiskRatingBefore,
-                RiskCategory = r.RiskType == RiskType.Quality
-                    ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
-                       r.OverallRiskRatingBefore > 8 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
-                       r.OverallRiskRatingBefore >= 32 ? "Critical" : null)
-                    : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
-                    ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
-                       r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
-                       r.OverallRiskRatingBefore >= 70 ? "Critical" : null)
-                    : null
-            })
-                .GroupBy(r => new { r.DepartmentId, r.RiskCategory })
+            var query = await _db.Set<Risk>()
+                .Where(r => !departmentIds.Any() || departmentIds.Contains(r.DepartmentId))
+                .Where(r => r.RiskStatus == RiskStatus.open) // Filter by department IDs if provided
+                .Select(r => new
+                {
+                    r.RiskType,
+                    r.OverallRiskRatingBefore,
+                    RiskCategory = r.RiskType == RiskType.Quality
+                        ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
+                           r.OverallRiskRatingBefore >= 9 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
+                           r.OverallRiskRatingBefore >= 33 ? "Critical" : null)
+                        : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
+                        ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
+                           r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
+                           r.OverallRiskRatingBefore >= 70 ? "Critical" : null)
+                        : null
+                })
+                .Where(r => r.RiskCategory != null) // Remove null categories
+                .GroupBy(r => r.RiskCategory)
                 .Select(g => new RiskCategoryCountDTO
                 {
-                    DepartmentId = g.Key.DepartmentId,
-                    RiskCategory = g.Key.RiskCategory,
+                    RiskCategory = g.Key,
                     Count = g.Count()
-                });
-            return await query.ToListAsync();
+                })
+                .ToListAsync(); // Materialize the query
+
+            // Initialize default values for Low, Moderate, Critical
+            var defaultCategories = new List<RiskCategoryCountDTO>
+    {
+        new RiskCategoryCountDTO { RiskCategory = "Low", Count = 0 },
+        new RiskCategoryCountDTO { RiskCategory = "Moderate", Count = 0 },
+        new RiskCategoryCountDTO { RiskCategory = "Critical", Count = 0 }
+    };
+
+            // Map the query results to the default list
+            foreach (var result in query)
+            {
+                var category = defaultCategories.FirstOrDefault(c => c.RiskCategory == result.RiskCategory);
+                if (category != null)
+                {
+                    category.Count = result.Count;
+                }
+            }
+
+            return defaultCategories;
         }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         public async Task<Object> RiskApproachingDeadline(List<int> departmentIds)
@@ -893,7 +1015,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             if (departmentIds.Count()==0)
             {
-                var riskTypeCounts = await _db.Set<Risk>()
+                var riskTypeCounts = await _db.Set<Risk>().Where(e=>e.RiskStatus==RiskStatus.open)
                .GroupBy(r => r.RiskType)
                .Select(g => new OpenRiskCountByTypeDTO
                {
@@ -908,7 +1030,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
 
                 var riskTypeCounts = await _db.Set<Risk>()
-               .Where(e => departmentIds.Contains(e.DepartmentId))
+               .Where(e => departmentIds.Contains(e.DepartmentId)).Where(e => e.RiskStatus == RiskStatus.open)
                .GroupBy(r => r.RiskType)
                .Select(g => new OpenRiskCountByTypeDTO
                {
