@@ -19,6 +19,7 @@ namespace Risk_Management_RiskEX_Backend.Models
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
 
+
         [ForeignKey("ExternalReviewerId")]
         public virtual ExternalReviewer ExternalReviewer { get; set; }
 

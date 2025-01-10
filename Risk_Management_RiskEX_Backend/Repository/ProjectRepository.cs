@@ -11,12 +11,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
     public class ProjectRepository : IProjectRepository
     {
         private readonly ApplicationDBContext _db;
-        private readonly IMapper _mapper;  // Injecting AutoMapper
+        private readonly IMapper _mapper; 
 
         public ProjectRepository(ApplicationDBContext db, IMapper mapper)
         {
             _db = db;
-            _mapper = mapper; // Assigning AutoMapper to the field
+            _mapper = mapper;
         }
 
 

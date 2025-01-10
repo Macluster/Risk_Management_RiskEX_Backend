@@ -18,21 +18,20 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         [HttpGet("Approval{userId}")]
         public async Task<ActionResult<IEnumerable<ApprovalDTO>>> GetRisksByReviewerId( int? userId)
         {
-            // Validate input
+      
             if (!userId.HasValue)
             {
                 return BadRequest("User ID must be provided.");
             }
 
-            // Fetch risks using the repository
             var risks = await _approvalRepository.GetRisksByReviewerAsync(userId);
 
             if (risks == null || !risks.Any())
             {
-                return NotFound("No risks found for the provided reviewer ID.");
+                //return NotFound("No risks found for the provided reviewer ID.");
+                return Ok(risks);
             }
 
-            // Return the risks in ApprovalDTO format
             return Ok(risks);
         }
 
@@ -57,13 +56,11 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         [HttpPut("update-review-status")]
         public async Task<IActionResult> UpdateReviewStatusOnly(int riskId, string approvalStatus)
         {
-            // Validate input
             if (string.IsNullOrEmpty(approvalStatus) || !new[] { "approved", "rejected" }.Contains(approvalStatus.ToLower()))
             {
                 return BadRequest("Invalid approval status.");
             }
 
-            // Update review status using repository
             bool updateSuccess = await _approvalRepository.UpdateReviewStatusAsync(riskId, approvalStatus);
 
             if (!updateSuccess)
@@ -111,30 +108,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
-        //[HttpPut("update-review/{riskId}")]
-        //public async Task<IActionResult> UpdateReviewStatusAndComments(int riskId, [FromBody] ReviewUpdateDTO updateRequest)
-        //{
-        //    if (updateRequest == null)
-        //    {
-        //        return BadRequest("Invalid data.");
-        //    }
-
-        //    // Call the method to update the review status
-        //    bool statusUpdated = await _approvalRepository.UpdateReviewStatusAsync(riskId, updateRequest.ApprovalStatus);
-        //    if (!statusUpdated)
-        //    {
-        //        return NotFound("Risk or review not found for status update.");
-        //    }
-
-        //    // Call the method to update the review comment
-        //    bool commentUpdated = await _approvalRepository.UpdateReviewCommentByRiskIdAsync(riskId, updateRequest.Comments);
-        //    if (!commentUpdated)
-        //    {
-        //        return NotFound("Risk or review not found for comment update.");
-        //    }
-
-        //    return Ok("Review status and comments updated successfully.");
-        //}
+       
 
         [HttpPut("update-review/{riskId}")]
         public async Task<IActionResult> UpdateReviewStatusAndComments(int riskId, [FromBody] ReviewUpdateDTO updateRequest)

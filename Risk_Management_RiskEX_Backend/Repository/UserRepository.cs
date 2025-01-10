@@ -31,18 +31,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
         {
             try
             {
-                // Begin transaction
                 await using var transaction = await _db.Database.BeginTransactionAsync();
                 try
                 {
-                    // Input validation
                     if (string.IsNullOrWhiteSpace(userDto.Email))
                     {
                         _logger.LogError("User email cannot be empty.");
                         return 0;
                     }
 
-                    // Check for existing user
                     var existingUser = await _db.Users.FirstOrDefaultAsync(u => u.Email == userDto.Email);
                     if (existingUser != null)
                     {
@@ -50,7 +47,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         return 0;
                     }
 
-                    // Validate and get department
                     var department = await _db.Departments
                                     .FirstOrDefaultAsync(d => d.DepartmentName.ToLower() == userDto.DepartmentName.ToLower());
                     if (department == null)
@@ -59,7 +55,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         return 0;
                     }
 
-                    // Create new User entity using AutoMapper
                     var user = _mapper.Map<User>(userDto);
                     user.DepartmentId = department.Id;
                     user.CreatedAt = DateTime.UtcNow;
@@ -68,17 +63,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     var hashedPassword = _userService.GetHashedPassword(DEFAULT_PASSWORD);
                     user.Password = hashedPassword;
 
-                    // Handle project associations if provided
-                    if (userDto.ProjectNames != null && userDto.ProjectNames.Any())
+                    if (userDto.ProjectIds != null && userDto.ProjectIds.Any())
                     {
                         var projects = await _db.Projects
-                            .Where(p => userDto.ProjectNames.Contains(p.Name))
+                            .Where(p => userDto.ProjectIds.Contains(p.Id))
                             .ToListAsync();
 
-                        // Verify all project names were found
-                        var foundProjectNames = projects.Select(p => p.Name).ToList();
-                        var missingProjects = userDto.ProjectNames
-                            .Where(name => !foundProjectNames.Contains(name, StringComparer.OrdinalIgnoreCase))
+                        var foundProjectIds = projects.Select(p => p.Id).ToList();
+                        var missingProjects = userDto.ProjectIds
+                            .Where(Id => !foundProjectIds.Contains(Id))
                             .ToList();
 
                         if (missingProjects.Any())
@@ -89,14 +82,11 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         user.Projects = projects;
                     }
 
-                    // Add user to database
                     await _db.Users.AddAsync(user);
                     await _db.SaveChangesAsync();
 
-                    // Important: Commit the transaction before sending email
                     await transaction.CommitAsync();
 
-                    // Send welcome email after transaction is committed
                     try
                     {
                         await _emailService.SendEmail(
@@ -112,7 +102,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     catch (Exception emailEx)
                     {
                         _logger.LogWarning($"Failed to send welcome email: {emailEx.Message}");
-                        // Don't rollback transaction for email failure
                     }
 
                     return user.Id;

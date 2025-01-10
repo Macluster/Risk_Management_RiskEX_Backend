@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Interfaces;
@@ -10,9 +11,11 @@ namespace Risk_Management_RiskEX_Backend.Repository
     public class ApprovalsRepository : IApprovalRepository
     {
         private readonly ApplicationDBContext _db;
-        public ApprovalsRepository(ApplicationDBContext db)
+        private readonly IRiskRepository _riskRepository;
+        public ApprovalsRepository(ApplicationDBContext db, IRiskRepository riskRepository)
         {
             _db = db;
+            _riskRepository = riskRepository;
         }
 
         public async Task<IEnumerable<Review>> GetReviewByRiskIdAsync(int riskId)
@@ -22,7 +25,20 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 .ThenInclude(ra => ra.Review)
                 .FirstOrDefaultAsync(r => r.Id == riskId);
 
-            return risk?.RiskAssessments?.Select(ra => ra.Review).ToList();
+            if (risk == null || risk.RiskAssessments == null)
+            {
+                return Enumerable.Empty<Review>();
+            }
+
+            // Select distinct reviews based on Review.Id
+            var distinctReviews = risk.RiskAssessments
+                .Where(ra => ra.Review != null) 
+                .Select(ra => ra.Review)
+                .GroupBy(review => review.Id)
+                .Select(group => group.First())
+                .ToList();
+
+            return distinctReviews;
         }
 
         public async Task<IEnumerable<RiskDetailsDTO>> GetRiskDetailsToReviewAsync()
@@ -41,15 +57,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     RiskName = ra.Risk.RiskName,
                     RiskDepartment = ra.Risk.Department.DepartmentName,
                     Description = ra.Risk.Description,
-                    RiskType = ra.Risk.RiskType,  // Keep enum as it is
+                    RiskType = ra.Risk.RiskType, 
                     PlannedActionDate = ra.Risk.PlannedActionDate,
                     OverallRiskRating = ra.Risk.OverallRiskRatingAfter ?? ra.Risk.OverallRiskRatingBefore,
-                    RiskStatus = ra.Risk.RiskStatus,  // Keep enum as it is
+                    RiskStatus = ra.Risk.RiskStatus, 
                     ReviewerName = r.UserId.HasValue ? r.User.FullName : r.ExternalReviewer.FullName,
                     ReviewerDepartment = r.UserId.HasValue ? r.User.Department.DepartmentName : r.ExternalReviewer.Department.DepartmentName
                 }))
-                 .GroupBy(r => r.Id) // Group by the risk Id to ensure distinct records
-                .Select(g => g.First()) // Select the first record from each group
+                 .GroupBy(r => r.Id) 
+                .Select(g => g.First()) 
                 .ToListAsync();
 
             // After fetching the data, convert enums to strings in memory
@@ -60,10 +76,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 RiskName = r.RiskName,
                 RiskDepartment = r.RiskDepartment,
                 Description = r.Description,
-                RiskType = Enum.GetName(typeof(RiskType), r.RiskType),  // Convert enum to string here
+                RiskType = Enum.GetName(typeof(RiskType), r.RiskType),  
                 PlannedActionDate = r.PlannedActionDate,
                 OverallRiskRating = (int)r.OverallRiskRating,
-                RiskStatus = Enum.GetName(typeof(RiskStatus), r.RiskStatus),  // Convert enum to string here
+                RiskStatus = Enum.GetName(typeof(RiskStatus), r.RiskStatus), 
                 ReviewerName = r.ReviewerName,
                 ReviewerDepartment = r.ReviewerDepartment
             }).ToList();
@@ -144,7 +160,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             (r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending))
                 .Include(r => r.RiskAssessments)
                 .ThenInclude(ra => ra.Risk)
-                .ThenInclude(risk => risk.Department) // Ensure Department is included
+                .ThenInclude(risk => risk.Department) 
                 .ToListAsync();
 
             Console.WriteLine($"Found {reviews.Count} reviews for userId {userId.Value}.");
@@ -177,72 +193,63 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 OverallRiskRating = risk.OverallRiskRatingAfter ?? risk.OverallRiskRatingBefore,
                 PlannedActionDate = risk.PlannedActionDate,
                 RiskStatus = Enum.GetName(typeof(RiskStatus), risk.RiskStatus) ?? "Unknown",
-                DepartmentName = risk.Department?.DepartmentName ?? "No Department" // Include DepartmentName
+                DepartmentName = risk.Department?.DepartmentName ?? "No Department"
             }).ToList();
 
             return approvalDTOs;
+
+            
         }
 
+        public async Task<Review> GetReviewBasedPostOrPre(int riskId,bool isMitigated)
+        {
+           
+            var risk = await _db.Risks
+            .Include(r => r.RiskAssessments.Where(ra => ra.IsMitigated==isMitigated)) 
+            .ThenInclude(ra => ra.Review) 
+            .FirstOrDefaultAsync(r => r.Id == riskId);
 
+
+            return risk?.RiskAssessments?.Select(ra => ra.Review).FirstOrDefault();
+            
+        }
 
         public async Task<bool> UpdateReviewStatusAsync(int riskId, string approvalStatus)
         {
-            var review = await GetReviewByRiskIdAsync(riskId);
-            Review tempReview = null; 
+        
+            dynamic mitigationStatus = await _riskRepository.GetMitigationStatusOfARisk(riskId);
+
+
+            var review = await GetReviewBasedPostOrPre(riskId, mitigationStatus.isMitigated);
+
 
             if (review == null)
             {
                 return false; 
             }
-            if (review.Count() == 1)
-            {
+          
                 switch (approvalStatus.ToLower())
                 {
                     case "approved":
-                        if (review.ElementAt(0).ReviewStatus == ReviewStatus.ReviewPending)
+                        if (review.ReviewStatus == ReviewStatus.ReviewPending)
                         {
-                            review.ElementAt(0).ReviewStatus = ReviewStatus.ReviewCompleted;
+                            review.ReviewStatus = ReviewStatus.ReviewCompleted;
                         }
-                        else if (review.ElementAt(0).ReviewStatus == ReviewStatus.ApprovalPending)
+                        else if (review.ReviewStatus == ReviewStatus.ApprovalPending)
                         {
-                            review.ElementAt(0).ReviewStatus = ReviewStatus.ApprovalCompleted;
+                            review.ReviewStatus = ReviewStatus.ApprovalCompleted;
                         }
                         break;
 
                     case "rejected":
-                        review.ElementAt(0).ReviewStatus = ReviewStatus.Rejected;
+                        review.ReviewStatus = ReviewStatus.Rejected;
                         break;
 
                     default:
                         return false;
                 }
-                tempReview = review.ElementAt(0);
-            }
-            else
-            {
-                switch (approvalStatus.ToLower())
-                {
-                    case "approved":
-                        if (review.ElementAt(1).ReviewStatus == ReviewStatus.ReviewPending)
-                        {
-                            review.ElementAt(1).ReviewStatus = ReviewStatus.ReviewCompleted;
-                        }
-                        else if (review.ElementAt(1).ReviewStatus == ReviewStatus.ApprovalPending)
-                        {
-                            review.ElementAt(1).ReviewStatus = ReviewStatus.ApprovalCompleted;
-                        }
-                        break;
-
-                    case "rejected":
-                        review.ElementAt(1).ReviewStatus = ReviewStatus.Rejected;
-                        break;
-
-                    default:
-                        return false;
-                }
-                tempReview = review.ElementAt(1);
-
-            }
+              
+           
             //switch (approvalStatus.ToLower())
             //{
             //    case "approved":
@@ -264,24 +271,36 @@ namespace Risk_Management_RiskEX_Backend.Repository
             //        return false; 
             //}
 
-            _db.Reviews.Update(tempReview);
+            _db.Reviews.Update(review);
             await _db.SaveChangesAsync();
 
             return true;
         }
         public async Task<bool> UpdateReviewCommentByRiskIdAsync(int riskId, string comments)
         {
-            
-            var review = await _db.Set<RiskAssessment>()
-                                       .Where(ra => ra.RiskId == riskId)
-                                       .Select(ra => ra.Review)
-                                       .FirstOrDefaultAsync();
-
+            var review = await GetReviewByRiskIdAsync(riskId);
             if (review == null)
-                return false; 
+                return false;
+
+            if (review.Count() == 1)
+            {
+                review.ElementAt(0).Comments = comments;
+            }
+            else if(review.Count() == 2)
+            {
+                review.ElementAt(1).Comments = comments;
+            }
+
+            //    var review = await _db.Set<RiskAssessment>()
+            //                           .Where(ra => ra.RiskId == riskId)
+            //                           .Select(ra => ra.Review)
+            //                           .FirstOrDefaultAsync();
+
+            //if (review == null)
+            //    return false; 
 
             
-            review.Comments = comments;
+            //review.Comments = comments;
 
             
             await _db.SaveChangesAsync();

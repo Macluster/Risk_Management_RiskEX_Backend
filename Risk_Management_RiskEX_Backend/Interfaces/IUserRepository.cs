@@ -11,7 +11,6 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task<Object> GetNameAndEmailOfAUserbyRiskid(int riskId);
         Task<Object> GetInfoOfAssigneeByRiskId(int riskId);
         Task<List<User>> GetAllUsersWithDetailsAsync();
-        //Task<IEnumerable<object>> GetUsersByDepartmentNameAsync(string departmentName);
         Task<List<User>> GetUsersByDepartmentNameAsync(string departmentName);
 
         Task<List<User>> GetUsersByDepartmentIdAsync(int departmentId);

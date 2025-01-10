@@ -20,7 +20,6 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         [HttpPost("ChangePassword/{userId}")]
         public async Task<IActionResult> ChangePassword(int userId, [FromBody] ChangePasswordRequestDTO request, PasswordService _passwordService)
         {
-            // Validate request
             if (string.IsNullOrEmpty(request.CurrentPassword) || string.IsNullOrEmpty(request.NewPassword) || string.IsNullOrEmpty(request.ConfirmPassword))
             {
                 return BadRequest(new { message = "All fields are required." });
@@ -31,7 +30,6 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return BadRequest(new { message = "New Password and Confirm Password do not match." });
             }
 
-            // Fetch the user from the database
             var user = await _accountRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
@@ -39,14 +37,12 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
 
             bool isPasswordVerified = _passwordService.VerifyPassword(user.Password, request.CurrentPassword);
-            // Check if the current password matches the stored password (hashing recommended)
-            if (!isPasswordVerified) // Replace this with password hashing logic
+            if (!isPasswordVerified)
             {
                 return BadRequest(new { message = "Incorrect current password." });
             }
 
-            // Update the password
-            user.Password=_passwordService.HashPassword(request.NewPassword) ; // Replace this with password hashing logic
+            user.Password=_passwordService.HashPassword(request.NewPassword) ;
             await _accountRepository.UpdateUserPasswordAsync(user);
 
             return Ok(new { message = "Password changed successfully." });

@@ -29,12 +29,13 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task<Risk> EditSecurityOrPrivacyRiskAsync(int id, RiskDTO riskDto);
         Task<Risk> UpdateQualityRiskAsync(int riskId, RiskUpdateDTO riskUpdateDto);
         Task<Risk> UpdateSecurityOrPrivacyRiskAsync(int riskId, RiskUpdateDTO riskUpdateDto);
-        Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCountsByDepartments(List<int> departmentIds);
+        Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCountsByDepartments(List<int> departmentIds, List<int> projectids);
         Task<Object> GetRiskByAssigneeId(int id);
-        Task<Object> RiskApproachingDeadline(int? id);
-        Task<Object> GetRiskWithHeighestOverallRationg(int? id);
-        Task<ICollection<OpenRiskCountByTypeDTO>> GetOpenRiskCountByType(int? id);
+        Task<Object> RiskApproachingDeadline(List<int> departmentIds, List<int> projectids);
+        Task<Object> GetRiskWithHeighestOverallRationg(List<int> departmentIds, List<int> projectids);
+        Task<ICollection<OpenRiskCountByTypeDTO>> GetOpenRiskCountByType(List<int> departmentIds, List<int> projectids);
         Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCounts(int?id);
+        Task<object> GetAllRiskAssigned();
 
         Task<string> SetAndGetRiskIdByDepartmentAsync(int departmentId);
 
