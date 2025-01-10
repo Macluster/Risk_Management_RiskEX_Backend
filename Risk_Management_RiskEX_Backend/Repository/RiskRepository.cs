@@ -532,7 +532,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
                     if (existingRisk.RiskStatus == RiskStatus.close)
                     {
-                        throw new UnauthorizedAccessException($"Risk with ID {riskId} is already closed and cannot be updated.");
+                        throw new UnauthorizedAccessException($"This risk is already closed and cannot be updated.");
                     }
 
                     // Update Risk properties 
