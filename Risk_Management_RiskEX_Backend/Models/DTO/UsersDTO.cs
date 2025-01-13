@@ -15,6 +15,6 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
         [Required]
         public string DepartmentName { get; set; }
 
-        public List<string>? ProjectNames { get; set; } 
+        public List<int>? ProjectIds { get; set; } 
     }
 }

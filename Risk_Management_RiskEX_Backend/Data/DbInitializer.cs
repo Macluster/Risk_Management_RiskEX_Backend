@@ -37,25 +37,10 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 1,
                     Email = "admin@gmail.com",
-                    Password = "admin@123", // In production, use hashed passwords
+                    Password = "admin@123",
                     FullName = "System Admin",
                     DepartmentId = 17,
                     IsActive = true,
-                    //CreatedBy = 1,
-                    //UpdatedBy = 1,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new User
-                {
-                    Id = 2,
-                    Email = "risk.manager@riskex.com",
-                    Password = "Risk@123",
-                    FullName = "Risk Manager",
-                    DepartmentId = 1,
-                    IsActive = true,
-                    //CreatedBy = 1,
-                    //UpdatedBy = 1,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
@@ -67,7 +52,6 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 1,
                     Basis = "Confidentiality",
-               
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -75,7 +59,6 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 2,
                     Basis = "Integrity",
-    
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -83,7 +66,6 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 3,
                     Basis = "Availability",
- 
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -91,7 +73,6 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 4,
                     Basis = "Privacy",
-
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
@@ -104,7 +85,6 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 1,
                     Name = "Data Center Migration",
                     DepartmentId = 1,
-                    UserId = 1,
                     CreatedById = 1,
                     UpdatedById = 1,
                     CreatedAt = DateTime.UtcNow,
@@ -115,7 +95,6 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 2,
                     Name = "HR Inventory",
                     DepartmentId = 2,
-                    UserId = 2,
                     CreatedById = 1,
                     UpdatedById = 1,
                     CreatedAt = DateTime.UtcNow,
@@ -139,7 +118,6 @@ namespace Risk_Management_RiskEX_Backend.Data
                     AssessmentFactor = "Medium",
                     Impact = 20.0,  
                     Definition = "business objectives affected",
-
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },

@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Interfaces;
-using Risk_Management_RiskEX_Backend.Models.DTO;
 using Risk_Management_RiskEX_Backend.Models;
+using Risk_Management_RiskEX_Backend.Models.DTO;
 using Risk_Management_RiskEX_Backend.Repository;
-using Microsoft.AspNetCore.Http;
 using Risk_Management_RiskEX_Backend.Services;
 
 
@@ -134,7 +129,7 @@ namespace RiskManagement
                 FullName = "New User",
                 Email = "new@test.com",
                 DepartmentName = "Non-Existent Department",
-                ProjectNames = new List<string> { "Test Project" }
+                ProjectIds = new List<int> { 1 }
             };
 
             // Act
@@ -154,7 +149,7 @@ namespace RiskManagement
                 FullName = "New User",
                 Email = "new@test.com",
                 DepartmentName = department.DepartmentName,
-                ProjectNames = new List<string> { "Non-Existent Project" }
+                ProjectIds = new List<int> { 1 }
             };
 
             // Act

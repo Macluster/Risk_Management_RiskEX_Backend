@@ -12,18 +12,15 @@ namespace Risk_Management_RiskEX_Backend.Models
 
         public string? ProjectCode { get; set; }
         public int DepartmentId { get; set; }
-        public int? UserId { get; set; }
 
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
 
-        [ForeignKey("UserId")]
-        public virtual User User { get; set; }
 
-     
+        public ICollection<User> Users { get; set; }
 
         public ICollection<Risk> Risks { get; set; }
 
-        public ICollection<User> Users { get; set; }
+        
     }
 }

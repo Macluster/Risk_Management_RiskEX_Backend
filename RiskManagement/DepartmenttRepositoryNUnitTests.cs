@@ -11,7 +11,7 @@ using Risk_Management_RiskEX_Backend.Repository;
 using Microsoft.AspNetCore.Http;
 
 
-namespace Risk_Management_RiskEX_Backend.Tests
+namespace RiskManagement
 {
     [TestFixture]
     public class DepartmentRepositoryTests

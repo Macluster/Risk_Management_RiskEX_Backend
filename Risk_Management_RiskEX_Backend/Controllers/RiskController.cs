@@ -126,8 +126,8 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    message = "An unexpected error occurred. Please try again later.",
-                    details = ex.Message
+                    message = "An unexpected error occurred while processing your request.Please ensure all mandatory fields are filled. If the issue persists, contact the administrator or Please try again later",
+                    //details = ex.Message
                 });
             }
         }
@@ -235,16 +235,15 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
-           
 
-       
+
+
         [HttpGet("RiskCategoryCountByDepartment")]
-        public async Task<IActionResult> GetRiskCategoryCountsForDepartments([FromQuery] List<int> departmentIds)
+        public async Task<IActionResult> GetRiskCategoryCountsForDepartments([FromQuery] List<int> departmentIds, [FromQuery] List<int> projectIds)
         {
-            var result = await _riskRepository.GetRiskCategoryCountsByDepartments(departmentIds);
+            var result = await _riskRepository.GetRiskCategoryCountsByDepartments(departmentIds, projectIds);
             return Ok(result);  // Return the results in JSON format
         }
-
 
 
 
@@ -470,25 +469,25 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
         [HttpGet("GetRiskApproachingDeadline")]
-        public async Task<IActionResult> RiskApproachingDeadline([FromQuery] List<int> departmentIds)
+        public async Task<IActionResult> RiskApproachingDeadline([FromQuery] List<int> departmentIds, [FromQuery] List<int> projectIds)
         {
 
-            var risks = await _riskRepository.RiskApproachingDeadline(departmentIds);
+            var risks = await _riskRepository.RiskApproachingDeadline(departmentIds, projectIds);
             return Ok(risks);
         }
 
         [HttpGet("GetRiskWithHeighestOverallRationg")]
-        public async Task<IActionResult> GetRiskWithHeighestOverallRationg([FromQuery] List<int> departmentIds)
+        public async Task<IActionResult> GetRiskWithHeighestOverallRationg([FromQuery] List<int> departmentIds, [FromQuery] List<int> projectIds)
         {
 
-            var risks = await _riskRepository.GetRiskWithHeighestOverallRationg(departmentIds);
+            var risks = await _riskRepository.GetRiskWithHeighestOverallRationg(departmentIds, projectIds);
             return Ok(risks);
         }
 
         [HttpGet("CountOfRiskType(Open)")]
-        public async Task<IActionResult> GetOpenRiskCountByType([FromQuery] List<int> departmentIds)
+        public async Task<IActionResult> GetOpenRiskCountByType([FromQuery] List<int> departmentIds, [FromQuery] List<int> projectIds)
         {
-            var riskTypeCounts = await _riskRepository.GetOpenRiskCountByType(departmentIds);
+            var riskTypeCounts = await _riskRepository.GetOpenRiskCountByType(departmentIds, projectIds);
             return Ok(riskTypeCounts);
 
         }

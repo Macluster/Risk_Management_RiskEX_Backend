@@ -18,38 +18,20 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         [HttpGet("Approval{userId}")]
         public async Task<ActionResult<IEnumerable<ApprovalDTO>>> GetRisksByReviewerId( int? userId)
         {
-            // Validate input
+      
             if (!userId.HasValue)
             {
                 return BadRequest("User ID must be provided.");
             }
 
-            // Fetch risks using the repository
             var risks = await _approvalRepository.GetRisksByReviewerAsync(userId);
 
             if (risks == null || !risks.Any())
             {
-                return NotFound("No risks found for the provided reviewer ID.");
+                //return NotFound("No risks found for the provided reviewer ID.");
+                return Ok(risks);
             }
 
-            // Return the risks in ApprovalDTO format
-            return Ok(risks);
-        }
-
-        [HttpGet("reiviews{riskId}")]
-        public async Task<ActionResult<IEnumerable<ApprovalDTO>>> GetReviewByRiskIdAsync(int riskId)
-        {
-            
-
-            // Fetch risks using the repository
-            var risks = await _approvalRepository.GetReviewByRiskIdAsync(riskId);
-
-            if (risks == null || !risks.Any())
-            {
-                return NotFound("No risks found for the provided reviewer ID.");
-            }
-
-            // Return the risks in ApprovalDTO format
             return Ok(risks);
         }
 
@@ -74,13 +56,11 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         [HttpPut("update-review-status")]
         public async Task<IActionResult> UpdateReviewStatusOnly(int riskId, string approvalStatus)
         {
-            // Validate input
             if (string.IsNullOrEmpty(approvalStatus) || !new[] { "approved", "rejected" }.Contains(approvalStatus.ToLower()))
             {
                 return BadRequest("Invalid approval status.");
             }
 
-            // Update review status using repository
             bool updateSuccess = await _approvalRepository.UpdateReviewStatusAsync(riskId, approvalStatus);
 
             if (!updateSuccess)
@@ -128,7 +108,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
-
+       
 
         [HttpPut("update-review/{riskId}")]
         public async Task<IActionResult> UpdateReviewStatusAndComments(int riskId, [FromBody] ReviewUpdateDTO updateRequest)
