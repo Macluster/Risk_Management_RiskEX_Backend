@@ -72,20 +72,19 @@ builder.Services.AddScoped<PasswordService>();
 
 builder.Services.AddSwaggerGen(option => {
 
-{
->>>>>>> a4034362876d63aa4ecb6924ae0b82df63496daf
-    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description =
-             "JWT Authorization header using the Bearer scheme. \r\n\r\n " +
-             "Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\n" +
-             "Example: \"Bearer 12345abcdef\"",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-    option.AddSecurityRequirement(new OpenApiSecurityRequirement()
+        option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description =
+                 "JWT Authorization header using the Bearer scheme. \r\n\r\n " +
+                 "Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\n" +
+                 "Example: \"Bearer 12345abcdef\"",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer"
+        });
+        option.AddSecurityRequirement(new OpenApiSecurityRequirement()
                 {
                     {
                         new OpenApiSecurityScheme
@@ -104,8 +103,9 @@ builder.Services.AddSwaggerGen(option => {
                     }
                 });
 
-
+    }
 });
+
 
 builder.Services.AddAuthentication(x =>
 {
