@@ -15,20 +15,23 @@ namespace Risk_Management_RiskEX_Backend.Services
         }
         public async Task SendEmail(string receptor,string subject,string body) 
         {
-            var email = configuration.GetValue<string>("EMAIL_CONFIGURATION:EMAIL");
-            var password = configuration.GetValue<string>("EMAIL_CONFIGURATION:PASSWORD");
+            //var email = configuration.GetValue<string>("EMAIL_CONFIGURATION:EMAIL");
+            //var password = configuration.GetValue<string>("EMAIL_CONFIGURATION:PASSWORD");
             var host = configuration.GetValue<string>("EMAIL_CONFIGURATION:HOST");
             var port = configuration.GetValue<int>("EMAIL_CONFIGURATION:PORT");
 
             var smtpClient = new SmtpClient(host,port);
             smtpClient.EnableSsl = true;
             smtpClient.UseDefaultCredentials = false;
-            string emaill = Environment.GetEnvironmentVariable("EMAIL");
-            string passwordd = Environment.GetEnvironmentVariable("PASSWORD");
-            smtpClient.Credentials =  new NetworkCredential(emaill, passwordd);
+
+
+
+            string email = Environment.GetEnvironmentVariable("EMAIL");
+            string password = Environment.GetEnvironmentVariable("PASSWORD");
+            smtpClient.Credentials =  new NetworkCredential(email, password);
          
 
-            var message = new MailMessage(emaill!, receptor, subject, body);
+            var message = new MailMessage(email!, receptor, subject, body);
             message.IsBodyHtml = true;
             await smtpClient.SendMailAsync(message);
 
