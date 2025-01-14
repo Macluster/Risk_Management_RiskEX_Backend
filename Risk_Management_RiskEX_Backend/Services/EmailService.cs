@@ -23,10 +23,10 @@ namespace Risk_Management_RiskEX_Backend.Services
             var smtpClient = new SmtpClient(host,port);
             smtpClient.EnableSsl = true;
             smtpClient.UseDefaultCredentials = false;
-
-            smtpClient.Credentials =  new NetworkCredential(email, password);
             string emaill = Environment.GetEnvironmentVariable("EMAIL");
             string passwordd = Environment.GetEnvironmentVariable("PASSWORD");
+            smtpClient.Credentials =  new NetworkCredential(emaill, passwordd);
+         
 
             var message = new MailMessage(emaill!, receptor, subject, body);
             message.IsBodyHtml = true;
