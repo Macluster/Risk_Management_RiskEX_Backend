@@ -25,8 +25,10 @@ namespace Risk_Management_RiskEX_Backend.Services
             smtpClient.UseDefaultCredentials = false;
 
             smtpClient.Credentials =  new NetworkCredential(email, password);
+            string emaill = Environment.GetEnvironmentVariable("EMAIL");
+            string passwordd = Environment.GetEnvironmentVariable("PASSWORD");
 
-            var message = new MailMessage(email!, receptor, subject, body);
+            var message = new MailMessage(emaill!, receptor, subject, body);
             message.IsBodyHtml = true;
             await smtpClient.SendMailAsync(message);
 
