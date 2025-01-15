@@ -21,7 +21,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             _emailService = emailService;
             _db = db;
             _userRepository = userRepository;
-            
+
         }
 
         // Assuming you are using Entity Framework Core (EF Core)
@@ -88,7 +88,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             ";
 
             // Send email
-            await _emailService.SendEmail(responsibleUserDetails.Email,subject,body);
+            await _emailService.SendEmail(responsibleUserDetails.Email, subject, body);
 
             return true;
         }

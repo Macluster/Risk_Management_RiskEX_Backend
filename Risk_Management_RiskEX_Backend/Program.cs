@@ -31,9 +31,9 @@ builder.Services.AddDbContext<ApplicationDBContext>((serviceProvider, options) =
 
 builder.Services.AddScoped<ApplicationDBContext>((serviceProvider) =>
 {
-   var options = serviceProvider.GetRequiredService<DbContextOptions<ApplicationDBContext>>();
-   var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
-   return new ApplicationDBContext(options, httpContextAccessor);
+    var options = serviceProvider.GetRequiredService<DbContextOptions<ApplicationDBContext>>();
+    var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+    return new ApplicationDBContext(options, httpContextAccessor);
 });
 
 builder.Services.AddTransient<IEmailService, EmailService>();
@@ -102,9 +102,8 @@ builder.Services.AddSwaggerGen(option =>
                     }
                 });
 
-    }
-});
 
+});
 
 builder.Services.AddAuthentication(x =>
 {
