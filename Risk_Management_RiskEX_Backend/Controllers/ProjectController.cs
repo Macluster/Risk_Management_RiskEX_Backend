@@ -22,7 +22,20 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         [HttpGet("ProjectsBy/{departmentName}")]
         public async Task<IActionResult> GetProjectsByDepartment(string departmentName)
         {
-            var projects = await _projectRepository.GetProjectsByDepartment(departmentName);
+            try
+            {
+                var projects = await _projectRepository.GetProjectsByDepartment(departmentName);
+                return Ok(projects ?? Enumerable.Empty<object>());
+            }
+            catch (Exception ex)
+            {
+                return Ok(Enumerable.Empty<object>());  
+            }
+        }
+        [HttpGet("projects/{departmentId}")]
+        public async Task<IActionResult> GetProjectsByDepartmentId(int departmentId)
+        {
+            var projects = await _projectRepository.GetProjectsByDepartmentId(departmentId);
             if (projects.Any())
             {
                 return Ok(projects);
