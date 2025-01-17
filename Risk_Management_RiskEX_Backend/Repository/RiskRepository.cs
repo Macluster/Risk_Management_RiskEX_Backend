@@ -103,7 +103,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                throw new Exception("An unexpected error occurred while adding risk: " + ex.Message, ex);
+
+               
+              
+
+                // Throw a user-friendly message
+                throw new Exception("An unexpected error occurred while processing your request.Please ensure all mandatory fields are filled. If the issue persists, contact the administrator or Please try again later");
             }
         }
 
@@ -530,7 +535,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
                     if (existingRisk.RiskStatus == RiskStatus.close)
                     {
-                        throw new UnauthorizedAccessException($"Risk with ID {riskId} is already closed and cannot be updated.");
+                        throw new UnauthorizedAccessException($"This risk is already closed and cannot be updated.");
                     }
 
                     // Update Risk properties 
