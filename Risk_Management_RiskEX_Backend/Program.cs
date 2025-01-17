@@ -71,7 +71,7 @@ builder.Services.AddScoped<PasswordService>();
 builder.Services.AddSwaggerGen(option =>
 
 {
-
+    
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description =
