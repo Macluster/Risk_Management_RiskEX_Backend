@@ -502,21 +502,31 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
 
 
-        [HttpGet("riskid/new/{departmentId}")]
-        public async Task<ActionResult<string>> SetAndGetRiskId(int departmentId)
+        [HttpGet("riskid/new/Id")]
+        public async Task<ActionResult<string>> SetAndGetRiskId(int departmentId, int? projectId = null)
         {
             try
             {
-                string riskId = await _riskRepository.SetAndGetRiskIdByDepartmentAsync( departmentId);
-                return Ok(new { riskId = riskId });
+                // Call the repository method with departmentId and optional projectId
+                string riskId = await _riskRepository.SetAndGetRiskIdAsync(departmentId, projectId);
+
+                // Return the generated RiskId
+                return Ok(new { riskId });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(ex.Message);
+                // Handle invalid input
+                return BadRequest(new { message = ex.Message });
             }
             catch (InvalidOperationException ex)
             {
-                return StatusCode(500, ex.Message);
+                // Handle internal processing errors
+                return StatusCode(500, new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Catch-all for unexpected errors
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
     }
