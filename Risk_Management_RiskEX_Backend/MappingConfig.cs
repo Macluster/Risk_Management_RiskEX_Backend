@@ -93,8 +93,8 @@ namespace Risk_Management_RiskEX_Backend
                       .ForMember(dest => dest.CreatedReviews, opt => opt.Ignore())
                       .ForMember(dest => dest.UpdatedReviews, opt => opt.Ignore())
                       .ForMember(dest => dest.CreatedUsers, opt => opt.Ignore())
-                       .ForMember(dest => dest.UpdatedUsers, opt => opt.Ignore())
-                       .ForMember(dest => dest.Reviews, opt => opt.Ignore());
+                      .ForMember(dest => dest.UpdatedUsers, opt => opt.Ignore())
+                      .ForMember(dest => dest.Reviews, opt => opt.Ignore());
 
 
             CreateMap<RiskResponseDTO, Risk>().ReverseMap();
