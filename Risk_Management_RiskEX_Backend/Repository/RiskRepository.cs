@@ -694,11 +694,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
             .FirstOrDefaultAsync();
             var isMitigated = await _db.Assessments
             .AnyAsync(e => e.RiskId == id && e.IsMitigated);
+
+
+            var date=await _db.Assessments.Where(e=>e.RiskId==id&&e.IsMitigated) .FirstOrDefaultAsync();
             if (isMitigated)
             {
                 return new
                 {
                     actionBy = responsibleUser?.FullName,
+                    date = date.CreatedAt,
                     isMitigated = true
                 };
             }
