@@ -1179,13 +1179,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
             // Generate the base RiskId based on department and project codes
             string baseRiskId = await GenerateBaseRiskId(departmentId, projectId);
 
-            // Query for the latest RiskId based on the provided department and project
-            var latestRisksQuery = _db.Risks.Where(r => r.DepartmentId == departmentId);
-
-            if (projectId.HasValue)
-            {
-                latestRisksQuery = latestRisksQuery.Where(r => r.ProjectId == projectId.Value);
-            }
+            // Query for the latest RiskId matching the baseRiskId
+            var latestRisksQuery = _db.Risks.Where(r => r.RiskId.StartsWith(baseRiskId));
 
             // Fetch the latest risks ordered by RiskId
             var latestRisks = await latestRisksQuery
@@ -1248,26 +1243,27 @@ namespace Risk_Management_RiskEX_Backend.Repository
             // Ensure the RiskId is long enough to contain the baseRiskId
             if (riskId.Length <= baseRiskId.Length || !riskId.StartsWith(baseRiskId))
             {
-                throw new InvalidOperationException("RiskId format does not match the expected baseRiskId.");
+                throw new InvalidOperationException($"RiskId '{riskId}' does not match the expected baseRiskId '{baseRiskId}'.");
             }
 
-            // Extract the numeric part of the RiskId
-            string numericPart = riskId.Substring(baseRiskId.Length);
+            // Extract the part of the RiskId after the baseRiskId
+            string remainingPart = riskId.Substring(baseRiskId.Length);
 
-            // Validate the numeric part
-            if (string.IsNullOrWhiteSpace(numericPart))
+            // Validate the numeric part of the RiskId
+            var parts = remainingPart.Split('_'); // Split by underscores, which separate different parts
+            string numericPart = parts.LastOrDefault(); // Get the last part (numeric)
+
+            // If the numeric part is empty or invalid, throw an exception
+            if (string.IsNullOrWhiteSpace(numericPart) || !int.TryParse(numericPart, out int result))
             {
-                throw new InvalidOperationException("RiskId does not contain a numeric part.");
+                throw new InvalidOperationException($"RiskId '{riskId}' contains an invalid numeric part: '{numericPart}'.");
             }
 
-            // Parse and return the numeric part
-            if (int.TryParse(numericPart, out int result))
-            {
-                return result;
-            }
-
-            throw new InvalidOperationException("Invalid numeric part in RiskId.");
+            return result;
         }
+
+
+
 
 
 
