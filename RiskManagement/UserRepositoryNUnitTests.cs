@@ -28,7 +28,8 @@ namespace RiskManagement
         public void OneTimeSetup()
         {
             // AutoMapper configuration
-            var config = new MapperConfiguration(cfg => {
+            var config = new MapperConfiguration(cfg =>
+            {
                 cfg.CreateMap<UsersDTO, User>()
                     .ForMember(dest => dest.Department, opt => opt.Ignore())
                     .ForMember(dest => dest.Projects, opt => opt.Ignore());
@@ -118,7 +119,7 @@ namespace RiskManagement
             await _context.SaveChangesAsync();
         }
 
-     
+
 
         [Test]
         public async Task AddUserToDepartment_InvalidDepartment_ReturnsZero()
