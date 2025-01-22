@@ -32,11 +32,13 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             // Select distinct reviews based on Review.Id
             var distinctReviews = risk.RiskAssessments
-                .Where(ra => ra.Review != null) 
-                .Select(ra => ra.Review)
-                .GroupBy(review => review.Id)
-                .Select(group => group.First())
-                .ToList();
+                 .Where(ra => ra.Review != null)
+                 .Select(ra => ra.Review)
+                 .GroupBy(review => review.Id)
+                 .Select(group => group.First())
+                 .OrderBy(review => review.CreatedAt) // Replace with the appropriate field
+                 .ToList();
+
 
             return distinctReviews;
         }
@@ -281,14 +283,14 @@ namespace Risk_Management_RiskEX_Backend.Repository
             var review = await GetReviewByRiskIdAsync(riskId);
             if (review == null)
                 return false;
-
-            if (review.Count() == 1)
+            var reviewList = review.ToList();
+            if (reviewList.Count() == 1)
             {
-                review.ElementAt(0).Comments = comments;
+                reviewList[0].Comments = comments;
             }
-            else if(review.Count() == 2)
+            else if(reviewList.Count() == 2)
             {
-                review.ElementAt(1).Comments = comments;
+                reviewList[1].Comments = comments;
             }
 
             //    var review = await _db.Set<RiskAssessment>()
