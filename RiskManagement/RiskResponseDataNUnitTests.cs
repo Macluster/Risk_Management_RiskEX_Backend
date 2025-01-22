@@ -116,5 +116,5 @@ namespace RiskManagement
                 Assert.AreEqual(0, result.Count); // No records exist in the database
             }
         }
-        }
+    }
 }
