@@ -694,11 +694,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
             .FirstOrDefaultAsync();
             var isMitigated = await _db.Assessments
             .AnyAsync(e => e.RiskId == id && e.IsMitigated);
+
+
+            var date=await _db.Assessments.Where(e=>e.RiskId==id&&e.IsMitigated) .FirstOrDefaultAsync();
             if (isMitigated)
             {
                 return new
                 {
                     actionBy = responsibleUser?.FullName,
+                    date = date.CreatedAt,
                     isMitigated = true
                 };
             }
@@ -1165,65 +1169,108 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
 
-        public async Task<string> SetAndGetRiskIdByDepartmentAsync(int departmentId)
+        public async Task<string> SetAndGetRiskIdAsync(int departmentId, int? projectId = null)
         {
             if (departmentId <= 0)
             {
-                throw new ArgumentException("Valid DepartmentId is required.");
+                throw new ArgumentException("A valid DepartmentId is required.");
             }
 
-            // Generate the base RiskId from the department code
-            string baseRiskId = await GenerateBaseRiskId(departmentId);
+            // Generate the base RiskId based on department and project codes
+            string baseRiskId = await GenerateBaseRiskId(departmentId, projectId);
 
-            // Get the latest 5 Risks for the given department
-            var latestRisks = await _db.Risks
-                .Where(r => r.DepartmentId == departmentId)  // Filter by DepartmentId
-                .OrderByDescending(r => r.RiskId)  // Order by RiskId to get the latest ones
-                .Take(5)  // Limit to the latest 5 entries
-                .ToListAsync();  // Fetch the results
+            // Query for the latest RiskId based on the provided department and project
+            var latestRisksQuery = _db.Risks.Where(r => r.DepartmentId == departmentId);
 
-            // If no Risk is found, create a new RiskId starting from _001
-            if (!latestRisks.Any())
+            if (projectId.HasValue)
             {
-                return $"{baseRiskId}001";  // Return the base RiskId with 001
+                latestRisksQuery = latestRisksQuery.Where(r => r.ProjectId == projectId.Value);
             }
 
-            // Extract the numeric part from the latest RiskId
-            int latestNumber = ExtractNumericPartFromRiskId(latestRisks.First().RiskId, baseRiskId) + 1;
+            // Fetch the latest risks ordered by RiskId
+            var latestRisks = await latestRisksQuery
+                .OrderByDescending(r => r.RiskId)
+                .Take(5)
+                .ToListAsync();
 
-            // Return the new RiskId with the incremented numeric part
-            return $"{baseRiskId}{latestNumber:D3}";  // Return with leading zeros (e.g., D1_001, D1_002, etc.)
+            // Filter risks that match the expected baseRiskId format
+            var matchingRisks = latestRisks
+                .Where(r => r.RiskId.StartsWith(baseRiskId))
+                .ToList();
+
+            // If no matching Risk is found, create a new RiskId starting with 001
+            if (!matchingRisks.Any())
+            {
+                return $"{baseRiskId}001";
+            }
+
+            // Extract and increment the numeric part from the latest matching RiskId
+            int latestNumber = ExtractNumericPartFromRiskId(matchingRisks.First().RiskId, baseRiskId) + 1;
+
+            // Return the new RiskId with the incremented number, zero-padded to 3 digits
+            return $"{baseRiskId}{latestNumber:D3}";
         }
 
-        private async Task<string> GenerateBaseRiskId(int departmentId)
+        private async Task<string> GenerateBaseRiskId(int departmentId, int? projectId)
         {
-            // Generate a base RiskId from the department code (e.g., D1_)
-            var department = await _db.Departments.FirstOrDefaultAsync(d => d.Id == departmentId);  // Fetch department
+            // Fetch the department details
+            var department = await _db.Departments.FirstOrDefaultAsync(d => d.Id == departmentId);
             if (department == null)
             {
                 throw new InvalidOperationException("Department not found.");
             }
 
-            var departmentCode = department.DepartmentCode;  // Assuming DepartmentCode is the code (e.g., D1, HR_001, etc.)
+            var departmentCode = department.DepartmentCode?.ToUpper()
+                ?? throw new InvalidOperationException("Department code is missing.");
 
-            // Ensure the department code is in uppercase and followed by an underscore
-            return $"{departmentCode.ToUpper()}_";
+            // Check if a projectId is provided
+            if (projectId.HasValue)
+            {
+                // Fetch the project details
+                var project = await _db.Projects.FirstOrDefaultAsync(p => p.Id == projectId.Value);
+                if (project == null)
+                {
+                    throw new InvalidOperationException("Project not found.");
+                }
+
+                var projectCode = project.ProjectCode?.ToUpper()
+                    ?? throw new InvalidOperationException("Project code is missing.");
+
+                return $"{departmentCode}_{projectCode}_";
+            }
+
+            // If no projectId, return the base RiskId for the department
+            return $"{departmentCode}_";
         }
 
         private int ExtractNumericPartFromRiskId(string riskId, string baseRiskId)
         {
-            // This method extracts the numeric part of the RiskId after the department prefix.
-            string numericPart = riskId.Substring(baseRiskId.Length);  // Extract the part after the department prefix
+            // Ensure the RiskId is long enough to contain the baseRiskId
+            if (riskId.Length <= baseRiskId.Length || !riskId.StartsWith(baseRiskId))
+            {
+                throw new InvalidOperationException("RiskId format does not match the expected baseRiskId.");
+            }
 
-            // Ensure that the numeric part is valid and return it as an integer.
+            // Extract the numeric part of the RiskId
+            string numericPart = riskId.Substring(baseRiskId.Length);
+
+            // Validate the numeric part
+            if (string.IsNullOrWhiteSpace(numericPart))
+            {
+                throw new InvalidOperationException("RiskId does not contain a numeric part.");
+            }
+
+            // Parse and return the numeric part
             if (int.TryParse(numericPart, out int result))
             {
                 return result;
             }
 
-            // If parsing fails, throw an exception or return a default value (optional).
-            throw new InvalidOperationException("Invalid RiskId format detected.");
+            throw new InvalidOperationException("Invalid numeric part in RiskId.");
         }
+
+
+
 
 
 

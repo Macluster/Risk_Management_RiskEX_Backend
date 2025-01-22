@@ -34,7 +34,20 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             .Select(p => new { p.Id, p.Name, p.ProjectCode })
                             .ToListAsync();
         }
+        public async Task<IEnumerable<object>> GetProjectsByDepartmentId(int departmentId)
+        {
+            var department = await _db.Departments
+                                    .FirstOrDefaultAsync(d => d.Id == departmentId);
+            if (department == null)
+            {
+                throw new Exception("Department does not exist.");
+            }
 
+            return await _db.Projects
+                            .Where(p => p.DepartmentId == departmentId)
+                            .Select(p => new { p.Id, p.Name, p.ProjectCode })
+                            .ToListAsync();
+        }
         public async Task<bool> AddProjectToDepartment(ProjectDTO projectDto)
         {
             try
