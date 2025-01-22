@@ -11,7 +11,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
     public class ProjectRepository : IProjectRepository
     {
         private readonly ApplicationDBContext _db;
-        private readonly IMapper _mapper; 
+        private readonly IMapper _mapper;
 
         public ProjectRepository(ApplicationDBContext db, IMapper mapper)
         {
@@ -31,7 +31,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             return await _db.Projects
                             .Where(p => p.DepartmentId == department.Id)
-                            .Select(p => new { p.Id, p.Name,p.ProjectCode })
+                            .Select(p => new { p.Id, p.Name, p.ProjectCode })
                             .ToListAsync();
         }
         public async Task<IEnumerable<object>> GetProjectsByDepartmentId(int departmentId)
@@ -71,7 +71,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     return false;
                 }
 
-               
+
 
                 // Map and set up the project
                 var project = _mapper.Map<Project>(projectDto);
@@ -94,9 +94,9 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<bool> UpdateProjectById(ProjectUpdateRequestDTO projectDto)
         {
-           var project= await  _db.Projects.FirstOrDefaultAsync(e => e.Name==projectDto.ProjectName);
+            var project = await _db.Projects.FirstOrDefaultAsync(e => e.Name == projectDto.ProjectName);
 
-            project.Name=projectDto.NewProjectName;
+            project.Name = projectDto.NewProjectName;
             project.ProjectCode = projectDto.NewProjectCode;
             await _db.SaveChangesAsync();
 
