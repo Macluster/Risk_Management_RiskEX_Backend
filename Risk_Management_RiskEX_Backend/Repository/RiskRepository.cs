@@ -1188,9 +1188,9 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 .Take(5)
                 .ToListAsync();
 
-            // Filter risks that match the expected baseRiskId format
+            // Filter risks that strictly match the expected format
             var matchingRisks = latestRisks
-                .Where(r => r.RiskId.StartsWith(baseRiskId))
+                .Where(r => IsMatchingBaseRiskId(r.RiskId, baseRiskId, projectId.HasValue))
                 .ToList();
 
             // If no matching Risk is found, create a new RiskId starting with 001
@@ -1205,6 +1205,25 @@ namespace Risk_Management_RiskEX_Backend.Repository
             // Return the new RiskId with the incremented number, zero-padded to 3 digits
             return $"{baseRiskId}{latestNumber:D3}";
         }
+
+        private bool IsMatchingBaseRiskId(string riskId, string baseRiskId, bool hasProjectId)
+        {
+            if (!riskId.StartsWith(baseRiskId))
+            {
+                return false;
+            }
+
+            // If projectId is provided, ensure the RiskId includes project-specific parts
+            if (hasProjectId)
+            {
+                return true; // Already matched by `baseRiskId`
+            }
+
+            // If no projectId, ensure the RiskId doesn't have an additional project-specific part
+            string remainingPart = riskId.Substring(baseRiskId.Length);
+            return !remainingPart.Contains("_");
+        }
+
 
         private async Task<string> GenerateBaseRiskId(int departmentId, int? projectId)
         {
