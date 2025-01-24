@@ -15,6 +15,12 @@ namespace Risk_Management_RiskEX_Backend.Services
         }
         public async Task SendEmail(string receptor,string subject,string body) 
         {
+
+
+            if (string.IsNullOrWhiteSpace(receptor))
+            {
+                throw new ArgumentException("Receptor email cannot be null or empty", nameof(receptor));
+            }
             //var email = configuration.GetValue<string>("EMAIL_CONFIGURATION:EMAIL");
             //var password = configuration.GetValue<string>("EMAIL_CONFIGURATION:PASSWORD");
             var host = configuration.GetValue<string>("EMAIL_CONFIGURATION:HOST");
