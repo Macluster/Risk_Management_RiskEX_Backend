@@ -147,7 +147,37 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
+        public async Task<bool> SaveResetToken(string email, string token)
+        {
+            var resetToken = new PasswordResetToken
+            {
+                Email = email,
+                Token = token,
+                ExpiryDate = DateTime.UtcNow.AddHours(1)
+            };
 
+            _db.PasswordResetTokens.Add(resetToken);
+            return await _db.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> ValidateResetToken(string email, string token)
+        {
+            var tokenEntry = await _db.PasswordResetTokens
+                .FirstOrDefaultAsync(t => t.Email == email && t.Token == token);
+
+            return tokenEntry != null && tokenEntry.ExpiryDate > DateTime.UtcNow;
+        }
+
+        public async Task<bool> UpdateUserPassword(string email, string newPasswordHash)
+        {
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null) return false;
+
+            user.Password = newPasswordHash;
+            _db.Users.Update(user);
+
+            return await _db.SaveChangesAsync() > 0;
+        }
 
 
     }
