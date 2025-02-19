@@ -27,6 +27,11 @@ namespace Risk_Management_RiskEX_Backend.Repository
             _userService = userService;
         }
 
+        public class UserOperationException : Exception
+        {
+            public UserOperationException(string message) : base(message) { }
+        }
+
         public async Task<int> AddUserToDepartment(UsersDTO userDto)
         {
             try
