@@ -146,6 +146,20 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     user.FullName = userDto.FullName;
                 }
 
+                if (!string.IsNullOrWhiteSpace(userDto.DepartmentName))
+                {
+                    var department = await _db.Departments.FirstOrDefaultAsync(d => d.DepartmentName == userDto.DepartmentName);
+                    if (department != null)
+                    {
+                        user.DepartmentId = department.Id; 
+                    }
+                    else
+                    {
+                        _logger.LogError($"Department '{userDto.DepartmentName}' not found.");
+                        return false;
+                    }
+                }
+
                 // Handle project updates (including removal)
                 if (userDto.ProjectIds != null)
                 {
