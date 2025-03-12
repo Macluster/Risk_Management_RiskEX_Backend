@@ -5,6 +5,7 @@ using Risk_Management_RiskEX_Backend.Models.DTO;
 using Risk_Management_RiskEX_Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Risk_Management_RiskEX_Backend.Services;
+using Risk_Management_RiskEX_Backend.congig;
 
 namespace Risk_Management_RiskEX_Backend.Repository
 {
@@ -145,6 +146,20 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     user.FullName = userDto.FullName;
                 }
 
+                if (!string.IsNullOrWhiteSpace(userDto.DepartmentName))
+                {
+                    var department = await _db.Departments.FirstOrDefaultAsync(d => d.DepartmentName == userDto.DepartmentName);
+                    if (department != null)
+                    {
+                        user.DepartmentId = department.Id; 
+                    }
+                    else
+                    {
+                        _logger.LogError($"Department '{userDto.DepartmentName}' not found.");
+                        return false;
+                    }
+                }
+
                 // Handle project updates (including removal)
                 if (userDto.ProjectIds != null)
                 {
@@ -263,7 +278,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return await _db.Users
                 .Include(u => u.Department)  
                 .Include(u => u.Projects)   
-                .Where(u => u.Department.DepartmentName == departmentName && u.Email != "admin@gmail.com") 
+                .Where(u => u.Department.DepartmentName == departmentName && !GlobalConfig.AdminEmails.Contains(u.Email)) 
                 .ToListAsync();
         }
         public async Task<List<User>> GetUsersByDepartmentIdAsync(int departmentId)
@@ -271,7 +286,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return await _db.Users
                 .Include(u => u.Department)
                 .Include(u => u.Projects)
-                .Where(u => u.Department.Id == departmentId && u.Email != "admin@gmail.com")
+                .Where(u => u.Department.Id == departmentId && !GlobalConfig.AdminEmails.Contains(u.Email))
                 .ToListAsync();
         }
 

@@ -6,6 +6,7 @@ using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Models.DTO;
 using System.Threading.Tasks;
+using Risk_Management_RiskEX_Backend.congig;
 
 namespace Risk_Management_RiskEX_Backend.Repository
 {
@@ -67,8 +68,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
            
 
             var users = await _db.Users
-                .Where(u => u.IsActive
-                    && !u.Email.ToLower().Contains("admin"))
+                .Where(u => u.IsActive && !GlobalConfig.AdminEmails.Contains(u.Email))
                 .Select(u => new ReviewerDTO
                 {
                     Id = u.Id,
@@ -79,7 +79,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 .ToListAsync();
 
             var externalReviewers = await _db.ExternalReviewers
-                .Where(er => !er.Email.ToLower().Contains("admin"))
+                .Where(er => !GlobalConfig.AdminEmails.Contains(er.Email))
                 .Select(er => new ReviewerDTO
                 {
                     Id = er.Id,

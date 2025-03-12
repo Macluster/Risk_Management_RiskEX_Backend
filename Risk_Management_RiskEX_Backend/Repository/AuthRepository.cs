@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using Risk_Management_RiskEX_Backend.Services;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Risk_Management_RiskEX_Backend.congig;
 
 namespace Risk_Management_RiskEX_Backend.Repository
 {
@@ -80,7 +81,11 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     new Claim("UserMail", user.Email ?? "Unknown")
                 };
 
-                if (user.Email == "admin@gmail.com")
+                //if (user.Email == "admin@gmail.com")
+                //{
+                //    claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+                //}
+                if (GlobalConfig.IsAdmin(user.Email))
                 {
                     claims.Add(new Claim(ClaimTypes.Role, "Admin"));
                 }
@@ -173,7 +178,11 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     new Claim("UserMail", user.Email ?? "Unknown")
                  };
 
-                if (user.Email == "admin@gmail.com")
+                //if (user.Email == "admin@gmail.com")
+                //{
+                //    claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+                //}
+                if (GlobalConfig.IsAdmin(user.Email))
                 {
                     claims.Add(new Claim(ClaimTypes.Role, "Admin"));
                 }

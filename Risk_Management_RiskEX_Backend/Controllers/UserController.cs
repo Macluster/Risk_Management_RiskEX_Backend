@@ -220,7 +220,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
             if (!result)
             {
-                return BadRequest("User update failed. Email may be already in use.");
+                return BadRequest("User update failed. Email may be already in use or department is not valid");
             }
 
             return Ok(new { message = "User updated successfully." });
