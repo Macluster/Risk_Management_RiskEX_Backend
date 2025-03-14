@@ -226,7 +226,12 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             return Ok(new { message = "User updated successfully." });
         }
 
-
+        [HttpGet("{riskId}/createdBy")]
+        public async Task<IActionResult> GetCreatedByUser(string riskId)
+        {
+            var userName = await _userRepository.GetCreatedByUserNameAsync(riskId);
+        return Ok(userName);
+        }
 
     }
 }

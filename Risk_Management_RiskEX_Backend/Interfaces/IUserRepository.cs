@@ -19,6 +19,8 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
 
         Task<bool> UpdateUser(int userId, UsersDTO userDto);
 
+        Task<string> GetCreatedByUserNameAsync(string riskId);
+
 
     }
 }

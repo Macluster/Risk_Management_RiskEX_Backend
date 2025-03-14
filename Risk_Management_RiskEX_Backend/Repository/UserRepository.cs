@@ -332,6 +332,24 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return user;
 
         }
+
+        public async Task<string> GetCreatedByUserNameAsync(string riskId)
+        {
+            var risk = await _db.Risks
+                .FirstOrDefaultAsync(r => r.RiskId == riskId);
+
+            if (risk == null || risk.CreatedById == null)
+            {
+                return "User Not Found";
+            }
+
+            var user = await _db.Users
+                .FirstOrDefaultAsync(u => u.Id == risk.CreatedById);
+
+            return user?.FullName ?? "User Not Found";
+        }
+
+
     }
 }
 
