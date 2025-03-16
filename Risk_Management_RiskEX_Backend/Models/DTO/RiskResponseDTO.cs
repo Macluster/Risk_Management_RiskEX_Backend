@@ -18,6 +18,7 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
         public string Remarks { get; set; }
         public string RiskStatus { get; set; }
         public string RiskType { get; set; }
+        public string RiskResponse { get; set; }
         public List<RiskAssessmentResponseDTO> RiskAssessments { get; set; }
         public UserResponseDTO ResponsibleUser { get; set; }
         public DepartmentDTO Department { get; set; }
@@ -31,5 +32,7 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
         public DateTime? CreatedAt { get; set; }
         public UserResponseDTO UpdatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
+
+        public string ClosedDate { get; set; }
     }
 }
