@@ -208,8 +208,30 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UsersDTO userDto)
+        {
+            if (userDto == null)
+            {
+                return BadRequest("Invalid user data.");
+            }
 
+            var result = await _userRepository.UpdateUser(id, userDto);
 
+            if (!result)
+            {
+                return BadRequest("User update failed. Email may be already in use or department is not valid");
+            }
+
+            return Ok(new { message = "User updated successfully." });
+        }
+
+        [HttpGet("{riskId}/createdBy")]
+        public async Task<IActionResult> GetCreatedByUser(string riskId)
+        {
+            var userName = await _userRepository.GetCreatedByUserNameAsync(riskId);
+        return Ok(userName);
+        }
 
     }
 }

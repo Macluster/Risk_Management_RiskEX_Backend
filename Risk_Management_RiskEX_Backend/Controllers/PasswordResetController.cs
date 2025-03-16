@@ -25,13 +25,13 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         {
             try
             {
-                if (!await _passwordResetRepository.ValidateResetTokenAsync(resetPasswordDTO.ResetToken))
+                if (!await _passwordResetRepository.ValidateResetTokenAsync(resetPasswordDTO.Token))
                 {
                     return BadRequest(new { message = "Invalid or expired reset token." });
                 }
 
                 var result = await _passwordResetRepository.ResetPasswordAsync(
-                    resetPasswordDTO.ResetToken,
+                    resetPasswordDTO.Token,
                     resetPasswordDTO.NewPassword
                 );
 

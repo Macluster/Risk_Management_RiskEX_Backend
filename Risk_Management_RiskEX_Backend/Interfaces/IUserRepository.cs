@@ -17,6 +17,9 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
 
         Task<List<dynamic>> GetUsersByProjects(int[] projectIds);
 
+        Task<bool> UpdateUser(int userId, UsersDTO userDto);
+
+        Task<string> GetCreatedByUserNameAsync(string riskId);
 
 
     }
