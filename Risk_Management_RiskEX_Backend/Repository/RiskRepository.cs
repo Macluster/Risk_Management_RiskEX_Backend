@@ -252,7 +252,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 UpdatedBy = new UserResponseDTO { Id = r.UpdatedBy != null ? r.UpdatedBy.Id : 0, FullName = r.UpdatedBy != null ? r.UpdatedBy.FullName : " ", Email = r.UpdatedBy != null ? r.UpdatedBy.Email : "" },
 
                 UpdatedAt = r.UpdatedAt,
-                ClosedDate=r.ClosedDate!=null? r.ClosedDate : ""
+                ClosedDate=r.ClosedDate!=null? r.ClosedDate.ToString() : ""
             })
             .FirstOrDefaultAsync();
 
