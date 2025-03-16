@@ -213,8 +213,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 OverallRiskRating = r.OverallRiskRatingAfter.HasValue ? r.OverallRiskRatingAfter.Value : r.OverallRiskRatingBefore,
                 PlannedActionDate = r.PlannedActionDate != null ? r.PlannedActionDate.ToString() : "No planned action date set.",
                 Remarks = r.Remarks != null ? r.Remarks : null,
-
-
+                
+                RiskResponse=r.RiskResponseData.Name,
                 RiskStatus = r.RiskStatus.ToString(),
                 RiskType = r.RiskType.ToString(),
 
@@ -251,7 +251,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 CreatedAt = r.CreatedAt,
                 UpdatedBy = new UserResponseDTO { Id = r.UpdatedBy != null ? r.UpdatedBy.Id : 0, FullName = r.UpdatedBy != null ? r.UpdatedBy.FullName : " ", Email = r.UpdatedBy != null ? r.UpdatedBy.Email : "" },
 
-                UpdatedAt = r.UpdatedAt
+                UpdatedAt = r.UpdatedAt,
+                ClosedDate=r.ClosedDate!=null? r.ClosedDate.ToString() : ""
             })
             .FirstOrDefaultAsync();
 
