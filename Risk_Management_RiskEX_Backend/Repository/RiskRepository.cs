@@ -211,6 +211,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 Mitigation = r.Mitigation,
                 Contingency = r.Contingency != null ? r.Contingency : null,
                 OverallRiskRating = r.OverallRiskRatingAfter.HasValue ? r.OverallRiskRatingAfter.Value : r.OverallRiskRatingBefore,
+                OveralRiskRatingBefore=r.OverallRiskRatingBefore,
+                OverallRiskRatingAfter=r.OverallRiskRatingAfter.HasValue?r.OverallRiskRatingAfter.Value:0,
+                
+
                 PlannedActionDate = r.PlannedActionDate != null ? r.PlannedActionDate.ToString() : "No planned action date set.",
                 Remarks = r.Remarks != null ? r.Remarks : null,
                 
