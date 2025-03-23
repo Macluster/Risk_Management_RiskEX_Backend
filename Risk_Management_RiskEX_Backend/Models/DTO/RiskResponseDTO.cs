@@ -14,6 +14,8 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
         public string Mitigation { get; set; }
         public string Contingency { get; set; }
         public int OverallRiskRating { get; set; }
+        public int OveralRiskRatingBefore { get; set; }
+        public int OverallRiskRatingAfter { get; set; }
         public string PlannedActionDate { get; set; }
         public string Remarks { get; set; }
         public string RiskStatus { get; set; }
