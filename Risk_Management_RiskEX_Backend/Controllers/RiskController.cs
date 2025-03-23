@@ -12,7 +12,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RiskController:ControllerBase
+    public class RiskController : ControllerBase
     {
         private readonly IRiskRepository _riskRepository;
         private readonly ILogger<RiskController> _logger;
@@ -22,7 +22,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             _riskRepository = riskRepository;
             _logger = logger;
         }
-       
+
         [HttpGet("type/{type}")]
         public async Task<IActionResult> GetRisksByType(RiskType type)
         {
@@ -140,7 +140,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         {
             try
             {
-                var newRisk=  await _riskRepository.AddSecurityOrPrivacyRiskAsync(riskDto);
+                var newRisk = await _riskRepository.AddSecurityOrPrivacyRiskAsync(riskDto);
                 return CreatedAtAction(nameof(AddRisk), new { id = newRisk.Id }, newRisk);
             }
             catch (ValidationException valEx)
@@ -454,11 +454,11 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
             try
             {
-               
+
 
                 var risks = await _riskRepository.GetAllRiskAssigned();
-                    return Ok(risks);
-              
+                return Ok(risks);
+
             }
             catch (Exception e)
             {
@@ -493,7 +493,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
         [HttpGet("RiskCategory-Counts")]
-        public async Task<IActionResult> GetRiskCategoryCounts(int?id)
+        public async Task<IActionResult> GetRiskCategoryCounts(int? id)
         {
             var categoryCounts = await _riskRepository.GetRiskCategoryCounts(id);
             return Ok(categoryCounts);
@@ -501,13 +501,24 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
 
 
-
         [HttpGet("riskid/new/Id")]
-        public async Task<ActionResult<string>> SetAndGetRiskId(int departmentId, int? projectId = null)
+        public async Task<ActionResult<string>> SetAndGetRiskId(int? departmentId = null, int? projectId = null)
         {
             try
             {
-                // Call the repository method with departmentId and optional projectId
+                if (departmentId.HasValue && projectId.HasValue)
+                {
+                    // Only one ID should be provided at a time
+                    return BadRequest(new { message = "Please provide either DepartmentId or ProjectId, not both." });
+                }
+
+                if (!departmentId.HasValue && !projectId.HasValue)
+                {
+                    // At least one ID must be provided
+                    return BadRequest(new { message = "Either DepartmentId or ProjectId is required." });
+                }
+
+                // Call the repository method with either departmentId or projectId
                 string riskId = await _riskRepository.SetAndGetRiskIdAsync(departmentId, projectId);
 
                 // Return the generated RiskId
