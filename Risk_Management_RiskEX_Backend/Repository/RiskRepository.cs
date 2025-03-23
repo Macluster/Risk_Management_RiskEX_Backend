@@ -1172,7 +1172,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
 
-        public async Task<string> SetAndGetRiskIdAsync(int departmentId, int? projectId = null)
+        public async Task<string> SetAndGetRiskIdAsync(int ?departmentId, int? projectId = null)
         {
             if (departmentId <= 0)
             {
@@ -1228,10 +1228,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
-        private async Task<string> GenerateBaseRiskId(int departmentId, int? projectId)
+        private async Task<string> GenerateBaseRiskId(int ?departmentId, int? projectId)
         {
             // Fetch the department details
-            var department = await _db.Departments.FirstOrDefaultAsync(d => d.Id == departmentId);
+            var department = await _db.Departments.FirstOrDefaultAsync(d => d.Id == departmentId.Value);
             if (department == null)
             {
                 throw new InvalidOperationException("Department not found.");
