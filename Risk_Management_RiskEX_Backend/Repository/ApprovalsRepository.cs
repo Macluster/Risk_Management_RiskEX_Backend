@@ -221,6 +221,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
         
             dynamic mitigationStatus = await _riskRepository.GetMitigationStatusOfARisk(riskId);
 
+          
+
 
             var review = await GetReviewBasedPostOrPre(riskId, mitigationStatus.isMitigated);
 
@@ -245,7 +247,11 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
                     case "rejected":
                         review.ReviewStatus = ReviewStatus.Rejected;
-                        break;
+                        var risk = await _db.Risks.FirstOrDefaultAsync(e => e.Id == riskId);
+                        risk.RiskStatus=RiskStatus.open;
+                       _db.Risks.Update(risk);
+
+                         break;
 
                     default:
                         return false;
