@@ -249,7 +249,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         review.ReviewStatus = ReviewStatus.Rejected;
                         var risk = await _db.Risks.FirstOrDefaultAsync(e => e.Id == riskId);
                         risk.RiskStatus=RiskStatus.open;
-                       _db.Risks.Update(risk);
+                   
 
                          break;
 
@@ -280,6 +280,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             //}
 
             _db.Reviews.Update(review);
+            _db.Risks.Update(risk);
             await _db.SaveChangesAsync();
 
             return true;
