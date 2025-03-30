@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using Risk_Management_RiskEX_Backend;
 using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Interfaces;
+using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Repository;
 using Risk_Management_RiskEX_Backend.Services;
 
@@ -66,6 +67,19 @@ builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
 builder.Services.AddScoped<UserService>();
 
 builder.Services.AddScoped<PasswordService>();
+
+
+
+
+// Configure MongoDB
+builder.Services.Configure<RiskDatabaseSettingscs>(builder.Configuration.GetSection("MongoDbSettings"));
+builder.Services.AddSingleton<RiskMongoService>();
+
+
+
+
+
+
 
 
 builder.Services.AddSwaggerGen(option =>
