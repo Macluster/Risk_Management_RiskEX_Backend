@@ -16,12 +16,14 @@ namespace Risk_Management_RiskEX_Backend.Repository
         private readonly ApplicationDBContext _db;
         private readonly IMapper _mapper;
         private readonly IReviewRepository _reviewRepository;
+        private readonly RiskMongoService _riskMongoService;  
 
-       public RiskRepository(ApplicationDBContext db, IMapper mapper, IReviewRepository reviewRepository)
+       public RiskRepository(ApplicationDBContext db, IMapper mapper, IReviewRepository reviewRepository,RiskMongoService riskMongoService)
         {
             _db = db;
             _mapper = mapper;
             _reviewRepository = reviewRepository;
+            _riskMongoService=riskMongoService;
         }
         public async Task<ICollection<Risk>> GetRisksByType(RiskType riskType)
         {
@@ -91,6 +93,16 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     });
                 }
                 _db.Risks.Add(risk);
+                try
+                {
+                    await _riskMongoService.CreateAsync(riskDto);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e);
+                    
+                }
+    
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return risk;
