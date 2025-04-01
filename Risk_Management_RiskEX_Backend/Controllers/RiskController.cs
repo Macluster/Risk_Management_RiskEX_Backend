@@ -540,5 +540,6 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
+
     }
 }

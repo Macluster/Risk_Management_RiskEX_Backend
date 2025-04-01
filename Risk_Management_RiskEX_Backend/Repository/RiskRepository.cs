@@ -16,12 +16,14 @@ namespace Risk_Management_RiskEX_Backend.Repository
         private readonly ApplicationDBContext _db;
         private readonly IMapper _mapper;
         private readonly IReviewRepository _reviewRepository;
+        private readonly RiskMongoService _riskMongoService;  
 
-       public RiskRepository(ApplicationDBContext db, IMapper mapper, IReviewRepository reviewRepository)
+       public RiskRepository(ApplicationDBContext db, IMapper mapper, IReviewRepository reviewRepository,RiskMongoService riskMongoService)
         {
             _db = db;
             _mapper = mapper;
             _reviewRepository = reviewRepository;
+            _riskMongoService=riskMongoService;
         }
         public async Task<ICollection<Risk>> GetRisksByType(RiskType riskType)
         {
@@ -91,6 +93,16 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     });
                 }
                 _db.Risks.Add(risk);
+                try
+                {
+                    await _riskMongoService.CreateAsync(riskDto);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e);
+                    
+                }
+    
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return risk;
@@ -1172,14 +1184,14 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
 
-        public async Task<string> SetAndGetRiskIdAsync(int ?departmentId, int? projectId = null)
+        public async Task<string> SetAndGetRiskIdAsync(int? departmentId, int? projectId)
         {
-            if (departmentId <= 0)
+            if (!departmentId.HasValue && !projectId.HasValue)
             {
-                throw new ArgumentException("A valid DepartmentId is required.");
+                throw new ArgumentException("Either DepartmentId or ProjectId is required.");
             }
 
-            // Generate the base RiskId based on department and project codes
+            // Generate the base RiskId based on department or project codes
             string baseRiskId = await GenerateBaseRiskId(departmentId, projectId);
 
             // Query for the latest RiskId matching the baseRiskId
@@ -1188,60 +1200,42 @@ namespace Risk_Management_RiskEX_Backend.Repository
             // Fetch the latest risks ordered by RiskId
             var latestRisks = await latestRisksQuery
                 .OrderByDescending(r => r.RiskId)
-                .Take(5)
+                .Take(1) // Only fetch the latest record
                 .ToListAsync();
 
-            // Filter risks that strictly match the expected format
-            var matchingRisks = latestRisks
-                .Where(r => IsMatchingBaseRiskId(r.RiskId, baseRiskId, projectId.HasValue))
-                .ToList();
-
             // If no matching Risk is found, create a new RiskId starting with 001
-            if (!matchingRisks.Any())
+            if (!latestRisks.Any())
             {
                 return $"{baseRiskId}001";
             }
 
             // Extract and increment the numeric part from the latest matching RiskId
-            int latestNumber = ExtractNumericPartFromRiskId(matchingRisks.First().RiskId, baseRiskId) + 1;
+            int latestNumber = ExtractNumericPartFromRiskId(latestRisks.First().RiskId, baseRiskId) + 1;
 
             // Return the new RiskId with the incremented number, zero-padded to 3 digits
             return $"{baseRiskId}{latestNumber:D3}";
         }
 
-        private bool IsMatchingBaseRiskId(string riskId, string baseRiskId, bool hasProjectId)
+
+
+
+        private async Task<string> GenerateBaseRiskId(int? departmentId, int? projectId)
         {
-            if (!riskId.StartsWith(baseRiskId))
+            if (departmentId.HasValue)
             {
-                return false;
+                // Fetch the department details
+                var department = await _db.Departments.FirstOrDefaultAsync(d => d.Id == departmentId.Value);
+                if (department == null)
+                {
+                    throw new InvalidOperationException("Department not found.");
+                }
+
+                var departmentCode = department.DepartmentCode?.ToUpper()
+                    ?? throw new InvalidOperationException("Department code is missing.");
+
+                return $"RSK-{departmentCode}-";
             }
-
-            // If projectId is provided, ensure the RiskId includes project-specific parts
-            if (hasProjectId)
-            {
-                return true; // Already matched by `baseRiskId`
-            }
-
-            // If no projectId, ensure the RiskId doesn't have an additional project-specific part
-            string remainingPart = riskId.Substring(baseRiskId.Length);
-            return !remainingPart.Contains("_");
-        }
-
-
-        private async Task<string> GenerateBaseRiskId(int ?departmentId, int? projectId)
-        {
-            // Fetch the department details
-            var department = await _db.Departments.FirstOrDefaultAsync(d => d.Id == departmentId.Value);
-            if (department == null)
-            {
-                throw new InvalidOperationException("Department not found.");
-            }
-
-            var departmentCode = department.DepartmentCode?.ToUpper()
-                ?? throw new InvalidOperationException("Department code is missing.");
-
-            // Check if a projectId is provided
-            if (projectId.HasValue)
+            else if (projectId.HasValue)
             {
                 // Fetch the project details
                 var project = await _db.Projects.FirstOrDefaultAsync(p => p.Id == projectId.Value);
@@ -1253,12 +1247,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 var projectCode = project.ProjectCode?.ToUpper()
                     ?? throw new InvalidOperationException("Project code is missing.");
 
-                return $"{departmentCode}_{projectCode}_";
+                return $"RSK-{projectCode}-";
             }
 
-            // If no projectId, return the base RiskId for the department
-            return $"{departmentCode}_";
+            throw new InvalidOperationException("Invalid input. Either departmentId or projectId is required.");
         }
+
 
         private int ExtractNumericPartFromRiskId(string riskId, string baseRiskId)
         {
@@ -1268,22 +1262,17 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 throw new InvalidOperationException($"RiskId '{riskId}' does not match the expected baseRiskId '{baseRiskId}'.");
             }
 
-            // Extract the part of the RiskId after the baseRiskId
-            string remainingPart = riskId.Substring(baseRiskId.Length);
+            // Extract the numeric part after the baseRiskId
+            string numericPart = riskId.Substring(baseRiskId.Length);
 
-            // Validate the numeric part of the RiskId
-            var parts = remainingPart.Split('_'); // Split by underscores, which separate different parts
-            string numericPart = parts.LastOrDefault(); // Get the last part (numeric)
-
-            // If the numeric part is empty or invalid, throw an exception
-            if (string.IsNullOrWhiteSpace(numericPart) || !int.TryParse(numericPart, out int result))
+            // Validate the numeric part
+            if (!int.TryParse(numericPart, out int result))
             {
                 throw new InvalidOperationException($"RiskId '{riskId}' contains an invalid numeric part: '{numericPart}'.");
             }
 
             return result;
         }
-
 
 
 
