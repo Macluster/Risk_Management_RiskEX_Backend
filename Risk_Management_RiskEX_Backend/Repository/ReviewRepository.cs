@@ -16,10 +16,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
         public async Task<object> GetReviewStatusOfARisk(int id, bool isPreReview)
         {
 
-            var responsiblePerson = await _db.Assessments.Where(e => e.RiskId == id).Select(e=>e.Review.User.FullName).FirstOrDefaultAsync();
          
             if (isPreReview)
             {
+                var responsiblePerson = await _db.Assessments.Where(e => e.RiskId == id && !e.IsMitigated).Select(e => e.Review.User.FullName).FirstOrDefaultAsync();
 
                 var assessments = await _db.Assessments.Where(e => e.RiskId == id && !e.IsMitigated)
                .Select(e => new
@@ -37,6 +37,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             }
             else
             {
+                var responsiblePerson = await _db.Assessments.Where(e => e.RiskId == id && !e.IsMitigated).Select(e => e.Review.User.FullName).FirstOrDefaultAsync();
 
                 var assessments = await _db.Assessments.Where(e => e.RiskId == id && e.IsMitigated)
              .Select(e => new
