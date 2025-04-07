@@ -49,7 +49,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 return assessments != null ? assessments : new
                 {
                     actionBy = responsiblePerson,
-                    isReviewed = 1,
+                    isReviewed = 0,
                     date = "...",
                 };
             }
