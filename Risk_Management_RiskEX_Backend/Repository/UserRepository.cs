@@ -274,6 +274,14 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             !GlobalConfig.AdminEmails.Contains(u.Email))
                 .ToListAsync();
         }
+        //public async Task<List<User>> GetUsersByDepartmentIdAsync(int departmentId)
+        //{
+        //    return await _db.Users
+        //        .Include(u => u.Department)
+        //        .Include(u => u.Projects)
+        //        .Where(u => u.Department.Id == departmentId && !GlobalConfig.AdminEmails.Contains(u.Email))
+        //        .ToListAsync();
+        //}
 
         public async Task<List<dynamic>> GetUsersByProjects(int[] projectIds)
         {
