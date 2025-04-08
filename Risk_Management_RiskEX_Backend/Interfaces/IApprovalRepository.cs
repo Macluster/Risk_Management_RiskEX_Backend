@@ -12,5 +12,10 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task<bool> UpdateReviewCommentByRiskIdAsync(int riskId, string comments);
         Task<Review> GetReviewBasedPostOrPre(int riskId, bool isMitigated);
 
+        Task<bool> UpdateSpecificReviewStatusAsync(int reviewId, string approvalStatus);
+
+        Task<bool> UpdateSpecificReviewCommentAsync(int reviewId, string comment);
+
+
     }
 }

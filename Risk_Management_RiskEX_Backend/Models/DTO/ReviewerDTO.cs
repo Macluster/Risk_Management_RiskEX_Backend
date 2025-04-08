@@ -9,6 +9,8 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
         public string Email { get; set; }
         public string Type { get; set; } 
 
+        public bool IsActive {  get; set; }
+
        
     }
 

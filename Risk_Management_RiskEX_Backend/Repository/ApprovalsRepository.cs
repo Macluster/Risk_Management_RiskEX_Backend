@@ -90,63 +90,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
-        //public async Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId)
-        //{
-        //    if (!userId.HasValue)
-        //    {
-        //        Console.WriteLine("No userId provided.");
-        //        return new List<ApprovalDTO>();
-        //    }
-
-        //    // Query the reviews by userId and specific review status values
-        //    var reviews = await _db.Reviews
-        //        .Where(r => r.UserId == userId &&
-        //                    (r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending))
-        //        .Include(r => r.RiskAssessments)
-        //        .ThenInclude(ra => ra.Risk)
-        //        .ThenInclude(risk => risk.Department)
-
-        //        .ToListAsync();
-
-        //    Console.WriteLine($"Found {reviews.Count} reviews for userId {userId.Value}.");
-
-        //    // Check if reviews were found for this user
-        //    if (reviews == null || reviews.Count == 0)
-        //    {
-        //        Console.WriteLine("No reviews found for this user.");
-        //        return new List<ApprovalDTO>();
-        //    }
-
-        //    // Get the unique risks associated with the reviews (where risk is not null)
-        //    var risks = reviews
-        //        .SelectMany(r => r.RiskAssessments)
-        //        .Where(ra => ra.Risk != null)
-        //        .Select(ra => ra.Risk)
-        //        .Distinct()
-        //        .ToList();
-
-        //    Console.WriteLine($"Found {risks.Count} unique risks.");
-
-        //    // Create a list of ApprovalDTOs from the unique risks
-        //    var approvalDTOs = risks.Select(risk => new ApprovalDTO
-        //    {
-        //        Id = risk.Id, 
-        //        RiskId = risk.RiskId,
-        //        RiskName = risk.RiskName,
-        //        Description = risk.Description,
-
-        //        RiskType = Enum.GetName(typeof(RiskType), risk.RiskType) ?? "Unknown",
-        //        OverallRiskRating = risk.OverallRiskRatingAfter ?? risk.OverallRiskRatingBefore,
-
-        //        //RiskType = risk.RiskType,
-        //        //OverallRiskRating = risk.OverallRiskRatingBefore,
-
-        //        PlannedActionDate = risk.PlannedActionDate,
-        //        RiskStatus = Enum.GetName(typeof(RiskStatus), risk.RiskStatus) ?? "Unknown",
-        //    }).ToList();
-
-        //    return approvalDTOs;
-        //}
 
         public async Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId)
         {
@@ -257,27 +200,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         return false;
                 }
               
-           
-            //switch (approvalStatus.ToLower())
-            //{
-            //    case "approved":
-            //        if (review.ReviewStatus == ReviewStatus.ReviewPending)
-            //        {
-            //            review.ReviewStatus = ReviewStatus.ReviewCompleted;
-            //        }
-            //        else if (review.ReviewStatus == ReviewStatus.ApprovalPending)
-            //        {
-            //            review.ReviewStatus = ReviewStatus.ApprovalCompleted;
-            //        }
-            //        break;
-
-            //    case "rejected":
-            //        review.ReviewStatus = ReviewStatus.Rejected;
-            //        break;
-
-            //    default:
-            //        return false; 
-            //}
 
             _db.Reviews.Update(review);
             await _db.SaveChangesAsync();
@@ -298,25 +220,109 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
                 reviewList[1].Comments = comments;
             }
-
-            //    var review = await _db.Set<RiskAssessment>()
-            //                           .Where(ra => ra.RiskId == riskId)
-            //                           .Select(ra => ra.Review)
-            //                           .FirstOrDefaultAsync();
-
-            //if (review == null)
-            //    return false; 
-
-            
-            //review.Comments = comments;
-
-            
+       
             await _db.SaveChangesAsync();
 
             return true; 
         }
 
-        
+        // New repository methods for the ApprovalRepository class
+        public async Task<bool> UpdateSpecificReviewStatusAsync(int reviewId, string approvalStatus)
+        {
+         
+
+            var review = await _db.Reviews
+                .Include(r => r.RiskAssessments)
+                .ThenInclude(ra => ra.Risk)
+                .FirstOrDefaultAsync(r => r.Id == reviewId);
+
+
+
+            if (review == null)
+            {
+                return false;
+            }
+
+            switch (approvalStatus.ToLower())
+            {
+                case "approved":
+                    if (review.ReviewStatus == ReviewStatus.ReviewPending)
+                    {
+                        review.ReviewStatus = ReviewStatus.ReviewCompleted;
+                    }
+                    else if (review.ReviewStatus == ReviewStatus.ApprovalPending)
+                    {
+                        review.ReviewStatus = ReviewStatus.ApprovalCompleted;
+                    }
+                    break;
+
+                case "rejected":
+                    review.ReviewStatus = ReviewStatus.Rejected;
+
+                    // Update associated risk status to "open"
+                    var risk = review.RiskAssessments
+                        .Select(ra => ra.Risk)
+                        .FirstOrDefault();
+
+                    if (risk != null)
+                    {
+                        risk.RiskStatus = RiskStatus.open;
+                        _db.Risks.Update(risk);
+                    }
+
+                    break;
+
+                default:
+                    return false;
+            }
+
+            _db.Reviews.Update(review);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
+
+        public async Task<bool> UpdateSpecificReviewCommentAsync(int reviewId, string comment)
+        {
+            var review = await _db.Reviews.FindAsync(reviewId);
+            if (review == null)
+            {
+                return false;
+            }
+
+            review.Comments = comment;
+            _db.Reviews.Update(review);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
+        // Updated method to handle risk status-based review selection
+        //public async Task<Review> GetReviewBasedPostOrPre(int riskId, bool isMitigated)
+        //{
+        //    var risk = await _db.Risks
+        //        .Include(r => r.RiskAssessments)
+        //            .ThenInclude(ra => ra.Review)
+        //        .FirstOrDefaultAsync(r => r.Id == riskId);
+
+        //    if (risk == null || risk.RiskAssessments == null || !risk.RiskAssessments.Any())
+        //    {
+        //        return null;
+        //    }
+
+        //    // Sort assessments by ID to ensure we have them in creation order
+        //    var sortedAssessments = risk.RiskAssessments.OrderBy(ra => ra.Id).ToList();
+
+        //    if (risk.RiskStatus == RiskStatus.open && sortedAssessments.Count > 1)
+        //    {
+        //        // For open risks with multiple assessments, get the first assessment's review
+        //        return sortedAssessments.First().Review;
+        //    }
+        //    else
+        //    {
+        //        // For closed risks or risks with only one assessment, get the latest assessment's review
+        //        return sortedAssessments.Last().Review;
+        //    }
+        //}
 
 
     }

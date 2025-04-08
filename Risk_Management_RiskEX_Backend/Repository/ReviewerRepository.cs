@@ -65,16 +65,17 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<List<ReviewerDTO>> GetAllReviewersAsync([FromServices] IHttpContextAccessor httpContextAccessor)
         {
-           
+
 
             var users = await _db.Users
-                .Where(u => u.IsActive && !GlobalConfig.AdminEmails.Contains(u.Email))
+                .Where(u => !GlobalConfig.AdminEmails.Contains(u.Email))
                 .Select(u => new ReviewerDTO
                 {
                     Id = u.Id,
                     FullName = u.FullName,
                     Email = u.Email,
-                    Type = "Internal"
+                    Type = "Internal",
+                    IsActive = u.IsActive // Show actual status
                 })
                 .ToListAsync();
 
@@ -85,7 +86,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     Id = er.Id,
                     FullName = er.FullName,
                     Email = er.Email,
-                    Type = "External"
+                    Type = "External",
+                    IsActive = true // Always set true for external
                 })
                 .ToListAsync();
 
