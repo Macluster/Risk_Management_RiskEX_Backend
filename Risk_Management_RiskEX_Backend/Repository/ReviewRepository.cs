@@ -39,7 +39,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
                 var responsiblePerson = await _db.Assessments.Where(e => e.RiskId == id && e.IsMitigated==true).Select(e => e.Review.User.FullName).FirstOrDefaultAsync();
 
-                var assessments = await _db.Assessments.Where(e => e.RiskId == id && e.IsMitigated)
+                var assessments = await _db.Assessments.Where(e => e.RiskId == id && e.IsMitigated).OrderByDescending(e=>e.Id)
              .Select(e => new
              {
                  actionBy = responsiblePerson,
