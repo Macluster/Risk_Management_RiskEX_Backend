@@ -93,23 +93,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
                     await transaction.CommitAsync();
 
-                    //try
-                    //{
-                    //    await _emailService.SendEmail(
-                    //        user.Email,
-                    //        "Your Account Credentials",
-                    //        $"Welcome to the system!\n\n" +
-                    //        $"Your account has been created with the following credentials:\n" +
-                    //        $"Username: {user.Email}\n" +
-                    //        $"Password: {DEFAULT_PASSWORD}\n\n" +
-                    //        "Please change your password upon first login for security purposes."
-                    //    );
-                    //}
-                    //catch (Exception emailEx)
-                    //{
-                    //    _logger.LogWarning($"Failed to send welcome email: {emailEx.Message}");
-                    //}
-
                     return user.Id;
                 }
                 catch (Exception ex)
@@ -286,9 +269,19 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return await _db.Users
                 .Include(u => u.Department)
                 .Include(u => u.Projects)
-                .Where(u => u.Department.Id == departmentId && !GlobalConfig.AdminEmails.Contains(u.Email))
+                .Where(u => u.Department.Id == departmentId &&
+                            u.IsActive &&
+                            !GlobalConfig.AdminEmails.Contains(u.Email))
                 .ToListAsync();
         }
+        //public async Task<List<User>> GetUsersByDepartmentIdAsync(int departmentId)
+        //{
+        //    return await _db.Users
+        //        .Include(u => u.Department)
+        //        .Include(u => u.Projects)
+        //        .Where(u => u.Department.Id == departmentId && !GlobalConfig.AdminEmails.Contains(u.Email))
+        //        .ToListAsync();
+        //}
 
         public async Task<List<dynamic>> GetUsersByProjects(int[] projectIds)
         {
