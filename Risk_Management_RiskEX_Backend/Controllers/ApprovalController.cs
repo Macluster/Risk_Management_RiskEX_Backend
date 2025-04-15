@@ -7,7 +7,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class ApprovalController: ControllerBase
+    public class ApprovalController : ControllerBase
     {
         private readonly IApprovalRepository _approvalRepository;
         public ApprovalController(IApprovalRepository approvalRepository)
@@ -16,9 +16,9 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
         [HttpGet("Approval{userId}")]
-        public async Task<ActionResult<IEnumerable<ApprovalDTO>>> GetRisksByReviewerId( int? userId)
+        public async Task<ActionResult<IEnumerable<ApprovalDTO>>> GetRisksByReviewerId(int? userId)
         {
-      
+
             if (!userId.HasValue)
             {
                 return BadRequest("User ID must be provided.");
@@ -52,7 +52,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        
+
         [HttpPut("update-review-status")]
         public async Task<IActionResult> UpdateReviewStatusOnly(int riskId, string approvalStatus)
         {
@@ -108,7 +108,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
-       
+
 
         [HttpPut("update-review/{riskId}")]
         public async Task<IActionResult> UpdateReviewStatusAndComments(int riskId, [FromBody] ReviewUpdateDTO updateRequest)
@@ -139,8 +139,32 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
         }
 
+        [HttpPut("update-review-status/{riskId}/{reviewId}")]
+        public async Task<IActionResult> UpdateSpecificReviewStatusAndComments(int riskId, int reviewId, [FromBody] ReviewUpdateDTO updateRequest)
+        {
+            // Validate the request body
+            if (updateRequest == null || string.IsNullOrWhiteSpace(updateRequest.ApprovalStatus))
+            {
+                return BadRequest(new { Message = "Invalid data. ApprovalStatus is required." });
+            }
 
+            // Update the specific review status
+            var statusUpdated = await _approvalRepository.UpdateSpecificReviewStatusAsync(reviewId, updateRequest.ApprovalStatus);
+            if (!statusUpdated)
+            {
+                return NotFound(new { Message = "Review not found for status update." });
+            }
 
+            // Update the specific review comment
+            var commentUpdated = await _approvalRepository.UpdateSpecificReviewCommentAsync(reviewId, updateRequest.Comments);
+            if (!commentUpdated)
+            {
+                return NotFound(new { Message = "Review not found for comment update." });
+            }
+
+            // ✅ Success response
+            return Ok(new { Message = "Review status and comment updated successfully." });
+        }
 
     }
 }
