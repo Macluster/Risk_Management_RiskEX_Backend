@@ -17,6 +17,8 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         private readonly IRiskRepository _riskRepository;
         private readonly ILogger<RiskController> _logger;
 
+       
+
         public RiskController(IRiskRepository riskRepository, ILogger<RiskController> logger)
         {
             _riskRepository = riskRepository;
@@ -540,6 +542,95 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
+
+
+
+        [HttpPost("draft-quality")]
+        public async Task<IActionResult> SaveDraft([FromBody] RiskDraftDTO riskDraftDto)
+        {
+            if (riskDraftDto == null)
+            {
+                return BadRequest("Risk data is required.");
+            }
+
+            try
+            {
+                var savedDraft = await _riskRepository.AddDraftQualityRiskAsync(riskDraftDto);
+                return Ok(savedDraft); // return the saved draft back to the client
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                // You might want to log this exception in a real app
+                return StatusCode(500, "An error occurred while saving the draft.");
+            }
+        }
+
+
+
+        [HttpPost("Draft-security-or-privacy")]
+        public async Task<IActionResult> SaveSecurityOrPrivacyDraft([FromBody] RiskDraftDTO riskDraftDto)
+        {
+            if (riskDraftDto == null)
+            {
+                return BadRequest("Risk data is required.");
+            }
+
+            try
+            {
+                var result = await _riskRepository.AddDraftSecurityOrPrivacyRiskAsync(riskDraftDto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to save draft: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("drafts")]
+        public async Task<IActionResult> GetAllDrafts()
+        {
+            var drafts = await _riskRepository.GetAllDraftsAsync();
+            return Ok(drafts);
+        }
+
+
+        [HttpDelete("drafts/{id}")]
+        public async Task<IActionResult> DeleteDraft(string id)
+        {
+            var deleted = await _riskRepository.DeleteDraftByIdAsync(id); 
+            if (!deleted)
+                return NotFound("Draft not found.");
+
+            return Ok("Draft deleted successfully.");
+        }
+
+
+        [HttpGet("drafts/department/{departmentId}")]
+        public async Task<IActionResult> GetDraftsByDepartmentId(int departmentId)
+        {
+            var drafts = await _riskRepository.GetAllDraftsByDepartmentIdAsync(departmentId);
+            return Ok(drafts);
+        }
+
+        [HttpGet("drafts/createdby/{createdBy}")]
+        public async Task<IActionResult> GetDraftsByCreatedUser(int createdBy)
+        {
+            var drafts = await _riskRepository.GetAllDraftsByCreatedUserAsync(createdBy);
+            return Ok(drafts);
+        }
+
+
+
+
 
     }
 }
