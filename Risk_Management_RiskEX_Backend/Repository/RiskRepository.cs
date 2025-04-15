@@ -93,15 +93,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     });
                 }
                 _db.Risks.Add(risk);
-                try
-                {
-                    await _riskMongoService.CreateAsync(riskDto);
-                }
-                catch(Exception e)
-                {
-                    Console.WriteLine(e);
-                    
-                }
     
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -1254,7 +1245,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
-        private int ExtractNumericPartFromRiskId(string riskId, string baseRiskId)
+        private static int ExtractNumericPartFromRiskId(string riskId, string baseRiskId)
         {
             // Ensure the RiskId is long enough to contain the baseRiskId
             if (riskId.Length <= baseRiskId.Length || !riskId.StartsWith(baseRiskId))
@@ -1273,6 +1264,93 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             return result;
         }
+
+
+
+        public async Task<RiskDraftDTO> AddDraftQualityRiskAsync(RiskDraftDTO riskDraftDto)
+        {
+            if (riskDraftDto == null)
+            {
+                throw new ArgumentNullException(nameof(riskDraftDto), "Draft risk cannot be null.");
+            }
+
+            // Optional: Check if at least one field has value (custom logic if needed)
+            if (string.IsNullOrWhiteSpace(riskDraftDto.RiskName))
+               
+            {
+                throw new ArgumentException("Draft must have at least some data.");
+            }
+
+            try
+            {
+                await _riskMongoService.CreateAsync(riskDraftDto);
+                return riskDraftDto;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error saving draft: " + e.Message);
+                throw new Exception("Failed to save draft. Please try again later.", e);
+            }
+        }
+
+
+
+
+
+        public async Task<RiskDraftDTO> AddDraftSecurityOrPrivacyRiskAsync(RiskDraftDTO riskDraftDto)
+        {
+            if (riskDraftDto == null)
+            {
+                throw new ArgumentNullException(nameof(riskDraftDto), "Draft risk cannot be null.");
+            }
+
+            // Optional: Add validation logic here as needed
+            if (string.IsNullOrWhiteSpace(riskDraftDto.RiskName) &&
+                string.IsNullOrWhiteSpace(riskDraftDto.Description) &&
+                riskDraftDto.RiskAssessments.Count == 0)
+            {
+                throw new ArgumentException("Draft must have at least some data.");
+            }
+
+            try
+            {
+                await _riskMongoService.CreateAsync(riskDraftDto);
+                return riskDraftDto;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error saving security/privacy draft: " + ex.Message);
+                throw new Exception("Failed to save draft. Please try again later.", ex);
+            }
+        }
+
+
+
+
+
+        public async Task<List<RiskDraftDTO>> GetAllDraftsAsync()
+        {
+            return await _riskMongoService.GetAllDraftsAsync();
+        }
+
+
+        public async Task<bool> DeleteDraftByIdAsync(string riskId)
+        {
+            return await _riskMongoService.DeleteDraftByIdAsync(riskId);
+        }
+
+
+        public async Task<List<RiskDraftDTO>> GetAllDraftsByDepartmentIdAsync(int departmentId)
+        {
+            return await _riskMongoService.GetAllDraftsByDepartmentIdAsync(departmentId);
+        }
+
+        public async Task<List<RiskDraftDTO>> GetAllDraftsByCreatedUserAsync(int createdBy)
+        {
+            return await _riskMongoService.GetAllDraftsByCreatedUserAsync(createdBy);
+        }
+
+
 
 
 
