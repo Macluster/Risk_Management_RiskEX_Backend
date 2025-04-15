@@ -34,7 +34,18 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 1,
                     Email = "riskex@experionglobal.com",
-                    Password = "Admin@123",
+                    Password = "AQAAAAIAAYagAAAAEAaroqhRU1q5tzEl35QYww+8xRNB3KLD6rrlXLdANJ8N2kUrAXvLsEYOpWldjgmzMg==",
+                    FullName = "System Admin",
+                    DepartmentId = 1,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
+                new User
+                {
+                    Id = 2,
+                    Email = "admin@gmail.com",
+                    Password = "AQAAAAIAAYagAAAAEAaroqhRU1q5tzEl35QYww+8xRNB3KLD6rrlXLdANJ8N2kUrAXvLsEYOpWldjgmzMg==",
                     FullName = "System Admin",
                     DepartmentId = 1,
                     IsActive = true,
