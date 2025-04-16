@@ -42,10 +42,10 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         public Task<RiskDraftDTO> AddDraftQualityRiskAsync(RiskDraftDTO riskDraftDto);
         public Task<RiskDraftDTO> AddDraftSecurityOrPrivacyRiskAsync(RiskDraftDTO riskDraftDto);
 
-        public Task<List<RiskDraftDTO>> GetAllDraftsAsync();
+        public Task<List<dynamic>> GetAllDraftsAsync();
 
         public Task<bool> DeleteDraftByIdAsync(string riskId);
-        public Task<List<RiskDraftDTO>> GetAllDraftsByDepartmentIdAsync(int departmentId);
+        public Task<List<dynamic>> GetAllDraftsByDepartmentIdAsync(int departmentId);
         public Task<List<RiskDraftDTO>> GetAllDraftsByCreatedUserAsync(int createdBy);
 
 
