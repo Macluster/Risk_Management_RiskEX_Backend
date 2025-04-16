@@ -1,4 +1,6 @@
-﻿using Risk_Management_RiskEX_Backend.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Risk_Management_RiskEX_Backend.Data;
+using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models.DTO;
 using Risk_Management_RiskEX_Backend.Repository;
 
@@ -8,10 +10,12 @@ namespace Risk_Management_RiskEX_Backend.Services
     {
         private readonly PasswordService _passwordService;
         private IAuthRepository _authRepository;
+
         public UserService(PasswordService passwordService,IAuthRepository authRepository)
         {
             _passwordService = passwordService;
             _authRepository = authRepository;
+            
         }
 
         // Register new user
@@ -50,6 +54,7 @@ namespace Risk_Management_RiskEX_Backend.Services
             // Store username and hashedPassword in the database
             // Example: Save username and hashedPassword in the Users table
         }
+       
     }
 
 }

@@ -178,7 +178,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<DepartmentValidationMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

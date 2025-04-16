@@ -1,4 +1,4 @@
-﻿namespace Risk_Management_RiskEX_Backend.congig
+﻿namespace Risk_Management_RiskEX_Backend.config
 {
     public class GlobalConfig
     {

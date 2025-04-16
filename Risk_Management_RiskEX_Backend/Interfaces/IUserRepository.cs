@@ -22,5 +22,10 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task<string> GetCreatedByUserNameAsync(string riskId);
 
 
+        Task<int?> GetDepartmentIdByUserIdAsync(string userId);
+        Task<List<int>> GetProjectIdsByUserIdAsync(string userId);
+        Task<bool> IsUserActiveAsync(string userId);
+
+
     }
 }
