@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using Risk_Management_RiskEX_Backend.Services;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Risk_Management_RiskEX_Backend.congig;
+using Risk_Management_RiskEX_Backend.config;
 
 namespace Risk_Management_RiskEX_Backend.Repository
 {

@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Risk_Management_RiskEX_Backend.Services;
 using Risk_Management_RiskEX_Backend.Models;
+using Risk_Management_RiskEX_Backend.Interfaces;
 
 public class DepartmentValidationMiddleware
 {
@@ -11,7 +12,7 @@ public class DepartmentValidationMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context, UserService userService)
+    public async Task InvokeAsync(HttpContext context, IUserRepository userRepository)
     {
         var user = context.User;
 
@@ -21,9 +22,21 @@ public class DepartmentValidationMiddleware
             var departmentIdFromToken = user.FindFirst("DepartmentId")?.Value;
             var projectsFromTokenJson = user.FindFirst("Projects")?.Value;
 
-            if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(departmentIdFromToken))
+            if (!string.IsNullOrEmpty(userId))
             {
-                var currentDepartmentId = await userService.GetDepartmentIdByUserIdAsync(userId);
+
+                bool isUserActive = await userRepository.IsUserActiveAsync(userId);
+                if (!isUserActive)
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await context.Response.WriteAsync("User is inactive. Access denied.");
+                    return;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(departmentIdFromToken))
+            {
+                var currentDepartmentId = await userRepository.GetDepartmentIdByUserIdAsync(userId);
 
                 if (currentDepartmentId?.ToString() != departmentIdFromToken)
                 {
@@ -35,7 +48,7 @@ public class DepartmentValidationMiddleware
 
             if (!string.IsNullOrEmpty(userId))
             {
-                var currentProjectIds = await userService.GetProjectIdsByUserIdAsync(userId);
+                var currentProjectIds = await userRepository.GetProjectIdsByUserIdAsync(userId);
 
 
                 var tokenProjectList = !string.IsNullOrEmpty(projectsFromTokenJson)
