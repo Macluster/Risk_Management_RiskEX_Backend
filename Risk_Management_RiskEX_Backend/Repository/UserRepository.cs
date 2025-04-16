@@ -5,7 +5,7 @@ using Risk_Management_RiskEX_Backend.Models.DTO;
 using Risk_Management_RiskEX_Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Risk_Management_RiskEX_Backend.Services;
-using Risk_Management_RiskEX_Backend.congig;
+using Risk_Management_RiskEX_Backend.config;
 
 namespace Risk_Management_RiskEX_Backend.Repository
 {
@@ -348,6 +348,41 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
+
+        public async Task<int?> GetDepartmentIdByUserIdAsync(string userId)
+        {
+            if (!int.TryParse(userId, out int parsedUserId))
+                return null;
+
+            var user = await _db.Users
+                .AsNoTracking()
+                .Where(u => u.Id == parsedUserId && u.IsActive)
+                .Select(u => u.DepartmentId)
+                .FirstOrDefaultAsync();
+
+            return user;
+        }
+
+        public async Task<List<int>> GetProjectIdsByUserIdAsync(string userId)
+        {
+            if (!int.TryParse(userId, out int parsedUserId))
+                return new List<int>();
+
+            return await _db.Users
+                .Where(u => u.Id == parsedUserId)
+                .SelectMany(u => u.Projects.Select(p => p.Id))
+                .ToListAsync();
+        }
+        public async Task<bool> IsUserActiveAsync(string userId)
+        {
+            if (!int.TryParse(userId, out int parsedUserId))
+                return false;
+
+            return await _db.Users
+                .Where(u => u.Id == parsedUserId)
+                .Select(u => u.IsActive)
+                .FirstOrDefaultAsync();
+        }
     }
 }
 
