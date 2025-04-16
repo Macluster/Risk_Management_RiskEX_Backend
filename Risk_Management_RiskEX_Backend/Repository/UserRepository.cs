@@ -225,12 +225,17 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             AssigneeResponseDTO assigneeResponseDTO=  _mapper.Map<AssigneeResponseDTO>(User);
 
-            return new
+            if (User != null)
+                return new
+                {
+                    User.FullName,
+                    User.Email
+
+                };
+            else
             {
-                User.FullName,
-                User.Email
-                
-            };
+                return null;
+            }
         }
 
         public async Task<Object> GetInfoOfAssigneeByRiskId(int riskId)
