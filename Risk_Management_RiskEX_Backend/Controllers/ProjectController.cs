@@ -64,7 +64,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return Ok(new { message = "Project added successfully." });
             }
 
-            return StatusCode(500, new { message = "An error occurred while adding the project." });
+            return BadRequest( new { message = "An error occurred while adding the project." });
         }
 
 
