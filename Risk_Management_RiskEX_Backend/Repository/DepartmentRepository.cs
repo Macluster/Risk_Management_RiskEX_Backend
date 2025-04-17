@@ -64,9 +64,9 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<bool> UpdateDepartment(DepartmentUpdateDTO departmentUpdateDTO)
         {
-            var department= await  _db.Departments.FirstOrDefaultAsync(e=>e.DepartmentName==departmentUpdateDTO.DepartmentName);
+            var department = await _db.Departments.FirstOrDefaultAsync(e => e.DepartmentName == departmentUpdateDTO.DepartmentName);
             department.DepartmentName = departmentUpdateDTO.NewDepartmentName;
-            department.DepartmentCode= departmentUpdateDTO.NewDepartmentCode;
+            department.DepartmentCode = departmentUpdateDTO.NewDepartmentCode;
 
             await _db.SaveChangesAsync();
 
@@ -83,6 +83,17 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 throw new Exception("Department does not exist.");
             }
 
+            return department;
+        }
+
+        public async Task<Department> GetDepartmentById(string departmentId)
+        {
+            var department = await _db.Departments
+                .FirstOrDefaultAsync(d => d.Id.ToString() == departmentId);
+            if (department == null)
+            {
+                throw new Exception("Department does not exist.");
+            }
             return department;
         }
     }
