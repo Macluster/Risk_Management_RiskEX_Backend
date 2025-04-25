@@ -8,6 +8,7 @@ using Risk_Management_RiskEX_Backend.Models.DTO;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace Risk_Management_RiskEX_Backend.Repository
 {
@@ -1186,7 +1187,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
             string baseRiskId = await GenerateBaseRiskId(departmentId, projectId);
 
             // Query for the latest RiskId matching the baseRiskId
-            var latestRisksQuery = _db.Risks.Where(r => r.RiskId.StartsWith(baseRiskId));
+            var latestRisksQuery = _db.Risks
+                .Where(r => r.RiskId.StartsWith(baseRiskId) &&
+                            Regex.IsMatch(r.RiskId, $"^{Regex.Escape(baseRiskId)}\\d{{3,}}$"));
+
 
             // Fetch the latest risks ordered by RiskId
             var latestRisks = await latestRisksQuery
