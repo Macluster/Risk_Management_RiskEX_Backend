@@ -10,20 +10,20 @@ namespace Risk_Management_RiskEX_Backend.Data
         {
             // Seed Departments
             modelBuilder.Entity<Department>().HasData(
-                new Department { Id = 1, DepartmentName = "Audits & Compliance", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 2, DepartmentName = "EMT", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 3, DepartmentName = "SFM", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 4, DepartmentName = "HR", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 5, DepartmentName = "Admin & Purchase", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 6, DepartmentName = "DU1", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 7, DepartmentName = "DU2", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 8, DepartmentName = "DU3", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 9, DepartmentName = "DU4", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 10, DepartmentName = "DU5", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 11, DepartmentName = "DU6", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 12, DepartmentName = "Marketing", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 13, DepartmentName = "Learning & Development", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 14, DepartmentName = "Finance", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+                new Department { Id = 1, DepartmentName = "Audits & Compliance", DepartmentCode = "ACE", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 2, DepartmentName = "EMT", DepartmentCode = "EMT", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 3, DepartmentName = "SFM", DepartmentCode = "SFM", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 4, DepartmentName = "HR", DepartmentCode = "HR", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 5, DepartmentName = "Admin & Purchase", DepartmentCode = "A&D", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 6, DepartmentName = "DU1", DepartmentCode = "DU1", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 7, DepartmentName = "DU2", DepartmentCode = "DU2", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 8, DepartmentName = "DU3", DepartmentCode = "DU3", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 9, DepartmentName = "DU4", DepartmentCode = "DU4", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 10, DepartmentName = "DU5", DepartmentCode = "DU5", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 11, DepartmentName = "DU6", DepartmentCode = "DU6", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 12, DepartmentName = "Marketing", DepartmentCode = "MAR", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 13, DepartmentName = "Learning & Development", DepartmentCode = "L&D", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 14, DepartmentName = "Finance", DepartmentCode = "FIN", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
 
 
             );
