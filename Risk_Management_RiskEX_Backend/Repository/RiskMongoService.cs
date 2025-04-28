@@ -59,20 +59,22 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     draft.RiskName,
                     draft.Description,
                     draft.RiskType,
+                    riskTypeName = draft.RiskType.ToString(),
                     draft.Impact,
                     draft.Mitigation,
                     draft.Contingency,
                     draft.OverallRiskRatingBefore,
                     draft.ResponsibleUserId,
+                    
                     ResponsibleUserName = draft.ResponsibleUserId.HasValue
    ? (await _userRepository.GetNameAndEmailOfAUser(196)).FullName
    : null,
                     draft.PlannedActionDate,
                     draft.DepartmentId,
-                    DepartmentName = (await _departmentRepository.GetDepartmentById(draft.DepartmentId.ToString())).DepartmentName,
+                    DepartmentName = draft.DepartmentId.HasValue?(await _departmentRepository.GetDepartmentById(draft.DepartmentId.ToString())).DepartmentName:"",
                     draft.ProjectId,
                     draft.CreatedBy,
-                    CreatedByName =( await _userRepository.GetNameAndEmailOfAUser(draft.CreatedBy.Value)).FullName,
+                    CreatedByName = draft.CreatedBy.HasValue?( await _userRepository.GetNameAndEmailOfAUser(draft.CreatedBy.Value)).FullName:"",
                     RiskAssessments = new List<RiskAssessmentDraftDTO>()
                 };
 
@@ -109,20 +111,22 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     draft.RiskName,
                     draft.Description,
                     draft.RiskType,
+                    riskTypeName = draft.RiskType.ToString(),
                     draft.Impact,
                     draft.Mitigation,
                     draft.Contingency,
                     draft.OverallRiskRatingBefore,
                     draft.ResponsibleUserId,
+
                     ResponsibleUserName = draft.ResponsibleUserId.HasValue
-   ? (await _userRepository.GetNameAndEmailOfAUser(196)).FullName
-   : null,
+  ? (await _userRepository.GetNameAndEmailOfAUser(196)).FullName
+  : null,
                     draft.PlannedActionDate,
                     draft.DepartmentId,
-                    DepartmentName = (await _departmentRepository.GetDepartmentById(draft.DepartmentId.ToString())).DepartmentName,
+                    DepartmentName = draft.DepartmentId.HasValue ? (await _departmentRepository.GetDepartmentById(draft.DepartmentId.ToString())).DepartmentName : "",
                     draft.ProjectId,
                     draft.CreatedBy,
-                    CreatedByName = (await _userRepository.GetNameAndEmailOfAUser(draft.CreatedBy.Value)).FullName,
+                    CreatedByName = draft.CreatedBy.HasValue ? (await _userRepository.GetNameAndEmailOfAUser(draft.CreatedBy.Value)).FullName : "",
                     RiskAssessments = new List<RiskAssessmentDraftDTO>()
                 };
 
