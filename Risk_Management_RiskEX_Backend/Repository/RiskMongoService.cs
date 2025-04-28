@@ -65,7 +65,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     draft.Contingency,
                     draft.OverallRiskRatingBefore,
                     draft.ResponsibleUserId,
-                    
                     ResponsibleUserName = draft.ResponsibleUserId.HasValue
    ? (await _userRepository.GetNameAndEmailOfAUser(196)).FullName
    : null,
