@@ -539,10 +539,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         throw new KeyNotFoundException($"Risk with ID {riskId} not found.");
                     }
 
-                    if (existingRisk.RiskStatus == RiskStatus.close)
-                    {
-                        throw new UnauthorizedAccessException($"This risk is already closed and cannot be updated.");
-                    }
+                   
 
                     // Update Risk properties 
 
@@ -1348,6 +1345,11 @@ namespace Risk_Management_RiskEX_Backend.Repository
         public async Task<List<RiskDraftDTO>> GetAllDraftsByCreatedUserAsync(int createdBy)
         {
             return await _riskMongoService.GetAllDraftsByCreatedUserAsync(createdBy);
+        }
+
+        public async Task<RiskDraftDTO> GetDraftByIdAsync(string riskId)
+        {
+            return await _riskMongoService.GetDraftByIdAsync(riskId);
         }
 
 

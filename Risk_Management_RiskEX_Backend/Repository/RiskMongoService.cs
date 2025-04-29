@@ -51,6 +51,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
+        public async Task<RiskDraftDTO> GetDraftByIdAsync(string riskId)
+        {
+            var result= await _booksCollection.Find(x => x.Id == riskId).FirstOrDefaultAsync();
+            return result;
+        }
+
         public async Task<List<RiskDraftDTO>> GetAllDraftsByDepartmentIdAsync(int departmentId)
         {
             return await _booksCollection.Find(x => x.DepartmentId == departmentId).ToListAsync();
