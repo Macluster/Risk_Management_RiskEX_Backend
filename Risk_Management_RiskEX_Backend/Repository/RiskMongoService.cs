@@ -66,7 +66,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     draft.OverallRiskRatingBefore,
                     draft.ResponsibleUserId,
                     ResponsibleUserName = draft.ResponsibleUserId.HasValue
-   ? (await _userRepository.GetNameAndEmailOfAUser(196)).FullName
+   ? (await _userRepository.GetNameAndEmailOfAUser(draft.ResponsibleUserId.Value)).FullName
    : null,
                     draft.PlannedActionDate,
                     draft.DepartmentId,
@@ -128,7 +128,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     draft.ResponsibleUserId,
 
                     ResponsibleUserName = draft.ResponsibleUserId.HasValue
-  ? (await _userRepository.GetNameAndEmailOfAUser(196)).FullName
+  ? (await _userRepository.GetNameAndEmailOfAUser(draft.ResponsibleUserId.Value)).FullName
   : null,
                     draft.PlannedActionDate,
                     draft.DepartmentId,
