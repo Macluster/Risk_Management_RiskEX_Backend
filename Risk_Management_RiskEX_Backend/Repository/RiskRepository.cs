@@ -8,6 +8,7 @@ using Risk_Management_RiskEX_Backend.Models.DTO;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace Risk_Management_RiskEX_Backend.Repository
 {
@@ -16,9 +17,9 @@ namespace Risk_Management_RiskEX_Backend.Repository
         private readonly ApplicationDBContext _db;
         private readonly IMapper _mapper;
         private readonly IReviewRepository _reviewRepository;
-        private readonly RiskMongoService _riskMongoService;  
+        private readonly IRiskMongoService _riskMongoService;  
 
-       public RiskRepository(ApplicationDBContext db, IMapper mapper, IReviewRepository reviewRepository,RiskMongoService riskMongoService)
+       public RiskRepository(ApplicationDBContext db, IMapper mapper, IReviewRepository reviewRepository,IRiskMongoService riskMongoService)
         {
             _db = db;
             _mapper = mapper;
@@ -1183,7 +1184,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
             string baseRiskId = await GenerateBaseRiskId(departmentId, projectId);
 
             // Query for the latest RiskId matching the baseRiskId
-            var latestRisksQuery = _db.Risks.Where(r => r.RiskId.StartsWith(baseRiskId));
+            var latestRisksQuery = _db.Risks
+                .Where(r => r.RiskId.StartsWith(baseRiskId) &&
+                            Regex.IsMatch(r.RiskId, $"^{Regex.Escape(baseRiskId)}\\d{{3,}}$"));
+
 
             // Fetch the latest risks ordered by RiskId
             var latestRisks = await latestRisksQuery
@@ -1325,7 +1329,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
 
-        public async Task<List<RiskDraftDTO>> GetAllDraftsAsync()
+        public async Task<List<Object>> GetAllDraftsAsync()
         {
             return await _riskMongoService.GetAllDraftsAsync();
         }
@@ -1337,7 +1341,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
-        public async Task<List<RiskDraftDTO>> GetAllDraftsByDepartmentIdAsync(int departmentId)
+        public async Task<List<Object>> GetAllDraftsByDepartmentIdAsync(int departmentId)
         {
             return await _riskMongoService.GetAllDraftsByDepartmentIdAsync(departmentId);
         }

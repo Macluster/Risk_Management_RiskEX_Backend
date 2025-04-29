@@ -46,6 +46,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRiskMongoService, RiskMongoService>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IRiskRepository, RiskRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
@@ -63,6 +64,7 @@ builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
+
 //builder.Services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
 builder.Services.AddScoped<UserService>();
 
@@ -73,7 +75,7 @@ builder.Services.AddScoped<PasswordService>();
 
 // Configure MongoDB
 builder.Services.Configure<RiskDatabaseSettingscs>(builder.Configuration.GetSection("MongoDbSettings"));
-builder.Services.AddSingleton<RiskMongoService>();
+
 
 
 
@@ -178,7 +180,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<DepartmentValidationMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

@@ -6,7 +6,7 @@ using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Models.DTO;
 using System.Threading.Tasks;
-using Risk_Management_RiskEX_Backend.congig;
+using Risk_Management_RiskEX_Backend.config;
 
 namespace Risk_Management_RiskEX_Backend.Repository
 {

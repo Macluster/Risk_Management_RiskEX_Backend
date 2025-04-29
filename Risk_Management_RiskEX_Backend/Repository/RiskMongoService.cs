@@ -1,18 +1,21 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Models.DTO;
 
 namespace Risk_Management_RiskEX_Backend.Repository
 {
-    public class RiskMongoService
+    public class RiskMongoService:IRiskMongoService
     {
 
+        private readonly IUserRepository _userRepository;
+        private readonly IDepartmentRepository _departmentRepository;
         private readonly IMongoCollection<RiskDraftDTO> _booksCollection;
 
         public RiskMongoService(
-            IOptions<RiskDatabaseSettingscs> riskSettings)
+            IOptions<RiskDatabaseSettingscs> riskSettings,IUserRepository userRepository, IDepartmentRepository departmentRepository)
         {
             var mongoClient = new MongoClient(
                riskSettings.Value.ConnectionString);
@@ -22,6 +25,9 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             _booksCollection = mongoDatabase.GetCollection<RiskDraftDTO>(
                 riskSettings.Value.CollectionName);
+
+            _userRepository = userRepository;
+            _departmentRepository = departmentRepository;
         }
 
         //public async Task<List<Risk>> GetAsync() =>
@@ -38,9 +44,42 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
-        public async Task<List<RiskDraftDTO>> GetAllDraftsAsync()
+        public async Task<List<Object>> GetAllDraftsAsync()
         {
-            return await _booksCollection.Find(_ => true).ToListAsync();
+            var draftList=  await _booksCollection.Find(_ => true).ToListAsync();
+
+            var result = new List<dynamic>();
+
+            foreach (var draft in draftList)
+            {
+
+                var tempdraft = new
+                {
+                    draft.Id,
+                    draft.RiskName,
+                    draft.Description,
+                    draft.RiskType,
+                    riskTypeName = draft.RiskType.ToString(),
+                    draft.Impact,
+                    draft.Mitigation,
+                    draft.Contingency,
+                    draft.OverallRiskRatingBefore,
+                    draft.ResponsibleUserId,
+                    ResponsibleUserName = draft.ResponsibleUserId.HasValue
+   ? (await _userRepository.GetNameAndEmailOfAUser(196)).FullName
+   : null,
+                    draft.PlannedActionDate,
+                    draft.DepartmentId,
+                    DepartmentName = draft.DepartmentId.HasValue?(await _departmentRepository.GetDepartmentById(draft.DepartmentId.ToString())).DepartmentName:"",
+                    draft.ProjectId,
+                    draft.CreatedBy,
+                    CreatedByName = draft.CreatedBy.HasValue?( await _userRepository.GetNameAndEmailOfAUser(draft.CreatedBy.Value)).FullName:"",
+                    RiskAssessments = new List<RiskAssessmentDraftDTO>()
+                };
+
+                result.Add(tempdraft);
+            }
+            return result;
         }
 
 
@@ -51,6 +90,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
+<<<<<<< HEAD
         public async Task<RiskDraftDTO> GetDraftByIdAsync(string riskId)
         {
             var result= await _booksCollection.Find(x => x.Id == riskId).FirstOrDefaultAsync();
@@ -58,8 +98,50 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
         public async Task<List<RiskDraftDTO>> GetAllDraftsByDepartmentIdAsync(int departmentId)
+=======
+        public async Task<List<Object>> GetAllDraftsByDepartmentIdAsync(int departmentId)
+>>>>>>> e857d75933ed22f5a3405472db08d7cbf5342505
         {
-            return await _booksCollection.Find(x => x.DepartmentId == departmentId).ToListAsync();
+      
+
+
+            var draftList = await _booksCollection.Find(x => x.DepartmentId == departmentId).ToListAsync();
+
+            var result = new List<dynamic>();
+
+            foreach (var draft in draftList)
+            {
+
+                Console.WriteLine("haiiiiiiiiiiiiiiiiiii"+await _departmentRepository.GetDepartmentById(draft.DepartmentId.ToString()));
+
+                var tempdraft = new
+                {
+                    draft.Id,
+                    draft.RiskName,
+                    draft.Description,
+                    draft.RiskType,
+                    riskTypeName = draft.RiskType.ToString(),
+                    draft.Impact,
+                    draft.Mitigation,
+                    draft.Contingency,
+                    draft.OverallRiskRatingBefore,
+                    draft.ResponsibleUserId,
+
+                    ResponsibleUserName = draft.ResponsibleUserId.HasValue
+  ? (await _userRepository.GetNameAndEmailOfAUser(196)).FullName
+  : null,
+                    draft.PlannedActionDate,
+                    draft.DepartmentId,
+                    DepartmentName = draft.DepartmentId.HasValue ? (await _departmentRepository.GetDepartmentById(draft.DepartmentId.ToString())).DepartmentName : "",
+                    draft.ProjectId,
+                    draft.CreatedBy,
+                    CreatedByName = draft.CreatedBy.HasValue ? (await _userRepository.GetNameAndEmailOfAUser(draft.CreatedBy.Value)).FullName : "",
+                    RiskAssessments = new List<RiskAssessmentDraftDTO>()
+                };
+
+                result.Add(tempdraft);
+            }
+            return result;
         }
 
         public async Task<List<RiskDraftDTO>> GetAllDraftsByCreatedUserAsync(int createdBy)
