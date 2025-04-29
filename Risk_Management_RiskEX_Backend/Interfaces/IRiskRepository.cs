@@ -47,6 +47,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         public Task<bool> DeleteDraftByIdAsync(string riskId);
         public Task<List<dynamic>> GetAllDraftsByDepartmentIdAsync(int departmentId);
         public Task<List<RiskDraftDTO>> GetAllDraftsByCreatedUserAsync(int createdBy);
+        public Task<RiskDraftDTO> GetDraftByIdAsync(string riskId);
 
 
 

@@ -225,23 +225,23 @@ namespace RiskManagement
         }
 
         // Alternative approach using explicit type
-        [Test]
-        public async Task GetNameAndEmailOfAUser_ValidId_ReturnsUserInfo_Alternative()
-        {
-            // Act
-            var result = await _userRepository.GetNameAndEmailOfAUser(1);
-            var resultDict = result.GetType().GetProperties()
-                .ToDictionary(prop => prop.Name, prop => prop.GetValue(result));
+        //[Test]
+        //public async Task GetNameAndEmailOfAUser_ValidId_ReturnsUserInfo_Alternative()
+        //{
+        //    // Act
+        //    var result = await _userRepository.GetNameAndEmailOfAUser(1);
+        //    var resultDict = result.GetType().GetProperties()
+        //        .ToDictionary(prop => prop.Name, prop => prop.GetValue(result));
 
-            // Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(resultDict, Does.ContainKey("FullName"));
-                Assert.That(resultDict, Does.ContainKey("Email"));
-                Assert.That(resultDict["FullName"], Is.EqualTo("Test User"));
-                Assert.That(resultDict["Email"], Is.EqualTo("existing@test.com"));
-            });
-        }
+        //    // Assert
+        //    Assert.Multiple(() =>
+        //    {
+        //        Assert.That(resultDict, Does.ContainKey("FullName"));
+        //        Assert.That(resultDict, Does.ContainKey("Email"));
+        //        Assert.That(resultDict["FullName"], Is.EqualTo("Test User"));
+        //        Assert.That(resultDict["Email"], Is.EqualTo("existing@test.com"));
+        //    });
+        //}
 
         [Test]
         public async Task GetInfoOfAssigneeByRiskId_ValidRiskId_ReturnsAssigneeInfo_Alternative()
