@@ -629,6 +629,14 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
+        [HttpGet("draft/{riskId}")]
+        public async Task<IActionResult> GetDraftById(string riskId)
+        {
+            var drafts = await _riskRepository.GetDraftByIdAsync(riskId);
+            return Ok(drafts);
+        }
+
+
 
 
 
