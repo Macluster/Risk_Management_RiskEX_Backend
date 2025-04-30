@@ -44,7 +44,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             if (existingUser != null)
             {
                 //_logger.LogError($"User with email {userDto.Email} already exists.");
-                return 0;
+                throw new InvalidOperationException("Reviewer with the same email already exists.");
             }
 
 
