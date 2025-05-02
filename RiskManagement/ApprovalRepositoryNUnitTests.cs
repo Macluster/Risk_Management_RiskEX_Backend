@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Risk_Management_RiskEX_Backend.Data;
+using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Repository;
 
@@ -11,6 +13,7 @@ namespace RiskManagement
     {
         private ApplicationDBContext _context;
         private ApprovalsRepository _repository;
+        private Mock<IRiskRepository> _riskRepositoryMock;
 
         [SetUp]
         public void SetUp()
@@ -24,6 +27,9 @@ namespace RiskManagement
             _context = new ApplicationDBContext(options, httpContextAccessor);
             //_repository = new ApprovalsRepository(_context);
 
+            _riskRepositoryMock = new Mock<IRiskRepository>();
+
+            _repository = new ApprovalsRepository(_context, _riskRepositoryMock.Object); // Use real repository
 
 
 

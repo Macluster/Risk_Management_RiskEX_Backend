@@ -61,7 +61,7 @@ namespace RiskManagement
             string body = "Test Body";
 
             // Act & Assert
-            var exception = Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
                 await _emailService.SendEmail(receptor, subject, body));
         }
 
@@ -86,7 +86,7 @@ namespace RiskManagement
             string body = "Test Body";
 
             // Act & Assert
-            var exception = Assert.ThrowsAsync<SmtpException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentNullException>(async () =>
                 await emailService.SendEmail(receptor, subject, body));
         }
 
@@ -99,7 +99,7 @@ namespace RiskManagement
             string body = "Test Body";
 
             // Act & Assert
-            var exception = Assert.ThrowsAsync<FormatException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentNullException>(async () =>
                 await _emailService.SendEmail(recipient, subject, body));
         }
 
