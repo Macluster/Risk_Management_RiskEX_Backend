@@ -89,13 +89,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return result.DeletedCount > 0;
         }
 
-
-
-        public async Task<RiskDraftDTO> GetDraftByIdAsync(string riskId)
+        public async Task<RiskDraftDTO>GetDraftByIdAsync(string riskId)
         {
-            var result= await _booksCollection.Find(x => x.Id == riskId).FirstOrDefaultAsync();
+            var result = await _booksCollection.Find(x => x.Id == riskId).FirstOrDefaultAsync();
             return result;
         }
+
+
+
+
 
         //public async Task<List<RiskDraftDTO>> GetAllDraftsByDepartmentIdAsync(int departmentId)
 
@@ -160,6 +162,28 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         //public async Task RemoveAsync(string id) =>
         //    await _booksCollection.DeleteOneAsync(x => x.Id == id);
+
+
+
+        public async Task UpdateAsync(string id, RiskDraftDTO updatedDraft)
+        {
+            var objectId = new ObjectId(id);
+            var filter = Builders<RiskDraftDTO>.Filter.Eq("_id", objectId);
+
+            updatedDraft.Id = id; // Ensure the Id is set, or MongoDB will treat it as a new document
+
+            var result = await _booksCollection.ReplaceOneAsync(filter, updatedDraft);
+
+            Console.WriteLine($"Matched: {result.MatchedCount}, Modified: {result.ModifiedCount}");
+
+            if (result.MatchedCount == 0)
+            {
+                throw new Exception("Draft not found.");
+            }
+        }
+
+
+
 
     }
 }
