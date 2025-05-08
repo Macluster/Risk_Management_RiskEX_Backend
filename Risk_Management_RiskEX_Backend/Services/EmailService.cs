@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Mail;
 using Risk_Management_RiskEX_Backend.Interfaces;
+using Risk_Management_RiskEX_Backend.Models;
 
 namespace Risk_Management_RiskEX_Backend.Services
 {
@@ -14,8 +15,14 @@ namespace Risk_Management_RiskEX_Backend.Services
         }
         public async Task SendEmail(string receptor,string subject,string body) 
         {
-            var email = configuration.GetValue<string>("EMAIL_CONFIGURATION:EMAIL");
-            var password = configuration.GetValue<string>("EMAIL_CONFIGURATION:PASSWORD");
+
+
+            if (string.IsNullOrWhiteSpace(receptor))
+            {
+                throw new ArgumentException("Receptor email cannot be null or empty", nameof(receptor));
+            }
+            //var email = configuration.GetValue<string>("EMAIL_CONFIGURATION:EMAIL");
+            //var password = configuration.GetValue<string>("EMAIL_CONFIGURATION:PASSWORD");
             var host = configuration.GetValue<string>("EMAIL_CONFIGURATION:HOST");
             var port = configuration.GetValue<int>("EMAIL_CONFIGURATION:PORT");
 
@@ -23,12 +30,22 @@ namespace Risk_Management_RiskEX_Backend.Services
             smtpClient.EnableSsl = true;
             smtpClient.UseDefaultCredentials = false;
 
+
+
+            string email = Environment.GetEnvironmentVariable("EMAIL");
+            string password = Environment.GetEnvironmentVariable("PASSWORD");
             smtpClient.Credentials =  new NetworkCredential(email, password);
+         
 
             var message = new MailMessage(email!, receptor, subject, body);
+            message.IsBodyHtml = true;
             await smtpClient.SendMailAsync(message);
 
 
         }
+
+       
+
+
     }
 }

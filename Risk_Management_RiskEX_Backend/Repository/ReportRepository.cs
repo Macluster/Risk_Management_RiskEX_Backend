@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Interfaces;
@@ -41,7 +39,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         ResidualValue = r.ResidualValue,
                         PercentageRedution = r.PercentageRedution,
                         ResidualRisk = r.ResidualRisk.ToString(),
-                        //Reviewer =r.ResponsibleUser.FullName,
                         PlannedActionDate = r.PlannedActionDate,
                         ClosedDate = r.ClosedDate,
                         RiskResponse = r.RiskResponseData.Name,
@@ -56,9 +53,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
                             MatrixImpact = ra.MatrixImpact.AssessmentFactor,
                             AssessmentBasis = ra.AssessmentBasis.Basis,
-                            Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                            Reviewer = ra.Review.User.FullName != null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
                             ReviewStatus = ra.Review.ReviewStatus.ToString(),
-                            IsMitigated = ra.IsMitigated
+                            IsMitigated = ra.IsMitigated,
+                            RiskFactor = ra.RiskFactor
 
                         }).ToList(),
                         Email = r.ResponsibleUser.Email,
@@ -79,12 +77,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 {
                     throw new ArgumentException($"Invalid RiskType value: {riskStatus}");
                 }
-                //var status = await _context.Risks.FindAsync(riskStatus);
-                //if (status == null)
-                //{
-                //    throw new ArgumentException("Department not found.");
-                //}
-
+                
                 var reports = await _context.Risks
                     .Where(r => r.RiskStatus == status)
                     .Select(r => new ReportDTO
@@ -118,9 +111,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
                             MatrixImpact = ra.MatrixImpact.AssessmentFactor,
                             AssessmentBasis = ra.AssessmentBasis.Basis,
-                            Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                            Reviewer = ra.Review.User.FullName != null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
                             ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
-                            IsMitigated = ra.IsMitigated
+                            IsMitigated = ra.IsMitigated,
+                            RiskFactor = ra.RiskFactor
                         }).ToList(),
                         Email = r.ResponsibleUser.Email,
                         CreatedBy = r.CreatedBy.FullName,
@@ -179,9 +173,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
                             MatrixImpact = ra.MatrixImpact.AssessmentFactor,
                             AssessmentBasis = ra.AssessmentBasis.Basis,
-                            Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                            Reviewer = ra.Review.User.FullName != null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
                             ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
-                            IsMitigated = ra.IsMitigated
+                            IsMitigated = ra.IsMitigated,
+                            RiskFactor = ra.RiskFactor
                         }).ToList(),
                         Email = r.ResponsibleUser.Email,
                         CreatedBy = r.CreatedBy.FullName,
@@ -206,12 +201,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 {
                     throw new ArgumentException($"Invalid RiskType value: {riskStatus}");
                 }
-                //var status = await _context.Risks.FindAsync(riskStatus);
-                //if (status == null)
-                //{
-                //    throw new ArgumentException("Department not found.");
-                //}
-
+               
                 var reports = await _context.Risks
                     .Where(r => r.DepartmentId == id)
                     .Where(r => r.RiskStatus == status)
@@ -246,9 +236,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
                             MatrixImpact = ra.MatrixImpact.AssessmentFactor,
                             AssessmentBasis = ra.AssessmentBasis.Basis,
-                            Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                            Reviewer = ra.Review.User.FullName != null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
                             ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
-                            IsMitigated = ra.IsMitigated
+                            IsMitigated = ra.IsMitigated,
+                            RiskFactor = ra.RiskFactor
                         }).ToList(),
                         Email = r.ResponsibleUser.Email,
                         CreatedBy = r.CreatedBy.FullName,
@@ -299,9 +290,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
                         MatrixImpact = ra.MatrixImpact.AssessmentFactor,
                         AssessmentBasis = ra.AssessmentBasis.Basis,
-                        Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                        Reviewer = ra.Review.User.FullName != null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
                         ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
-                        IsMitigated = ra.IsMitigated
+                        IsMitigated = ra.IsMitigated,
+                        RiskFactor =ra.RiskFactor
                     }).ToList(),
                     Email = r.ResponsibleUser.Email,
                     CreatedBy = r.CreatedBy.FullName,
@@ -321,12 +313,11 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
                 if (projectIds == null || !projectIds.Any())
                 {
-                    return new List<ReportDTO>(); // Return an empty list if no projects are associated
+                    return new List<ReportDTO>(); 
                 }
 
-                // Fetch all risks associated with the given project IDs
                 var risks = await _context.Risks
-                    .Where(r => r.ProjectId.HasValue && projectIds.Contains(r.ProjectId.Value)) // Handle nullable ProjectId
+                    .Where(r => r.ProjectId.HasValue && projectIds.Contains(r.ProjectId.Value))
                     .Select(r => new ReportDTO
                     {
 
@@ -359,9 +350,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
                             MatrixImpact = ra.MatrixImpact.AssessmentFactor,
                             AssessmentBasis = ra.AssessmentBasis.Basis,
-                            Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                            Reviewer = ra.Review.User.FullName != null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
                             ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
-                            IsMitigated = ra.IsMitigated
+                            IsMitigated = ra.IsMitigated,
+                            RiskFactor = ra.RiskFactor
                         }).ToList(),
                         Email = r.ResponsibleUser.Email,
                         CreatedBy = r.CreatedBy.FullName,
@@ -378,16 +370,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
                 if (projectIds == null || !projectIds.Any())
                 {
-                    return new List<ReportDTO>(); // Return an empty list if no projects are associated
+                    return new List<ReportDTO>(); 
                 }
                 if (!Enum.TryParse(riskStatus, true, out RiskStatus status))
                 {
                     throw new ArgumentException($"Invalid RiskType value: {riskStatus}");
                 }
 
-                // Fetch all risks associated with the given project IDs
                 var risks = await _context.Risks
-                    .Where(r => r.ProjectId.HasValue && projectIds.Contains(r.ProjectId.Value)) // Handle nullable ProjectId
+                    .Where(r => r.ProjectId.HasValue && projectIds.Contains(r.ProjectId.Value)) 
                     .Where(r => r.RiskStatus == status)
                     .Select(r => new ReportDTO
                     {
@@ -421,9 +412,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             MatrixLikelihood = ra.MatrixLikelihood.AssessmentFactor,
                             MatrixImpact = ra.MatrixImpact.AssessmentFactor,
                             AssessmentBasis = ra.AssessmentBasis.Basis,
-                            Reviewer = ra.Review != null ? ra.Review.User.FullName : "No Reviewer",
+                            Reviewer = ra.Review.User.FullName != null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
                             ReviewStatus = ra.Review != null ? ra.Review.ReviewStatus.ToString() : "No Status",
-                            IsMitigated = ra.IsMitigated
+                            IsMitigated = ra.IsMitigated,
+                            RiskFactor = ra.RiskFactor
                         }).ToList(),
                         Email = r.ResponsibleUser.Email,
                         CreatedBy = r.CreatedBy.FullName,

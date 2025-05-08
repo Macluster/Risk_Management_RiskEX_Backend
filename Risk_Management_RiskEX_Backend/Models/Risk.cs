@@ -13,7 +13,7 @@ namespace Risk_Management_RiskEX_Backend.Models
         [StringLength(20)]
         public string RiskId { get; set; }
 
-        [StringLength(50)]
+        [StringLength(500)]
         public string RiskName { get; set; }
 
         [StringLength(1000)]

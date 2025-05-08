@@ -12,17 +12,19 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RiskController:ControllerBase
+    public class RiskController : ControllerBase
     {
         private readonly IRiskRepository _riskRepository;
         private readonly ILogger<RiskController> _logger;
+
+       
 
         public RiskController(IRiskRepository riskRepository, ILogger<RiskController> logger)
         {
             _riskRepository = riskRepository;
             _logger = logger;
         }
-       
+
         [HttpGet("type/{type}")]
         public async Task<IActionResult> GetRisksByType(RiskType type)
         {
@@ -126,8 +128,8 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    message = "An unexpected error occurred. Please try again later.",
-                    details = ex.Message
+                    message = "An unexpected error occurred while processing your request.Please ensure all mandatory fields are filled. If the issue persists, contact the administrator or Please try again later",
+                    //details = ex.Message
                 });
             }
         }
@@ -140,7 +142,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         {
             try
             {
-                var newRisk=  await _riskRepository.AddSecurityOrPrivacyRiskAsync(riskDto);
+                var newRisk = await _riskRepository.AddSecurityOrPrivacyRiskAsync(riskDto);
                 return CreatedAtAction(nameof(AddRisk), new { id = newRisk.Id }, newRisk);
             }
             catch (ValidationException valEx)
@@ -235,19 +237,21 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
-           
 
-       
+
+
         [HttpGet("RiskCategoryCountByDepartment")]
-        public async Task<IActionResult> GetRiskCategoryCountsForDepartments([FromQuery] List<int> departmentIds)
+        public async Task<IActionResult> GetRiskCategoryCountsForDepartments([FromQuery] List<int> departmentIds, [FromQuery] List<int> projectIds)
         {
-            var result = await _riskRepository.GetRiskCategoryCountsByDepartments(departmentIds);
+            var result = await _riskRepository.GetRiskCategoryCountsByDepartments(departmentIds, projectIds);
             return Ok(result);  // Return the results in JSON format
         }
 
 
 
-        [HttpPut("quality/{id}")]
+
+        [HttpPut("edit/quality/{id}")]
+
         public async Task<IActionResult> EditQualityRiskAsync(int id, [FromBody] RiskDTO riskDto)
         {
 
@@ -441,35 +445,224 @@ namespace Risk_Management_RiskEX_Backend.Controllers
 
         }
 
-        [HttpGet("GetRiskApproachingDeadline")]
-        public async Task<IActionResult> RiskApproachingDeadline(int? id)
+
+        [HttpGet("GetAllRisksAssigned")]
+        public async Task<IActionResult> GetAllRisksAssigned()
         {
 
-            var risks = await _riskRepository.RiskApproachingDeadline(id);
+
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+
+            try
+            {
+
+
+                var risks = await _riskRepository.GetAllRiskAssigned();
+                return Ok(risks);
+
+            }
+            catch (Exception e)
+            {
+                return Ok("No user with the given Id");
+            }
+
+
+        }
+
+        [HttpGet("GetRiskApproachingDeadline")]
+        public async Task<IActionResult> RiskApproachingDeadline([FromQuery] List<int> departmentIds, [FromQuery] List<int> projectIds)
+        {
+
+            var risks = await _riskRepository.RiskApproachingDeadline(departmentIds, projectIds);
             return Ok(risks);
         }
 
         [HttpGet("GetRiskWithHeighestOverallRationg")]
-        public async Task<IActionResult> GetRiskWithHeighestOverallRationg(int? id)
+        public async Task<IActionResult> GetRiskWithHeighestOverallRationg([FromQuery] List<int> departmentIds, [FromQuery] List<int> projectIds)
         {
 
-            var risks = await _riskRepository.GetRiskWithHeighestOverallRationg(id);
+            var risks = await _riskRepository.GetRiskWithHeighestOverallRationg(departmentIds, projectIds);
             return Ok(risks);
         }
 
         [HttpGet("CountOfRiskType(Open)")]
-        public async Task<IActionResult> GetOpenRiskCountByType(int? id)
+        public async Task<IActionResult> GetOpenRiskCountByType([FromQuery] List<int> departmentIds, [FromQuery] List<int> projectIds)
         {
-            var riskTypeCounts = await _riskRepository.GetOpenRiskCountByType(id);
+            var riskTypeCounts = await _riskRepository.GetOpenRiskCountByType(departmentIds, projectIds);
             return Ok(riskTypeCounts);
 
         }
 
         [HttpGet("RiskCategory-Counts")]
-        public async Task<IActionResult> GetRiskCategoryCounts(int?id)
+        public async Task<IActionResult> GetRiskCategoryCounts(int? id)
         {
             var categoryCounts = await _riskRepository.GetRiskCategoryCounts(id);
             return Ok(categoryCounts);
         }
+
+
+
+        [HttpGet("riskid/new/Id")]
+        public async Task<ActionResult<string>> SetAndGetRiskId(int? departmentId = null, int? projectId = null)
+        {
+            try
+            {
+                if (departmentId.HasValue && projectId.HasValue)
+                {
+                    // Only one ID should be provided at a time
+                    return BadRequest(new { message = "Please provide either DepartmentId or ProjectId, not both." });
+                }
+
+                if (!departmentId.HasValue && !projectId.HasValue)
+                {
+                    // At least one ID must be provided
+                    return BadRequest(new { message = "Either DepartmentId or ProjectId is required." });
+                }
+
+                // Call the repository method with either departmentId or projectId
+                string riskId = await _riskRepository.SetAndGetRiskIdAsync(departmentId, projectId);
+
+                // Return the generated RiskId
+                return Ok(new { riskId });
+            }
+            catch (ArgumentException ex)
+            {
+                // Handle invalid input
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Handle internal processing errors
+                return StatusCode(500, new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Catch-all for unexpected errors
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+
+
+        [HttpPost("draft-quality")]
+        public async Task<IActionResult> SaveDraft([FromBody] RiskDraftDTO riskDraftDto)
+        {
+            if (riskDraftDto == null)
+            {
+                return BadRequest("Risk data is required.");
+            }
+
+            try
+            {
+                var savedDraft = await _riskRepository.AddDraftQualityRiskAsync(riskDraftDto);
+                return Ok(savedDraft); // return the saved draft back to the client
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                // You might want to log this exception in a real app
+                return StatusCode(500, "An error occurred while saving the draft.");
+            }
+        }
+
+
+
+        [HttpPost("Draft-security-or-privacy")]
+        public async Task<IActionResult> SaveSecurityOrPrivacyDraft([FromBody] RiskDraftDTO riskDraftDto)
+        {
+            if (riskDraftDto == null)
+            {
+                return BadRequest("Risk data is required.");
+            }
+
+            try
+            {
+                var result = await _riskRepository.AddDraftSecurityOrPrivacyRiskAsync(riskDraftDto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to save draft: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("drafts")]
+        public async Task<IActionResult> GetAllDrafts()
+        {
+            var drafts = await _riskRepository.GetAllDraftsAsync();
+            return Ok(drafts);
+        }
+
+
+        [HttpDelete("drafts/{id}")]
+        public async Task<IActionResult> DeleteDraft(string id)
+        {
+            var deleted = await _riskRepository.DeleteDraftByIdAsync(id); 
+            if (!deleted)
+                return NotFound("Draft not found.");
+
+            return Ok("Draft deleted successfully.");
+        }
+
+
+        [HttpGet("drafts/department/{departmentId}")]
+        public async Task<IActionResult> GetDraftsByDepartmentId(int departmentId)
+        {
+            var drafts = await _riskRepository.GetAllDraftsByDepartmentIdAsync(departmentId);
+            return Ok(drafts);
+        }
+
+        [HttpGet("drafts/createdby/{createdBy}")]
+        public async Task<IActionResult> GetDraftsByCreatedUser(int createdBy)
+        {
+            var drafts = await _riskRepository.GetAllDraftsByCreatedUserAsync(createdBy);
+            return Ok(drafts);
+        }
+
+
+        [HttpGet("draft/{riskId}")]
+        public async Task<IActionResult> GetDraftById(string riskId)
+        {
+            var drafts = await _riskRepository.GetDraftByIdAsync(riskId);
+            return Ok(drafts);
+        }
+
+
+        [HttpPut("draft/{id}")]
+        public async Task<IActionResult> UpdateDraft(string id, [FromBody] RiskDraftDTO riskDraftDto)
+        {
+            if (riskDraftDto == null)
+            {
+                return BadRequest("Risk data is required.");
+            }
+
+            try
+            {
+                var updatedDraft = await _riskRepository.UpdateDraftAsync(id, riskDraftDto);
+                return Ok(updatedDraft);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while updating the draft.");
+            }
+        }
+
+
+
+
+
     }
 }

@@ -35,7 +35,9 @@ namespace Risk_Management_RiskEX_Backend
                      dest.OverallRiskRating = src.OverallRiskRatingAfter.HasValue ? src.OverallRiskRatingAfter.Value: src.OverallRiskRatingBefore;});
             // Map Risk entity to RiskDetailsDTO
             CreateMap<Risk, RiskDetailsDTO>()
+
                 .ForMember(dest => dest.ReviewerName, opt => opt.Ignore()) // ReviewerName comes from Review.User
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.RiskAssessments.FirstOrDefault().Risk.Id)) 
                 .ForMember(dest => dest.ReviewerDepartment, opt => opt.Ignore()); // ReviewerDepartment comes from Review.User.Department
 
             // Map Review to RiskDetailsDTO
@@ -91,8 +93,8 @@ namespace Risk_Management_RiskEX_Backend
                       .ForMember(dest => dest.CreatedReviews, opt => opt.Ignore())
                       .ForMember(dest => dest.UpdatedReviews, opt => opt.Ignore())
                       .ForMember(dest => dest.CreatedUsers, opt => opt.Ignore())
-                       .ForMember(dest => dest.UpdatedUsers, opt => opt.Ignore())
-                       .ForMember(dest => dest.Reviews, opt => opt.Ignore());
+                      .ForMember(dest => dest.UpdatedUsers, opt => opt.Ignore())
+                      .ForMember(dest => dest.Reviews, opt => opt.Ignore());
 
 
             CreateMap<RiskResponseDTO, Risk>().ReverseMap();
@@ -102,7 +104,7 @@ namespace Risk_Management_RiskEX_Backend
                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
                .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.DepartmentName))
-               .ForMember(dest => dest.ProjectNames, opt => opt.MapFrom(src => src.Projects.Select(p => p.Name).ToList()));
+               .ForMember(dest => dest.ProjectIds, opt => opt.MapFrom(src => src.Projects.Select(p => p.Id).ToList()));
 
             // Mapping for LoginRequestDTO (no mapping needed as it's a simple DTO)
             CreateMap<LoginRequestDTO, User>()
@@ -130,6 +132,7 @@ namespace Risk_Management_RiskEX_Backend
             CreateMap<ExternalReviewerDTO, ExternalReviewer>().ReverseMap();
             CreateMap< AssigneeResponseDTO,User>().ReverseMap();
             CreateMap<RiskForApprovalDTO, Risk>().ReverseMap();
+            CreateMap<GetAllRiskAssignedDTO, Risk>().ReverseMap();
             CreateMap<RiskMinimalInfoDTO, Risk>().ReverseMap();
 
 

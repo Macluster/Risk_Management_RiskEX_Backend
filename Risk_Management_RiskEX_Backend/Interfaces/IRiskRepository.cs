@@ -29,19 +29,35 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task<Risk> EditSecurityOrPrivacyRiskAsync(int id, RiskDTO riskDto);
         Task<Risk> UpdateQualityRiskAsync(int riskId, RiskUpdateDTO riskUpdateDto);
         Task<Risk> UpdateSecurityOrPrivacyRiskAsync(int riskId, RiskUpdateDTO riskUpdateDto);
-        Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCountsByDepartments(List<int> departmentIds);
+        Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCountsByDepartments(List<int> departmentIds, List<int> projectids);
         Task<Object> GetRiskByAssigneeId(int id);
-        Task<Object> RiskApproachingDeadline(int? id);
-        Task<Object> GetRiskWithHeighestOverallRationg(int? id);
-        Task<ICollection<OpenRiskCountByTypeDTO>> GetOpenRiskCountByType(int? id);
+        Task<Object> RiskApproachingDeadline(List<int> departmentIds, List<int> projectids);
+        Task<Object> GetRiskWithHeighestOverallRationg(List<int> departmentIds, List<int> projectids);
+        Task<ICollection<OpenRiskCountByTypeDTO>> GetOpenRiskCountByType(List<int> departmentIds, List<int> projectids);
         Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCounts(int?id);
+        Task<object> GetAllRiskAssigned();
+
+        Task<string> SetAndGetRiskIdAsync(int? departmentId, int? projectId);
+
+        public Task<RiskDraftDTO> AddDraftQualityRiskAsync(RiskDraftDTO riskDraftDto);
+        public Task<RiskDraftDTO> AddDraftSecurityOrPrivacyRiskAsync(RiskDraftDTO riskDraftDto);
+
+        public Task<List<dynamic>> GetAllDraftsAsync();
+
+        public Task<bool> DeleteDraftByIdAsync(string riskId);
+        public Task<List<dynamic>> GetAllDraftsByDepartmentIdAsync(int departmentId);
+        public Task<List<RiskDraftDTO>> GetAllDraftsByCreatedUserAsync(int createdBy);
+        public Task<RiskDraftDTO> GetDraftByIdAsync(string riskId);
+
+        public Task<RiskDraftDTO> UpdateDraftAsync(string id, RiskDraftDTO riskDraftDto);
+
 
 
 
     }
 
-      
 
- 
-    
+
+
+
 }

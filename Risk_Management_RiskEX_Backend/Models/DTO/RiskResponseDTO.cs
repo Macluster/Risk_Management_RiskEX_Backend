@@ -14,10 +14,13 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
         public string Mitigation { get; set; }
         public string Contingency { get; set; }
         public int OverallRiskRating { get; set; }
+        public int OveralRiskRatingBefore { get; set; }
+        public int OverallRiskRatingAfter { get; set; }
         public string PlannedActionDate { get; set; }
         public string Remarks { get; set; }
         public string RiskStatus { get; set; }
         public string RiskType { get; set; }
+        public string RiskResponse { get; set; }
         public List<RiskAssessmentResponseDTO> RiskAssessments { get; set; }
         public UserResponseDTO ResponsibleUser { get; set; }
         public DepartmentDTO Department { get; set; }
@@ -31,5 +34,7 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
         public DateTime? CreatedAt { get; set; }
         public UserResponseDTO UpdatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
+
+        public string ClosedDate { get; set; }
     }
 }

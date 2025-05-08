@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Interfaces;
-using Risk_Management_RiskEX_Backend.Models.DTO;
 using Risk_Management_RiskEX_Backend.Models;
+using Risk_Management_RiskEX_Backend.Models.DTO;
 using Risk_Management_RiskEX_Backend.Repository;
-using Microsoft.AspNetCore.Http;
 using Risk_Management_RiskEX_Backend.Services;
 
 
@@ -33,7 +28,8 @@ namespace RiskManagement
         public void OneTimeSetup()
         {
             // AutoMapper configuration
-            var config = new MapperConfiguration(cfg => {
+            var config = new MapperConfiguration(cfg =>
+            {
                 cfg.CreateMap<UsersDTO, User>()
                     .ForMember(dest => dest.Department, opt => opt.Ignore())
                     .ForMember(dest => dest.Projects, opt => opt.Ignore());
@@ -123,7 +119,7 @@ namespace RiskManagement
             await _context.SaveChangesAsync();
         }
 
-     
+
 
         [Test]
         public async Task AddUserToDepartment_InvalidDepartment_ReturnsZero()
@@ -134,7 +130,7 @@ namespace RiskManagement
                 FullName = "New User",
                 Email = "new@test.com",
                 DepartmentName = "Non-Existent Department",
-                ProjectNames = new List<string> { "Test Project" }
+                ProjectIds = new List<int> { 1 }
             };
 
             // Act
@@ -154,7 +150,7 @@ namespace RiskManagement
                 FullName = "New User",
                 Email = "new@test.com",
                 DepartmentName = department.DepartmentName,
-                ProjectNames = new List<string> { "Non-Existent Project" }
+                ProjectIds = new List<int> { 1 }
             };
 
             // Act
@@ -229,23 +225,23 @@ namespace RiskManagement
         }
 
         // Alternative approach using explicit type
-        [Test]
-        public async Task GetNameAndEmailOfAUser_ValidId_ReturnsUserInfo_Alternative()
-        {
-            // Act
-            var result = await _userRepository.GetNameAndEmailOfAUser(1);
-            var resultDict = result.GetType().GetProperties()
-                .ToDictionary(prop => prop.Name, prop => prop.GetValue(result));
+        //[Test]
+        //public async Task GetNameAndEmailOfAUser_ValidId_ReturnsUserInfo_Alternative()
+        //{
+        //    // Act
+        //    var result = await _userRepository.GetNameAndEmailOfAUser(1);
+        //    var resultDict = result.GetType().GetProperties()
+        //        .ToDictionary(prop => prop.Name, prop => prop.GetValue(result));
 
-            // Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(resultDict, Does.ContainKey("FullName"));
-                Assert.That(resultDict, Does.ContainKey("Email"));
-                Assert.That(resultDict["FullName"], Is.EqualTo("Test User"));
-                Assert.That(resultDict["Email"], Is.EqualTo("existing@test.com"));
-            });
-        }
+        //    // Assert
+        //    Assert.Multiple(() =>
+        //    {
+        //        Assert.That(resultDict, Does.ContainKey("FullName"));
+        //        Assert.That(resultDict, Does.ContainKey("Email"));
+        //        Assert.That(resultDict["FullName"], Is.EqualTo("Test User"));
+        //        Assert.That(resultDict["Email"], Is.EqualTo("existing@test.com"));
+        //    });
+        //}
 
         [Test]
         public async Task GetInfoOfAssigneeByRiskId_ValidRiskId_ReturnsAssigneeInfo_Alternative()

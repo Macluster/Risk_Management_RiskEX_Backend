@@ -11,12 +11,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
     public class ProjectRepository : IProjectRepository
     {
         private readonly ApplicationDBContext _db;
-        private readonly IMapper _mapper;  // Injecting AutoMapper
+        private readonly IMapper _mapper;
 
         public ProjectRepository(ApplicationDBContext db, IMapper mapper)
         {
             _db = db;
-            _mapper = mapper; // Assigning AutoMapper to the field
+            _mapper = mapper;
         }
 
 
@@ -31,10 +31,23 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             return await _db.Projects
                             .Where(p => p.DepartmentId == department.Id)
-                            .Select(p => new { p.Id, p.Name,p.ProjectCode })
+                            .Select(p => new { p.Id, p.Name, p.ProjectCode })
                             .ToListAsync();
         }
+        public async Task<IEnumerable<object>> GetProjectsByDepartmentId(int departmentId)
+        {
+            var department = await _db.Departments
+                                    .FirstOrDefaultAsync(d => d.Id == departmentId);
+            if (department == null)
+            {
+                throw new Exception("Department does not exist.");
+            }
 
+            return await _db.Projects
+                            .Where(p => p.DepartmentId == departmentId)
+                            .Select(p => new { p.Id, p.Name, p.ProjectCode })
+                            .ToListAsync();
+        }
         public async Task<bool> AddProjectToDepartment(ProjectDTO projectDto)
         {
             try
@@ -58,7 +71,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     return false;
                 }
 
-               
+
 
                 // Map and set up the project
                 var project = _mapper.Map<Project>(projectDto);
@@ -81,14 +94,27 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<bool> UpdateProjectById(ProjectUpdateRequestDTO projectDto)
         {
-           var project= await  _db.Projects.FirstOrDefaultAsync(e => e.Name==projectDto.ProjectName);
+            var project = await _db.Projects.FirstOrDefaultAsync(e => e.Name == projectDto.ProjectName);
 
-            project.Name=projectDto.NewProjectName;
-            project.ProjectCode = projectDto.ProjectCode;
+            project.Name = projectDto.NewProjectName;
+            project.ProjectCode = projectDto.NewProjectCode;
             await _db.SaveChangesAsync();
 
             return true;
 
+        }
+        public async Task<Project> GetProjectById(int id)
+        {
+            var project = await _db.Projects
+                .Include(p => p.Department)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (project == null)
+            {
+                throw new Exception("Project does not exist.");
+            }
+
+            return project;
         }
     }
 }

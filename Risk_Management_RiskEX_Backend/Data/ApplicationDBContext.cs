@@ -39,6 +39,9 @@ namespace Risk_Management_RiskEX_Backend.Data
        public DbSet<AssessmentMatrixLikelihood> AssessmentsMatrixLikelihood { get; set; }
        public DbSet<RiskResponseData> RiskResponseDatas { get; set; }
 
+       public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -96,8 +99,8 @@ namespace Risk_Management_RiskEX_Backend.Data
             // User - Project
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Projects)
-                .WithOne(u => u.User)
-                .HasForeignKey(u => u.UserId);
+                .WithMany(u => u.Users);
+               
 
             // User - User Created and Updated
             modelBuilder.Entity<User>()
@@ -238,37 +241,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                 .HasForeignKey(f => f.DepartmentId);
         }
 
-        //public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        //{
-        //    UpdateTimestamps();
-        //    return base.SaveChangesAsync(cancellationToken);
-        //}
-
-        //public override int SaveChanges()
-        //{
-        //    UpdateTimestamps();
-        //    return base.SaveChanges();
-        //}
-
-        //private void UpdateTimestamps()
-        //{
-        //    var entries = ChangeTracker
-        //        .Entries()
-        //        .Where(e => e.Entity is TimeStamps && (
-        //            e.State == EntityState.Added ||
-        //            e.State == EntityState.Modified));
-
-        //    foreach (var entityEntry in entries)
-        //    {
-        //        var entity = (TimeStamps)entityEntry.Entity;
-
-        //        if (entityEntry.State == EntityState.Added)
-        //        {
-        //            entity.CreatedAt = DateTime.UtcNow;
-        //        }
-        //        entity.UpdatedAt = DateTime.UtcNow;
-        //    }
-        //}
+       
         private void UpdateAuditFields()
         {
             var currentUserId = GetCurrentUserId();

@@ -18,22 +18,16 @@ namespace Risk_Management_RiskEX_Backend.Models
         public int DepartmentId { get; set; }
         public bool IsActive { get; set; }
 
-        public int? projectId { get; set; }
 
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
 
-        [ForeignKey("projectId")]
-        public virtual Project Project { get; set; }
 
-
-
+        public ICollection<Project> Projects { get; set; }
 
 
         public ICollection<Risk> ResponsibleRisks { get; set; }
 
-
-        // For CreatedBy and edited By
         public ICollection<Risk> CreatedRisks { get; set; }
         public ICollection<Risk> UpdatedRisks { get; set; }
 
@@ -49,7 +43,6 @@ namespace Risk_Management_RiskEX_Backend.Models
 
         public ICollection<User> CreatedUsers {  get; set; }
         public ICollection<User> UpdatedUsers { get; set; }
-        public ICollection<Project> Projects { get; set; }
         public ICollection<Review> Reviews { get; set; }
     }
 }

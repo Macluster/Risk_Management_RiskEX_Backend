@@ -40,7 +40,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
         [HttpGet("gettheReviewer/{id}")]
-        public async Task<ActionResult<ReviewerDTO>> GettheReviewer(int id,[FromQuery]string reviewStatus)
+        public async Task<IActionResult> GettheReviewer(int id,[FromQuery]string reviewStatus)
         {
             try
             {
@@ -61,6 +61,10 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             {
                 var reviewerId = await _reviewerRepository.AddNewReviewer(externalReviewerDTO);
                 return Ok(new { ReviewerId = reviewerId });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { Message = ex.Message }); // 409 Conflict
             }
             catch (Exception ex)
             {

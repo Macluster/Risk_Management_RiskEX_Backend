@@ -5,6 +5,7 @@ using Risk_Management_RiskEX_Backend.Models.DTO;
 using Risk_Management_RiskEX_Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Risk_Management_RiskEX_Backend.Services;
+using Risk_Management_RiskEX_Backend.config;
 
 namespace Risk_Management_RiskEX_Backend.Repository
 {
@@ -27,22 +28,24 @@ namespace Risk_Management_RiskEX_Backend.Repository
             _userService = userService;
         }
 
+        public class UserOperationException : Exception
+        {
+            public UserOperationException(string message) : base(message) { }
+        }
+
         public async Task<int> AddUserToDepartment(UsersDTO userDto)
         {
             try
             {
-                // Begin transaction
                 await using var transaction = await _db.Database.BeginTransactionAsync();
                 try
                 {
-                    // Input validation
                     if (string.IsNullOrWhiteSpace(userDto.Email))
                     {
                         _logger.LogError("User email cannot be empty.");
                         return 0;
                     }
 
-                    // Check for existing user
                     var existingUser = await _db.Users.FirstOrDefaultAsync(u => u.Email == userDto.Email);
                     if (existingUser != null)
                     {
@@ -50,7 +53,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         return 0;
                     }
 
-                    // Validate and get department
                     var department = await _db.Departments
                                     .FirstOrDefaultAsync(d => d.DepartmentName.ToLower() == userDto.DepartmentName.ToLower());
                     if (department == null)
@@ -59,7 +61,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         return 0;
                     }
 
-                    // Create new User entity using AutoMapper
                     var user = _mapper.Map<User>(userDto);
                     user.DepartmentId = department.Id;
                     user.CreatedAt = DateTime.UtcNow;
@@ -68,17 +69,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     var hashedPassword = _userService.GetHashedPassword(DEFAULT_PASSWORD);
                     user.Password = hashedPassword;
 
-                    // Handle project associations if provided
-                    if (userDto.ProjectNames != null && userDto.ProjectNames.Any())
+                    if (userDto.ProjectIds != null && userDto.ProjectIds.Any())
                     {
                         var projects = await _db.Projects
-                            .Where(p => userDto.ProjectNames.Contains(p.Name))
+                            .Where(p => userDto.ProjectIds.Contains(p.Id))
                             .ToListAsync();
 
-                        // Verify all project names were found
-                        var foundProjectNames = projects.Select(p => p.Name).ToList();
-                        var missingProjects = userDto.ProjectNames
-                            .Where(name => !foundProjectNames.Contains(name, StringComparer.OrdinalIgnoreCase))
+                        var foundProjectIds = projects.Select(p => p.Id).ToList();
+                        var missingProjects = userDto.ProjectIds
+                            .Where(Id => !foundProjectIds.Contains(Id))
                             .ToList();
 
                         if (missingProjects.Any())
@@ -89,31 +88,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         user.Projects = projects;
                     }
 
-                    // Add user to database
                     await _db.Users.AddAsync(user);
                     await _db.SaveChangesAsync();
 
-                    // Important: Commit the transaction before sending email
                     await transaction.CommitAsync();
-
-                    // Send welcome email after transaction is committed
-                    try
-                    {
-                        await _emailService.SendEmail(
-                            user.Email,
-                            "Your Account Credentials",
-                            $"Welcome to the system!\n\n" +
-                            $"Your account has been created with the following credentials:\n" +
-                            $"Username: {user.Email}\n" +
-                            $"Password: {DEFAULT_PASSWORD}\n\n" +
-                            "Please change your password upon first login for security purposes."
-                        );
-                    }
-                    catch (Exception emailEx)
-                    {
-                        _logger.LogWarning($"Failed to send welcome email: {emailEx.Message}");
-                        // Don't rollback transaction for email failure
-                    }
 
                     return user.Id;
                 }
@@ -130,6 +108,96 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 return 0;
             }
         }
+
+
+        public async Task<bool> UpdateUser(int userId, UsersDTO userDto)
+        {
+            try
+            {
+                var user = await _db.Users
+                    .Include(u => u.Projects)
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (user == null)
+                {
+                    _logger.LogError($"User with ID {userId} not found.");
+                    return false;
+                }
+
+                if (!string.IsNullOrWhiteSpace(userDto.FullName))
+                {
+                    user.FullName = userDto.FullName;
+                }
+
+                if (!string.IsNullOrWhiteSpace(userDto.DepartmentName))
+                {
+                    var department = await _db.Departments.FirstOrDefaultAsync(d => d.DepartmentName == userDto.DepartmentName);
+                    if (department != null)
+                    {
+                        user.DepartmentId = department.Id; 
+                    }
+                    else
+                    {
+                        _logger.LogError($"Department '{userDto.DepartmentName}' not found.");
+                        return false;
+                    }
+                }
+
+                // Handle project updates (including removal)
+                if (userDto.ProjectIds != null)
+                {
+                    if (userDto.ProjectIds.Any()) // If project list is not empty, update the projects
+                    {
+                        var projects = await _db.Projects
+                            .Where(p => userDto.ProjectIds.Contains(p.Id))
+                            .ToListAsync();
+
+                        var foundProjectIds = projects.Select(p => p.Id).ToList();
+                        var missingProjects = userDto.ProjectIds
+                            .Where(id => !foundProjectIds.Contains(id))
+                            .ToList();
+
+                        if (missingProjects.Any())
+                        {
+                            _logger.LogError($"Projects not found: {string.Join(", ", missingProjects)}");
+                            return false;
+                        }
+
+                        user.Projects = projects;
+                    }
+                    else // If an empty list is passed, remove all projects
+                    {
+                        user.Projects.Clear();
+                    }
+                }
+
+                // Allow email update only if it's unique
+                if (!string.IsNullOrWhiteSpace(userDto.Email) && userDto.Email != user.Email)
+                {
+                    var emailExists = await _db.Users.AnyAsync(u => u.Email == userDto.Email && u.Id != userId);
+                    if (emailExists)
+                    {
+                        _logger.LogError($"Email {userDto.Email} is already in use.");
+                        return false;
+                    }
+                    user.Email = userDto.Email;
+                }
+
+                user.UpdatedAt = DateTime.UtcNow;
+
+                _db.Users.Update(user);
+                await _db.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating user.");
+                return false;
+            }
+        }
+
+
 
         public async Task<bool> ChangeUserActiveStatus(int id,bool isActive)
         {
@@ -151,18 +219,23 @@ namespace Risk_Management_RiskEX_Backend.Repository
            
         }
 
-        public async Task<Object> GetNameAndEmailOfAUser(int userId)
+        public async Task<dynamic> GetNameAndEmailOfAUser(int userId)
         {
             var User=  await _db.Users.FirstOrDefaultAsync(e=>e.Id==userId);
 
-            AssigneeResponseDTO assigneeResponseDTO=  _mapper.Map<AssigneeResponseDTO>(User);
+         
 
-            return new
+            if (User != null)
+                return new
+                {
+                   FullName= User.FullName,
+                   Email= User.Email
+
+                };
+            else
             {
-                User.FullName,
-                User.Email
-                
-            };
+                return null;
+            }
         }
 
         public async Task<Object> GetInfoOfAssigneeByRiskId(int riskId)
@@ -193,10 +266,27 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return await _db.Users
                 .Include(u => u.Department)  
                 .Include(u => u.Projects)   
-                .Where(u => u.Department.DepartmentName == departmentName) 
+                .Where(u => u.Department.DepartmentName == departmentName && !GlobalConfig.AdminEmails.Contains(u.Email)) 
                 .ToListAsync();
         }
-
+        public async Task<List<User>> GetUsersByDepartmentIdAsync(int departmentId)
+        {
+            return await _db.Users
+                .Include(u => u.Department)
+                .Include(u => u.Projects)
+                .Where(u => u.Department.Id == departmentId &&
+                            u.IsActive &&
+                            !GlobalConfig.AdminEmails.Contains(u.Email))
+                .ToListAsync();
+        }
+        //public async Task<List<User>> GetUsersByDepartmentIdAsync(int departmentId)
+        //{
+        //    return await _db.Users
+        //        .Include(u => u.Department)
+        //        .Include(u => u.Projects)
+        //        .Where(u => u.Department.Id == departmentId && !GlobalConfig.AdminEmails.Contains(u.Email))
+        //        .ToListAsync();
+        //}
 
         public async Task<List<dynamic>> GetUsersByProjects(int[] projectIds)
         {
@@ -239,6 +329,59 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             return user;
 
+        }
+
+        public async Task<string> GetCreatedByUserNameAsync(string riskId)
+        {
+            var risk = await _db.Risks
+                .FirstOrDefaultAsync(r => r.RiskId == riskId);
+
+            if (risk == null || risk.CreatedById == null)
+            {
+                return "User Not Found";
+            }
+
+            var user = await _db.Users
+                .FirstOrDefaultAsync(u => u.Id == risk.CreatedById);
+
+            return user?.FullName ?? "User Not Found";
+        }
+
+
+
+        public async Task<int?> GetDepartmentIdByUserIdAsync(string userId)
+        {
+            if (!int.TryParse(userId, out int parsedUserId))
+                return null;
+
+            var user = await _db.Users
+                .AsNoTracking()
+                .Where(u => u.Id == parsedUserId && u.IsActive)
+                .Select(u => u.DepartmentId)
+                .FirstOrDefaultAsync();
+
+            return user;
+        }
+
+        public async Task<List<int>> GetProjectIdsByUserIdAsync(string userId)
+        {
+            if (!int.TryParse(userId, out int parsedUserId))
+                return new List<int>();
+
+            return await _db.Users
+                .Where(u => u.Id == parsedUserId)
+                .SelectMany(u => u.Projects.Select(p => p.Id))
+                .ToListAsync();
+        }
+        public async Task<bool> IsUserActiveAsync(string userId)
+        {
+            if (!int.TryParse(userId, out int parsedUserId))
+                return false;
+
+            return await _db.Users
+                .Where(u => u.Id == parsedUserId)
+                .Select(u => u.IsActive)
+                .FirstOrDefaultAsync();
         }
     }
 }

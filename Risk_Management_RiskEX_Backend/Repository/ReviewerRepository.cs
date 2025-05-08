@@ -6,6 +6,7 @@ using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Models.DTO;
 using System.Threading.Tasks;
+using Risk_Management_RiskEX_Backend.config;
 
 namespace Risk_Management_RiskEX_Backend.Repository
 {
@@ -43,7 +44,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             if (existingUser != null)
             {
                 //_logger.LogError($"User with email {userDto.Email} already exists.");
-                return 0;
+                throw new InvalidOperationException("Reviewer with the same email already exists.");
             }
 
 
@@ -64,34 +65,29 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<List<ReviewerDTO>> GetAllReviewersAsync([FromServices] IHttpContextAccessor httpContextAccessor)
         {
-            // Get the current user's role from the token
-            var currentUserRole = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role)?.Value;
 
-            if (currentUserRole?.ToLower() == "admin")
-            {
-                return new List<ReviewerDTO>();  
-            }
 
             var users = await _db.Users
-                .Where(u => u.IsActive
-                    && !u.Email.ToLower().Contains("admin"))
+                .Where(u => !GlobalConfig.AdminEmails.Contains(u.Email))
                 .Select(u => new ReviewerDTO
                 {
                     Id = u.Id,
                     FullName = u.FullName,
                     Email = u.Email,
-                    Type = "Internal"
+                    Type = "Internal",
+                    IsActive = u.IsActive // Show actual status
                 })
                 .ToListAsync();
 
             var externalReviewers = await _db.ExternalReviewers
-                .Where(er => !er.Email.ToLower().Contains("admin"))
+                .Where(er => !GlobalConfig.AdminEmails.Contains(er.Email))
                 .Select(er => new ReviewerDTO
                 {
                     Id = er.Id,
                     FullName = er.FullName,
                     Email = er.Email,
-                    Type = "External"
+                    Type = "External",
+                    IsActive = true // Always set true for external
                 })
                 .ToListAsync();
 

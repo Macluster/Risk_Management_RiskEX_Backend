@@ -10,23 +10,20 @@ namespace Risk_Management_RiskEX_Backend.Data
         {
             // Seed Departments
             modelBuilder.Entity<Department>().HasData(
-                new Department { Id = 1, DepartmentName = "SFM", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department {Id = 2, DepartmentName = "HR", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department {Id = 3, DepartmentName = "Finance", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 4, DepartmentName = "Admin & Purchase", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 5, DepartmentName = "DU1", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 6, DepartmentName = "DU2", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 7, DepartmentName = "DU3", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 8, DepartmentName = "DU4", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 9, DepartmentName = "DU5", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 10, DepartmentName = "DU6", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 11, DepartmentName = "Data & Analytics", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 12, DepartmentName = "Design Services", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 13, DepartmentName = "Testing Services", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 14, DepartmentName = "Marketing", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 15, DepartmentName = "Business Solution Group", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 16, DepartmentName = "Learning & Development", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Department { Id = 17, DepartmentName = "Audits & Compliance", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+                new Department { Id = 1, DepartmentName = "Audits & Compliance", DepartmentCode = "ACE", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 2, DepartmentName = "EMT", DepartmentCode = "EMT", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 3, DepartmentName = "SFM", DepartmentCode = "SFM", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 4, DepartmentName = "HR", DepartmentCode = "HR", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 5, DepartmentName = "Admin & Purchase", DepartmentCode = "A&D", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 6, DepartmentName = "DU1", DepartmentCode = "DU1", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 7, DepartmentName = "DU2", DepartmentCode = "DU2", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 8, DepartmentName = "DU3", DepartmentCode = "DU3", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 9, DepartmentName = "DU4", DepartmentCode = "DU4", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 10, DepartmentName = "DU5", DepartmentCode = "DU5", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 11, DepartmentName = "DU6", DepartmentCode = "DU6", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 12, DepartmentName = "Marketing", DepartmentCode = "MAR", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 13, DepartmentName = "Learning & Development", DepartmentCode = "L&D", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Department { Id = 14, DepartmentName = "Finance", DepartmentCode = "FIN", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
 
 
             );
@@ -36,26 +33,22 @@ namespace Risk_Management_RiskEX_Backend.Data
                 new User
                 {
                     Id = 1,
-                    Email = "admin@gmail.com",
-                    Password = "admin@123", // In production, use hashed passwords
+                    Email = "riskex@experionglobal.com",
+                    Password = "AQAAAAIAAYagAAAAEAaroqhRU1q5tzEl35QYww+8xRNB3KLD6rrlXLdANJ8N2kUrAXvLsEYOpWldjgmzMg==",
                     FullName = "System Admin",
-                    DepartmentId = 17,
+                    DepartmentId = 1,
                     IsActive = true,
-                    //CreatedBy = 1,
-                    //UpdatedBy = 1,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
                 new User
                 {
                     Id = 2,
-                    Email = "risk.manager@riskex.com",
-                    Password = "Risk@123",
-                    FullName = "Risk Manager",
+                    Email = "admin@gmail.com",
+                    Password = "AQAAAAIAAYagAAAAEAaroqhRU1q5tzEl35QYww+8xRNB3KLD6rrlXLdANJ8N2kUrAXvLsEYOpWldjgmzMg==",
+                    FullName = "System Admin",
                     DepartmentId = 1,
                     IsActive = true,
-                    //CreatedBy = 1,
-                    //UpdatedBy = 1,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
@@ -67,7 +60,6 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 1,
                     Basis = "Confidentiality",
-               
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -75,7 +67,6 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 2,
                     Basis = "Integrity",
-    
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -83,7 +74,6 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 3,
                     Basis = "Availability",
- 
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -91,7 +81,6 @@ namespace Risk_Management_RiskEX_Backend.Data
                 {
                     Id = 4,
                     Basis = "Privacy",
-
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
@@ -104,7 +93,6 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 1,
                     Name = "Data Center Migration",
                     DepartmentId = 1,
-                    UserId = 1,
                     CreatedById = 1,
                     UpdatedById = 1,
                     CreatedAt = DateTime.UtcNow,
@@ -115,7 +103,6 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 2,
                     Name = "HR Inventory",
                     DepartmentId = 2,
-                    UserId = 2,
                     CreatedById = 1,
                     UpdatedById = 1,
                     CreatedAt = DateTime.UtcNow,
@@ -129,7 +116,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 1,
                     AssessmentFactor = "Low",
                     Impact = 10.0, 
-                    Definition = "No/slight effect on business",
+                    Definition = "No slight effect on business",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -138,8 +125,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 2,
                     AssessmentFactor = "Medium",
                     Impact = 20.0,  
-                    Definition = "business objectives affected",
-
+                    Definition = "Business objectives affected",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -148,7 +134,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 3,
                     AssessmentFactor = "High",
                     Impact = 40.0, 
-                    Definition= "business objectives undermined",
+                    Definition= "Business objectives undermined",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -157,7 +143,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 4,
                     AssessmentFactor = "Critical",
                     Impact = 60.0,  
-                    Definition = "business objectives not accomplished",
+                    Definition = "Business objectives not accomplished",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }

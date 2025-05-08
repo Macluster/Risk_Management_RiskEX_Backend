@@ -16,39 +16,40 @@ namespace Risk_Management_RiskEX_Backend.Repository
         public async Task<object> GetReviewStatusOfARisk(int id, bool isPreReview)
         {
 
-            var responsiblePerson = await _db.Assessments.Where(e => e.RiskId == id).Select(e=>e.Review.User.FullName).FirstOrDefaultAsync();
          
             if (isPreReview)
             {
+                var responsiblePerson = await _db.Assessments.Where(e => e.RiskId == id && e.IsMitigated==false).Select(e => e.Review.User.FullName).FirstOrDefaultAsync();
 
                 var assessments = await _db.Assessments.Where(e => e.RiskId == id && !e.IsMitigated)
                .Select(e => new
                {
                    actionBy = responsiblePerson,
-                   isReviewed = true,
+                   isReviewed = e.Review.ReviewStatus,
                    date = e.Review.CreatedAt,
                }).FirstOrDefaultAsync();
                   return assessments != null ? assessments : new
                 {
                     actionBy = responsiblePerson,
-                    isReviewed = false,
+                    isReviewed = 1,
                     date ="...",
                 };
             }
             else
             {
+                var responsiblePerson = await _db.Assessments.Where(e => e.RiskId == id && e.IsMitigated==true).Select(e => e.Review.User.FullName).FirstOrDefaultAsync();
 
-                var assessments = await _db.Assessments.Where(e => e.RiskId == id && e.IsMitigated)
+                var assessments = await _db.Assessments.Where(e => e.RiskId == id && e.IsMitigated).OrderByDescending(e=>e.Id)
              .Select(e => new
              {
                  actionBy = responsiblePerson,
-                 isReviewed = true,
+                 isReviewed = e.Review.ReviewStatus,
                  date = e.Review.CreatedAt,
              }).FirstOrDefaultAsync();
                 return assessments != null ? assessments : new
                 {
                     actionBy = responsiblePerson,
-                    isReviewed = false,
+                    isReviewed = 0,
                     date = "...",
                 };
             }

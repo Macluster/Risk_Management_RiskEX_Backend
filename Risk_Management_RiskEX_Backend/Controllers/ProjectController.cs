@@ -22,7 +22,20 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         [HttpGet("ProjectsBy/{departmentName}")]
         public async Task<IActionResult> GetProjectsByDepartment(string departmentName)
         {
-            var projects = await _projectRepository.GetProjectsByDepartment(departmentName);
+            try
+            {
+                var projects = await _projectRepository.GetProjectsByDepartment(departmentName);
+                return Ok(projects ?? Enumerable.Empty<object>());
+            }
+            catch (Exception ex)
+            {
+                return Ok(Enumerable.Empty<object>());  
+            }
+        }
+        [HttpGet("projects/{departmentId}")]
+        public async Task<IActionResult> GetProjectsByDepartmentId(int departmentId)
+        {
+            var projects = await _projectRepository.GetProjectsByDepartmentId(departmentId);
             if (projects.Any())
             {
                 return Ok(projects);
@@ -51,11 +64,11 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return Ok(new { message = "Project added successfully." });
             }
 
-            return StatusCode(500, new { message = "An error occurred while adding the project." });
+            return BadRequest( new { message = "An error occurred while adding the project." });
         }
 
 
-        [HttpPut("Project/{id}")]
+        [HttpPut("{id}")]
         [Authorize]
         public async Task<IActionResult> UpdateProject([FromServices] IProjectRepository _projectRepository, [FromBody] ProjectUpdateRequestDTO projectDto,int id)
         {
@@ -74,6 +87,26 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
 
             return StatusCode(500, new { message = "An error occurred while updating the project." });
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProjectById(int id)
+        {
+            try
+            {
+                var project = await _projectRepository.GetProjectById(id);
+                return Ok(new
+                {
+                    id = project.Id,
+                    name = project.Name,
+                    projectCode = project.ProjectCode,
+                    departmentName = project.Department.DepartmentName
+                });
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
 
     }

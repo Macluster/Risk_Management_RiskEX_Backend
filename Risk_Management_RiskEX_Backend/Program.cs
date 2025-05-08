@@ -1,9 +1,8 @@
 
 using System.Text;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Risk_Management_RiskEX_Backend;
@@ -18,9 +17,6 @@ using Risk_Management_RiskEX_Backend.Services;
 DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
-
-
-
 
 //Getting Connection String from Env file adding to db context
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
@@ -48,8 +44,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAutoMapper(typeof(MappingConfig)); 
+builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRiskMongoService, RiskMongoService>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IRiskRepository, RiskRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
@@ -59,6 +56,7 @@ builder.Services.AddScoped<IAssessmentMatrixImpactRepository, AssessmentMatrixIm
 builder.Services.AddScoped<IAssessmentMatrixLikelihoodRepository, AssessmentMatrixLikelihoodRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
+
 builder.Services.AddScoped<IApprovalRepository, ApprovalsRepository>();
 builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 
@@ -66,10 +64,30 @@ builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
+
+//builder.Services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
 builder.Services.AddScoped<UserService>();
+
 builder.Services.AddScoped<PasswordService>();
 
-builder.Services.AddSwaggerGen(option => {
+
+
+
+// Configure MongoDB
+builder.Services.Configure<RiskDatabaseSettingscs>(builder.Configuration.GetSection("MongoDbSettings"));
+
+
+
+
+
+
+
+
+
+builder.Services.AddSwaggerGen(option =>
+
+{
+    
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description =
@@ -162,7 +180,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<DepartmentValidationMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

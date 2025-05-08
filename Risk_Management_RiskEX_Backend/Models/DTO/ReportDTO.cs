@@ -7,7 +7,6 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
 {
     public class ReportDTO
     {
-        [Key]
         public int Id { get; set; }
         public string RiskId { get; set; }
         public string RiskName { get; set; }

@@ -10,6 +10,7 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
 
       
         public string RiskName { get; set; }
+        public string DepartmentName { get; set; }
 
 
         public string Description { get; set; }
