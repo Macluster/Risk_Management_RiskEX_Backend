@@ -15,7 +15,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task UpdateAsync(string id, RiskDraftDTO updatedDraft);
 
 
-        Task<RiskDraftDTO> GetDraftByIdAsync(string riskId);
+        
 
     }
 }
