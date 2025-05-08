@@ -1354,7 +1354,28 @@ namespace Risk_Management_RiskEX_Backend.Repository
         public async Task<RiskDraftDTO> GetDraftByIdAsync(string riskId)
         {
             return await _riskMongoService.GetDraftByIdAsync(riskId);
+            
         }
+
+
+
+        public async Task<RiskDraftDTO> UpdateDraftAsync(string id, RiskDraftDTO riskDraftDto)
+        {
+            if (string.IsNullOrEmpty(id))
+                throw new ArgumentException("Draft ID is required.");
+
+            try
+            {
+                await _riskMongoService.UpdateAsync(id, riskDraftDto);
+                return riskDraftDto;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error updating draft: " + e.Message);
+                throw new Exception("Failed to update draft.");
+            }
+        }
+
 
 
 

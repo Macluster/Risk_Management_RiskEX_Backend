@@ -49,6 +49,8 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         public Task<List<RiskDraftDTO>> GetAllDraftsByCreatedUserAsync(int createdBy);
         public Task<RiskDraftDTO> GetDraftByIdAsync(string riskId);
 
+        public Task<RiskDraftDTO> UpdateDraftAsync(string id, RiskDraftDTO riskDraftDto);
+
 
 
 
