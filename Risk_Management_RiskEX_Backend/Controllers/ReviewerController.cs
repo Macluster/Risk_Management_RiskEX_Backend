@@ -62,6 +62,10 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 var reviewerId = await _reviewerRepository.AddNewReviewer(externalReviewerDTO);
                 return Ok(new { ReviewerId = reviewerId });
             }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { Message = ex.Message }); // 409 Conflict
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
