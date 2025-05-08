@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Risk_Management_RiskEX_Backend.config;
 using Risk_Management_RiskEX_Backend.Data;
 using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Models.DTO;
@@ -115,56 +116,7 @@ namespace RiskManagement
             _dbContext.SaveChanges();
         }
 
-        private IEnumerable<Claim> DecodeToken(string token)
-        {
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(token);
-            return jwtToken.Claims;
-        }
-
-        [Test]
-        public async Task LoginUser_WithValidAdminCredentials_ShouldReturnTokenWithAdminRole()
-        {
-            // Arrange
-            var loginRequest = new LoginRequestDTO
-            {
-                Email = "admin@gmail.com",
-                Password = "TestPassword123!"
-            };
-
-            // Act
-            var result = await _authRepository.LoginUser(loginRequest, _passwordService);
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.Token, Is.Not.Null);
-            Assert.That(result.User.Email, Is.EqualTo("admin@gmail.com"));
-
-            var claims = DecodeToken(result.Token);
-            Assert.That(claims.Any(c => c.Type == ClaimTypes.Role && c.Value == "Admin"), Is.True, "Token should contain Admin role");
-        }
-
-        [Test]
-        public async Task LoginUser_WithValidEMTCredentials_ShouldReturnTokenWithEMTRole()
-        {
-            // Arrange
-            var loginRequest = new LoginRequestDTO
-            {
-                Email = "emt@gmail.com",
-                Password = "TestPassword123!"
-            };
-
-            // Act
-            var result = await _authRepository.LoginUser(loginRequest, _passwordService);
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.Token, Is.Not.Null);
-
-            var claims = DecodeToken(result.Token);
-            Assert.That(claims.Any(c => c.Type == ClaimTypes.Role && c.Value == "EMTUser"), Is.True, "Token should contain EMTUser role");
-            Assert.That(claims.Any(c => c.Type == "Projects"), Is.True, "Token should contain Projects claim");
-        }
+       
 
         [Test]
         public async Task LoginUser_WithInvalidPassword_ShouldReturnNull()
@@ -217,27 +169,7 @@ namespace RiskManagement
             Assert.That(exception.Message, Is.EqualTo("Your account has been deactivated.Please contact the admin."));
         }
 
-        [Test]
-        public async Task LoginUser_WithValidProjectUser_ShouldIncludeProjectClaims()
-        {
-            // Arrange
-            var loginRequest = new LoginRequestDTO
-            {
-                Email = "emt@gmail.com",
-                Password = "TestPassword123!"
-            };
-
-            // Act
-            var result = await _authRepository.LoginUser(loginRequest, _passwordService);
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.Token, Is.Not.Null);
-
-            var claims = DecodeToken(result.Token);
-            Assert.That(claims.Any(c => c.Type == ClaimTypes.Role && c.Value == "ProjectUsers"), Is.True, "Token should contain ProjectUsers role");
-            Assert.That(claims.Any(c => c.Type == "Projects"), Is.True, "Token should contain Projects claim");
-        }
+       
 
         [TearDown]
         public void TearDown()

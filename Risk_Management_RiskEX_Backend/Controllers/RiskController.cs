@@ -637,6 +637,30 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
 
+        [HttpPut("draft/{id}")]
+        public async Task<IActionResult> UpdateDraft(string id, [FromBody] RiskDraftDTO riskDraftDto)
+        {
+            if (riskDraftDto == null)
+            {
+                return BadRequest("Risk data is required.");
+            }
+
+            try
+            {
+                var updatedDraft = await _riskRepository.UpdateDraftAsync(id, riskDraftDto);
+                return Ok(updatedDraft);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while updating the draft.");
+            }
+        }
+
+
 
 
 
