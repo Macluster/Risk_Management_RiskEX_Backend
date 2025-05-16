@@ -246,7 +246,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     LikelihoodMatrix = new { LikeliHood = ra.MatrixLikelihood.AssessmentFactor, Value = ra.MatrixLikelihood.Likelihood },
 
 
-                }).OrderByDescending(x => x.Id).Take(4).ToList(),
+                }).OrderByDescending(x => x.Id).Take(8).ToList(),
                 ResponsibleUser = r.ResponsibleUser != null ? new UserResponseDTO { Id = r.ResponsibleUser.Id, FullName = r.ResponsibleUser.FullName,Email=r.ResponsibleUser.Email } : null,
                 Department = new DepartmentDTO { Id = r.Department.Id, Name = r.Department.DepartmentName },
                 Project = r.Project != null ? new ProjectResponseDTO { Id = r.Project.Id, ProjectName = r.Project.Name } : null,
