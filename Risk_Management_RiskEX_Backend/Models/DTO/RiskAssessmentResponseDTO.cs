@@ -10,5 +10,7 @@
         public bool IsMitigated { get; set; }
         public Object ImpactMatix { get; set; }
         public Object LikelihoodMatrix { get; set; }
+
+       
     }
 }
