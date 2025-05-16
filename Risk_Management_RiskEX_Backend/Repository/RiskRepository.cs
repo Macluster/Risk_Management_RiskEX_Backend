@@ -246,7 +246,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     LikelihoodMatrix = new { LikeliHood = ra.MatrixLikelihood.AssessmentFactor, Value = ra.MatrixLikelihood.Likelihood },
 
 
-                }).OrderByDescending(x => x.Id).Take(8).ToList(),
+                }).ToList(),
                 ResponsibleUser = r.ResponsibleUser != null ? new UserResponseDTO { Id = r.ResponsibleUser.Id, FullName = r.ResponsibleUser.FullName,Email=r.ResponsibleUser.Email } : null,
                 Department = new DepartmentDTO { Id = r.Department.Id, Name = r.Department.DepartmentName },
                 Project = r.Project != null ? new ProjectResponseDTO { Id = r.Project.Id, ProjectName = r.Project.Name } : null,
@@ -261,6 +261,38 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 ClosedDate=r.ClosedDate!=null? r.ClosedDate.ToString() : ""
             })
             .FirstOrDefaultAsync();
+
+
+
+            var newAssessmentBeforeMitigation = new List<RiskAssessmentResponseDTO>();
+            var newAssessmentAfterMitigation = new List<RiskAssessmentResponseDTO>();
+
+            foreach (RiskAssessmentResponseDTO item in risk.RiskAssessments)
+            {
+                if (item.IsMitigated)
+                {
+                    newAssessmentAfterMitigation.Add(item);
+                }
+                else
+                {
+                    newAssessmentBeforeMitigation.Add(item);
+                }
+            }
+
+            newAssessmentBeforeMitigation = newAssessmentBeforeMitigation
+                .OrderByDescending(r => r.Id)
+                .Take(risk.RiskType=="Quality"?1:4)
+                .ToList();
+
+            newAssessmentAfterMitigation = newAssessmentAfterMitigation
+                .OrderByDescending(r => r.Id)
+                .Take(risk.RiskType == "Quality" ? 1 : 4)
+                .ToList();
+
+            // Combine both lists and assign back to RiskAssessments
+            risk.RiskAssessments = newAssessmentAfterMitigation
+                .Concat(newAssessmentBeforeMitigation)
+                .ToList();
 
             return risk;
         }
