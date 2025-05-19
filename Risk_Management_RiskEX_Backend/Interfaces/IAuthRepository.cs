@@ -8,7 +8,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
 
        
 
-        Task<LoginResponseDTO> LoginUser(LoginRequestDTO loginRequestDTO,PasswordService _passwordService);
+        Task<LoginResponseDTO> LoginUser(LoginRequestDTO loginRequestDTO, IPasswordService _passwordService);
 
         Task<LoginResponseDTO> LoginUserWithMicrosoft(string idToken);
 

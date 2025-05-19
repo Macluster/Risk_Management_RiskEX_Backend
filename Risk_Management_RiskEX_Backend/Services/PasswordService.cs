@@ -1,6 +1,7 @@
 ﻿
 
 using Microsoft.AspNetCore.Identity;
+using Risk_Management_RiskEX_Backend.Interfaces;
 using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Models.DTO;
 using System;
@@ -8,7 +9,7 @@ namespace Risk_Management_RiskEX_Backend.Services
 {
 
 
-    public class PasswordService
+    public class PasswordService:IPasswordService
     {
         private readonly PasswordHasher<Object> _passwordHasher;
 

@@ -8,10 +8,10 @@ namespace Risk_Management_RiskEX_Backend.Services
 {
     public class UserService
     {
-        private readonly PasswordService _passwordService;
+        private readonly IPasswordService _passwordService;
         private IAuthRepository _authRepository;
 
-        public UserService(PasswordService passwordService,IAuthRepository authRepository)
+        public UserService(IPasswordService passwordService,IAuthRepository authRepository)
         {
             _passwordService = passwordService;
             _authRepository = authRepository;
