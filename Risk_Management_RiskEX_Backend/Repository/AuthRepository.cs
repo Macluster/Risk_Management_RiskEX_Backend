@@ -38,7 +38,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
-        public async Task<LoginResponseDTO> LoginUser(LoginRequestDTO loginRequestDTO,PasswordService _passwordService)
+        public async Task<LoginResponseDTO> LoginUser(LoginRequestDTO loginRequestDTO,IPasswordService _passwordService)
         {
             try
             {

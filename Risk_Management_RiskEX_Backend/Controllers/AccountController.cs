@@ -18,7 +18,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         }
 
         [HttpPost("ChangePassword/{userId}")]
-        public async Task<IActionResult> ChangePassword(int userId, [FromBody] ChangePasswordRequestDTO request, PasswordService _passwordService)
+        public async Task<IActionResult> ChangePassword(int userId, [FromBody] ChangePasswordRequestDTO request, IPasswordService _passwordService)
         {
             if (string.IsNullOrEmpty(request.CurrentPassword) || string.IsNullOrEmpty(request.NewPassword) || string.IsNullOrEmpty(request.ConfirmPassword))
             {
