@@ -12,7 +12,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         private readonly IUserRepository _userRepository;
         private readonly IDepartmentRepository _departmentRepository;
-        private readonly IMongoCollection<RiskDraftDTO> _booksCollection;
+        private readonly IMongoCollection<RiskDraftDTO> _draftCollection;
 
         public RiskMongoService(
             IOptions<RiskDatabaseSettingscs> riskSettings,IUserRepository userRepository, IDepartmentRepository departmentRepository)
@@ -23,30 +23,26 @@ namespace Risk_Management_RiskEX_Backend.Repository
             var mongoDatabase = mongoClient.GetDatabase(
                 riskSettings.Value.DatabaseName);
 
-            _booksCollection = mongoDatabase.GetCollection<RiskDraftDTO>(
+            _draftCollection = mongoDatabase.GetCollection<RiskDraftDTO>(
                 riskSettings.Value.CollectionName);
 
             _userRepository = userRepository;
             _departmentRepository = departmentRepository;
         }
 
-        //public async Task<List<Risk>> GetAsync() =>
-        //    await _booksCollection.Find(_ => true).ToListAsync();
+   
 
-        //public async Task<dynamic?> GetAsync(string id) =>
-        //    await _booksCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
-
-        public async Task CreateAsync(RiskDraftDTO newBook)
+        public async Task CreateAsync(RiskDraftDTO draft)
         {
 
-     
-            await _booksCollection.InsertOneAsync(newBook);
+
+            await _draftCollection.InsertOneAsync(draft);
         }
 
 
         public async Task<List<Object>> GetAllDraftsAsync()
         {
-            var draftList=  await _booksCollection.Find(_ => true).ToListAsync();
+            var draftList= await _draftCollection.Find(_ => true).ToListAsync();
 
             var result = new List<dynamic>();
 
@@ -99,13 +95,13 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<bool> DeleteDraftByIdAsync(string riskId)
         {
-            var result = await _booksCollection.DeleteOneAsync(x => x.Id == riskId);
+            var result = await _draftCollection.DeleteOneAsync(x => x.Id == riskId);
             return result.DeletedCount > 0;
         }
 
         public async Task<RiskDraftDTO>GetDraftByIdAsync(string riskId)
         {
-            var result = await _booksCollection.Find(x => x.Id == riskId).FirstOrDefaultAsync();
+            var result = await _draftCollection.Find(x => x.Id == riskId).FirstOrDefaultAsync();
             return result;
         }
 
@@ -121,7 +117,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
       
 
 
-            var draftList = await _booksCollection.Find(x => x.DepartmentId == departmentId).ToListAsync();
+            var draftList = await _draftCollection.Find(x => x.DepartmentId == departmentId).ToListAsync();
 
             var result = new List<dynamic>();
 
@@ -175,7 +171,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<List<RiskDraftDTO>> GetAllDraftsByCreatedUserAsync(int createdBy)
         {
-            return await _booksCollection
+            return await _draftCollection
                 .Find(r => r.CreatedBy == createdBy)
                 .ToListAsync();
         }
@@ -184,11 +180,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
 
-        //public async Task UpdateAsync(string id, Risk updatedBook) =>
-        //    await _booksCollection.ReplaceOneAsync(x => x.Id == id, updatedBook);
-
-        //public async Task RemoveAsync(string id) =>
-        //    await _booksCollection.DeleteOneAsync(x => x.Id == id);
+   
 
 
 
@@ -199,7 +191,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             updatedDraft.Id = id; // Ensure the Id is set, or MongoDB will treat it as a new document
 
-            var result = await _booksCollection.ReplaceOneAsync(filter, updatedDraft);
+            var result = await _draftCollection.ReplaceOneAsync(filter, updatedDraft);
 
             Console.WriteLine($"Matched: {result.MatchedCount}, Modified: {result.ModifiedCount}");
 
