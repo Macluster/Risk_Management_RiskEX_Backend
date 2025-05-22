@@ -19,7 +19,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
          
             if (isPreReview)
             {
-                var responsiblePerson = await _db.Assessments.Where(e => e.RiskId == id && e.IsMitigated==false).Select(e => e.Review.User.FullName).FirstOrDefaultAsync();
+                var responsiblePerson = await _db.Assessments.Where(e => e.RiskId == id && e.IsMitigated==false).Select(e => e.Review.User.FullName??e.Review.ExternalReviewer.FullName).FirstOrDefaultAsync();
 
                 var assessments = await _db.Assessments.Where(e => e.RiskId == id && !e.IsMitigated)
                .Select(e => new
