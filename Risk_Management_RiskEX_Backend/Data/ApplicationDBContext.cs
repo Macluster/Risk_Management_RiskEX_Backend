@@ -148,6 +148,16 @@ namespace Risk_Management_RiskEX_Backend.Data
                  .HasForeignKey(r => r.RiskResponseId)
                  .OnDelete(DeleteBehavior.Restrict);
 
+            //Index for Risk
+            modelBuilder.Entity<Risk>()
+             .HasIndex(r => new { r.DepartmentId, r.RiskStatus });
+
+            modelBuilder.Entity<Risk>()
+             .HasIndex(r => r.DepartmentId);
+
+            modelBuilder.Entity<Risk>()
+                .HasIndex(r => r.RiskStatus);
+
         }
 
         private void ConfigureProjectRelationships(ModelBuilder modelBuilder)
