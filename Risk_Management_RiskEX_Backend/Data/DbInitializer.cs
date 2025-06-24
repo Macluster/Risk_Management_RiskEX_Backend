@@ -86,29 +86,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                 }
             );
 
-            // Seed Projects
-            modelBuilder.Entity<Project>().HasData(
-                new Project
-                {
-                    Id = 1,
-                    Name = "Data Center Migration",
-                    DepartmentId = 1,
-                    CreatedById = 1,
-                    UpdatedById = 1,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Project
-                {
-                    Id = 2,
-                    Name = "HR Inventory",
-                    DepartmentId = 2,
-                    CreatedById = 1,
-                    UpdatedById = 1,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                }
-            );
+           
             // Seed Assessment Matrix Impact
             modelBuilder.Entity<AssessmentMatrixImpact>().HasData(
                 new AssessmentMatrixImpact
