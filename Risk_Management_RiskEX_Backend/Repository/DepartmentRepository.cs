@@ -92,7 +92,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 .FirstOrDefaultAsync(d => d.Id.ToString() == departmentId);
             if (department == null)
             {
-                throw new Exception("Department does not exist.");
+                throw new Exception($"Department does not exist : {departmentId}");
             }
             return department;
         }

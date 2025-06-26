@@ -177,13 +177,6 @@ namespace Risk_Management_RiskEX_Backend.Repository
         }
 
 
-
-
-
-   
-
-
-
         public async Task UpdateAsync(string id, RiskDraftDTO updatedDraft)
         {
             var objectId = new ObjectId(id);

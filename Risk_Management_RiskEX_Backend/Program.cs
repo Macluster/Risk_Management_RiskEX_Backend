@@ -21,6 +21,7 @@ var builder = WebApplication.CreateBuilder(args);
 //Getting Connection String from Env file adding to db context
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 var jwt_Scret = Environment.GetEnvironmentVariable("API_SECRET");
+//Console.WriteLine("JWT Secret: " + Environment.GetEnvironmentVariable("API_SECRET"));
 //builder.Services.AddDbContext<ApplicationDBContext>(options =>
 //           options.UseNpgsql(connectionString));
 
