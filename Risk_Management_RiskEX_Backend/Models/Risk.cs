@@ -45,10 +45,9 @@ namespace Risk_Management_RiskEX_Backend.Models
 
         public RiskStatus RiskStatus { get; set; }
 
-        //public RiskResponses? RiskResponse { get; set; }
         public int? RiskResponseId { get; set; }
 
-
+        public string ISOClauseNumber { get; set; }
         public string? Remarks { get; set; }
         public int DepartmentId { get; set; }
         public int? ProjectId { get; set; }

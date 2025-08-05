@@ -76,7 +76,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     ClosedDate = null,
                     RiskResponseId = null,
                     Remarks = null,
-                    RiskStatus = RiskStatus.open,
+                    RiskStatus = RiskStatus.Open,
                     RiskAssessments = new List<RiskAssessment>()
                 };
                 // 3. Add Assessments based on RiskType 
@@ -169,7 +169,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         PlannedActionDate = riskDto.PlannedActionDate,
                         DepartmentId = riskDto.DepartmentId,
                         ProjectId = riskDto.ProjectId,
-                        RiskStatus = RiskStatus.open,
+                        RiskStatus = RiskStatus.Open,
                         RiskAssessments = new List<RiskAssessment>()
                     };
                    _db.Risks.Add(risk);
@@ -578,7 +578,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
                     existingRisk.ClosedDate = riskUpdateDto.ClosedDate;
-                        existingRisk.RiskStatus = RiskStatus.close; // Set status to closed 
+                        existingRisk.RiskStatus = RiskStatus.Closed; // Set status to closed 
                         existingRisk.RiskResponseId = riskUpdateDto.RiskResponseId;
                         existingRisk.OverallRiskRatingAfter=riskUpdateDto.OverallRiskRatingAfter;
                         existingRisk.PercentageRedution=riskUpdateDto.PercentageRedution;
@@ -658,7 +658,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     }
                     // Update Risk properties 
                     existingRisk.ClosedDate = riskUpdateDto.ClosedDate;
-                    existingRisk.RiskStatus = RiskStatus.close; // Set status to closed 
+                    existingRisk.RiskStatus = RiskStatus.Closed; // Set status to closed 
                     existingRisk.RiskResponseId = riskUpdateDto.RiskResponseId;
                     existingRisk.OverallRiskRatingAfter = riskUpdateDto.OverallRiskRatingAfter;
                     existingRisk.PercentageRedution = riskUpdateDto.PercentageRedution;
@@ -751,7 +751,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<object> GetAllRiskAssigned()
         {
-            var result = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open).Select(r => new GetAllRiskAssignedDTO
+            var result = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open).Select(r => new GetAllRiskAssignedDTO
             {
                 Id = r.Id,
                 RiskId = r.RiskId,
@@ -777,7 +777,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             var result = await _db.Risks
       .Where(e => e.ResponsibleUserId == id)
-      .Where(e => e.RiskStatus == RiskStatus.open)
+      .Where(e => e.RiskStatus == RiskStatus.Open)
       .Where(e => e.RiskAssessments.Any(ra => ra.Review != null && ra.Review.ReviewStatus == ReviewStatus.ReviewCompleted))
       .Include(e => e.RiskAssessments)
       .ThenInclude(e => e.Review)
@@ -805,7 +805,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             if (id == null)
             {
-               var riskCategoryCounts = await _db.Set<Risk>().Where(e => e.RiskStatus == RiskStatus.open)
+               var riskCategoryCounts = await _db.Set<Risk>().Where(e => e.RiskStatus == RiskStatus.Open)
               .Select(r => new
               {
                   RiskType = r.RiskType.ToString(),
@@ -836,7 +836,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             else
             {
                 var riskCategoryCounts = await _db.Set<Risk>()
-                     .Where(e => e.DepartmentId == id).Where(e => e.RiskStatus == RiskStatus.open)
+                     .Where(e => e.DepartmentId == id).Where(e => e.RiskStatus == RiskStatus.Open)
                       .Select(r => new
                       {
                           RiskType = r.RiskType.ToString(),
@@ -957,7 +957,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
                 var query = await _db.Set<Risk>()
                .Where(r => !projects.Any() || projects.Contains(r.ProjectId.Value))
-               .Where(r => r.RiskStatus == RiskStatus.open) // Filter by department IDs if provided
+               .Where(r => r.RiskStatus == RiskStatus.Open) // Filter by department IDs if provided
                .Select(r => new
                {
                    r.RiskType,
@@ -1006,7 +1006,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
                 var query = await _db.Set<Risk>()
                   .Where(r => !departmentIds.Any() || departmentIds.Contains(r.DepartmentId))
-                  .Where(r => r.RiskStatus == RiskStatus.open) // Filter by department IDs if provided
+                  .Where(r => r.RiskStatus == RiskStatus.Open) // Filter by department IDs if provided
                   .Select(r => new
                   {
                       r.RiskType,
@@ -1074,7 +1074,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
 
-                var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open)
+                var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open)
                 .Where(e => projects.Contains(e.ProjectId.Value))
                 .ToListAsync();
                 var closestRisksSorted = closestRisks
@@ -1095,7 +1095,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
                 if (departmentIds.Count() == 0)
                 {
-                    var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open)
+                    var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open)
                     .ToListAsync();
                     var closestRisksSorted = closestRisks
                     .OrderBy(r => Math.Abs((r.PlannedActionDate - DateTime.Now).Ticks))
@@ -1106,7 +1106,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 }
                 else
                 {
-                    var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open)
+                    var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open)
                     .Where(e => departmentIds.Contains(e.DepartmentId))
                     .ToListAsync();
                     var closestRisksSorted = closestRisks
@@ -1128,7 +1128,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             if (projectIds.Count() != 0)
             {
-                var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open).Where(e => projectIds.Contains(e.ProjectId.Value)).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
+                var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open).Where(e => projectIds.Contains(e.ProjectId.Value)).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
                 var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
                 return data;
             }
@@ -1137,13 +1137,13 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
                 if (departmentIds.Count() == 0)
                 {
-                    var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
+                    var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
                     var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
                     return data;
                 }
                 else
                 {
-                    var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.open).Where(e => departmentIds.Contains(e.DepartmentId)).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
+                    var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open).Where(e => departmentIds.Contains(e.DepartmentId)).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
                     var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
                     return data;
                 }
@@ -1158,7 +1158,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
 
                 var riskTypeCounts = await _db.Set<Risk>()
-               .Where(e => projectIds.Contains(e.ProjectId.Value)).Where(e => e.RiskStatus == RiskStatus.open)
+               .Where(e => projectIds.Contains(e.ProjectId.Value)).Where(e => e.RiskStatus == RiskStatus.Open)
                .GroupBy(r => r.RiskType)
                .Select(g => new OpenRiskCountByTypeDTO
                {
@@ -1172,7 +1172,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
                 if (departmentIds.Count() == 0)
                 {
-                    var riskTypeCounts = await _db.Set<Risk>().Where(e => e.RiskStatus == RiskStatus.open)
+                    var riskTypeCounts = await _db.Set<Risk>().Where(e => e.RiskStatus == RiskStatus.Open)
                    .GroupBy(r => r.RiskType)
                    .Select(g => new OpenRiskCountByTypeDTO
                    {
@@ -1187,7 +1187,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 {
 
                     var riskTypeCounts = await _db.Set<Risk>()
-                   .Where(e => departmentIds.Contains(e.DepartmentId)).Where(e => e.RiskStatus == RiskStatus.open)
+                   .Where(e => departmentIds.Contains(e.DepartmentId)).Where(e => e.RiskStatus == RiskStatus.Open)
                    .GroupBy(r => r.RiskType)
                    .Select(g => new OpenRiskCountByTypeDTO
                    {

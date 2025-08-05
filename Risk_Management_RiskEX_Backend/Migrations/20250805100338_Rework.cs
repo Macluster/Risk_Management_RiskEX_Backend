@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Risk_Management_RiskEX_Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Final : Migration
+    public partial class Rework : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -449,6 +449,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     ClosedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     RiskStatus = table.Column<int>(type: "integer", nullable: false),
                     RiskResponseId = table.Column<int>(type: "integer", nullable: true),
+                    ISOClauseNumber = table.Column<string>(type: "text", nullable: true),
                     Remarks = table.Column<string>(type: "text", nullable: true),
                     DepartmentId = table.Column<int>(type: "integer", nullable: false),
                     ProjectId = table.Column<int>(type: "integer", nullable: true),
@@ -562,10 +563,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "Basis", "CreatedAt", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "Confidentiality", new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2101), new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2102) },
-                    { 2, "Integrity", new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2103), new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2104) },
-                    { 3, "Availability", new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2104), new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2105) },
-                    { 4, "Privacy", new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2106), new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2106) }
+                    { 1, "Confidentiality", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8967), new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8968) },
+                    { 2, "Integrity", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8969), new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8970) },
+                    { 3, "Availability", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8971), new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8971) },
+                    { 4, "Privacy", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8973), new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8973) }
                 });
 
             migrationBuilder.InsertData(
@@ -573,10 +574,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "AssessmentFactor", "CreatedAt", "Definition", "Impact", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "Low", new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2123), "No slight effect on business", 10.0, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2123) },
-                    { 2, "Medium", new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2125), "Business objectives affected", 20.0, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2125) },
-                    { 3, "High", new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2127), "Business objectives undermined", 40.0, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2127) },
-                    { 4, "Critical", new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2128), "Business objectives not accomplished", 60.0, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2129) }
+                    { 1, "Low", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8992), "No slight effect on business", 10.0, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8993) },
+                    { 2, "Medium", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8994), "Business objectives affected", 20.0, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8995) },
+                    { 3, "High", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8996), "Business objectives undermined", 40.0, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8997) },
+                    { 4, "Critical", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8998), "Business objectives not accomplished", 60.0, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8998) }
                 });
 
             migrationBuilder.InsertData(
@@ -584,10 +585,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "AssessmentFactor", "CreatedAt", "Definition", "Likelihood", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "Low", new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2144), "1-24% chance of occurrence", 0.10000000000000001, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2145) },
-                    { 2, "Medium", new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2146), "25-49% chance of occurrence", 0.20000000000000001, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2147) },
-                    { 3, "High", new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2148), "50-74% chance of occurrence", 0.40000000000000002, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2148) },
-                    { 4, "Critical", new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2149), "75-99% chance of occurrence", 0.59999999999999998, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2150) }
+                    { 1, "Low", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9020), "1-24% chance of occurrence", 0.10000000000000001, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9021) },
+                    { 2, "Medium", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9022), "25-49% chance of occurrence", 0.20000000000000001, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9023) },
+                    { 3, "High", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9024), "50-74% chance of occurrence", 0.40000000000000002, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9025) },
+                    { 4, "Critical", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9026), "75-99% chance of occurrence", 0.59999999999999998, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9027) }
                 });
 
             migrationBuilder.InsertData(
@@ -595,20 +596,20 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "DepartmentCode", "DepartmentName", "NewName", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1900), "ACE", "Audits & Compliance", null, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1904) },
-                    { 2, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1906), "EMT", "EMT", null, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1907) },
-                    { 3, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1908), "SFM", "SFM", null, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1908) },
-                    { 4, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1910), "HR", "HR", null, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1910) },
-                    { 5, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1911), "A&D", "Admin & Purchase", null, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1912) },
-                    { 6, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1913), "DU1", "DU1", null, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1913) },
-                    { 7, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1915), "DU2", "DU2", null, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1916) },
-                    { 8, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1917), "DU3", "DU3", null, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1917) },
-                    { 9, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1918), "DU4", "DU4", null, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1919) },
-                    { 10, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1920), "DU5", "DU5", null, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1920) },
-                    { 11, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1921), "DU6", "DU6", null, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1922) },
-                    { 12, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1923), "MAR", "Marketing", null, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1923) },
-                    { 13, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1924), "L&D", "Learning & Development", null, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1925) },
-                    { 14, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1926), "FIN", "Finance", null, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(1926) }
+                    { 1, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8729), "ACE", "Audits & Compliance", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8733) },
+                    { 2, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8734), "EMT", "EMT", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8735) },
+                    { 3, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8737), "SFM", "SFM", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8737) },
+                    { 4, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8774), "HR", "HR", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8774) },
+                    { 5, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8775), "A&D", "Admin & Purchase", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8776) },
+                    { 6, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8777), "DU1", "DU1", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8778) },
+                    { 7, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8779), "DU2", "DU2", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8780) },
+                    { 8, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8781), "DU3", "DU3", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8781) },
+                    { 9, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8782), "DU4", "DU4", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8783) },
+                    { 10, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8784), "DU5", "DU5", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8785) },
+                    { 11, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8786), "DU6", "DU6", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8786) },
+                    { 12, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8788), "MAR", "Marketing", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8788) },
+                    { 13, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8789), "L&D", "Learning & Development", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8790) },
+                    { 14, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8791), "FIN", "Finance", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8791) }
                 });
 
             migrationBuilder.InsertData(
@@ -627,8 +628,8 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedById", "DepartmentId", "Email", "FullName", "IsActive", "Password", "UpdatedAt", "UpdatedById" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2079), null, 1, "riskex@experionglobal.com", "System Admin", true, "AQAAAAIAAYagAAAAEAaroqhRU1q5tzEl35QYww+8xRNB3KLD6rrlXLdANJ8N2kUrAXvLsEYOpWldjgmzMg==", new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2079), null },
-                    { 2, new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2081), null, 1, "admin@gmail.com", "System Admin", true, "AQAAAAIAAYagAAAAEAaroqhRU1q5tzEl35QYww+8xRNB3KLD6rrlXLdANJ8N2kUrAXvLsEYOpWldjgmzMg==", new DateTime(2025, 6, 24, 10, 8, 12, 540, DateTimeKind.Utc).AddTicks(2082), null }
+                    { 1, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8939), null, 1, "riskex@experionglobal.com", "System Admin", true, "AQAAAAIAAYagAAAAEAaroqhRU1q5tzEl35QYww+8xRNB3KLD6rrlXLdANJ8N2kUrAXvLsEYOpWldjgmzMg==", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8939), null },
+                    { 2, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8941), null, 1, "admin@gmail.com", "System Admin", true, "AQAAAAIAAYagAAAAEAaroqhRU1q5tzEl35QYww+8xRNB3KLD6rrlXLdANJ8N2kUrAXvLsEYOpWldjgmzMg==", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8942), null }
                 });
 
             migrationBuilder.CreateIndex(

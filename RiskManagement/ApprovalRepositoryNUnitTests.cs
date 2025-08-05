@@ -70,7 +70,7 @@ namespace RiskManagement
             RiskType = RiskType.Quality,
             OverallRiskRatingBefore = 2,
             PlannedActionDate = DateTime.UtcNow.AddDays(30),
-            RiskStatus = RiskStatus.open,
+            RiskStatus = RiskStatus.Open,
             Impact = "High financial impact if unaddressed", // Required property
             Mitigation = "Implement additional controls to reduce risk" // Required property
         }

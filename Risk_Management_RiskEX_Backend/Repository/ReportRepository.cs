@@ -258,7 +258,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
         {
             
             var reports = await _context.Risks
-                .Where(r => r.RiskStatus == RiskStatus.close)
+                .Where(r => r.RiskStatus == RiskStatus.Closed)
                 .Select(r => new ReportDTO
                 {
                     Id = r.Id,

@@ -35,8 +35,12 @@ namespace Risk_Management_RiskEX_Backend.Models
 
     public enum RiskStatus
     {
-        open = 1,
-        close = 2
+        Open = 1,
+        Closed = 2,
+        UnderTreatment = 3,
+        Accepted = 4,
+        Monitoring = 5,
+        Deferred = 6
     }
 
     public enum ReviewStatus
