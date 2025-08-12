@@ -94,7 +94,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 1,
                     AssessmentFactor = "Low",
                     Impact = 10.0, 
-                    Definition = "No slight effect on business",
+                    Definition = "The consequences of the risk are minimal, with negligible effects on the organization's operations, finances, or reputation.",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -103,7 +103,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 2,
                     AssessmentFactor = "Medium",
                     Impact = 20.0,  
-                    Definition = "Business objectives affected",
+                    Definition = "The consequences of the risk are moderate, causing some disruption or financial loss, but manageable without significant impact on key objectives.",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -112,7 +112,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 3,
                     AssessmentFactor = "High",
                     Impact = 40.0, 
-                    Definition= "Business objectives undermined",
+                    Definition= "The consequences of the risk are significant, causing major disruptions, substantial financial losses, or harm to the organization’s reputation.",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -121,7 +121,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 4,
                     AssessmentFactor = "Critical",
                     Impact = 60.0,  
-                    Definition = "Business objectives not accomplished",
+                    Definition = "The consequences of the risk are severe, potentially threatening the organization's ability to operate or causing irreparable harm.",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
@@ -134,7 +134,8 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 1,
                     AssessmentFactor = "Low",
                     Likelihood = 0.1,  
-                    Definition = "1-24% chance of occurrence",
+                    Definition = "The probability of the risk occurring is minimal, with little to no historical evidence or indication of occurrence.(Once in 3 Years)",
+                    ChanceOfOccurance = "<=10%",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -143,7 +144,8 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 2,
                     AssessmentFactor = "Medium",
                     Likelihood = 0.2, 
-                    Definition = "25-49% chance of occurrence",
+                    Definition = "There is a moderate probability of the risk occurring. It may have occurred in the past under similar circumstances(Once a year)",
+                    ChanceOfOccurance = "10-50%",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -152,7 +154,8 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 3,
                     AssessmentFactor = "High",
                     Likelihood = 0.4, 
-                    Definition= "50-74% chance of occurrence",
+                    Definition= "The probability of the risk occurring is significant, and it is likely to happen based on historical trends or current conditions.(Once a quarter)",
+                    ChanceOfOccurance = "50-90%",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -161,7 +164,8 @@ namespace Risk_Management_RiskEX_Backend.Data
                     Id = 4,
                     AssessmentFactor = "Critical",
                     Likelihood = 0.6,  
-                    Definition = "75-99% chance of occurrence",
+                    Definition = "The risk is almost certain to occur, with a very high probability of materializing(Once a month)",
+                    ChanceOfOccurance = ">=90%",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
@@ -172,21 +176,21 @@ namespace Risk_Management_RiskEX_Backend.Data
                    Id = 1,
                    Name = "Avoid",
                    Description = "This strategy aims to eliminate the risk entirely by taking actions that prevent the risk from occurring. It involves altering project plans or processes to steer clear of the risk's potential impact.",
-                   Example = "Changing a project scope to exclude a high-risk feature that could lead to technical challenges."
+                   Example = "Changing a project scope to exclude a high-risk feature that could lead to technical challenges, Discontinuing a risky process or project."
                },
                new RiskResponseData
                {
                    Id = 2,
                    Name = "Mitigate",
                    Description = "Mitigation involves taking proactive steps to reduce the likelihood or impact of a risk. It focuses on minimizing the risk's negative effects while still allowing the project or function to move forward.",
-                   Example =  "Developing a backup system to reduce the impact of potential server failures."
+                   Example = "Developing a backup system to reduce the impact of potential server failures, Implementing access controls, encryption, or training."
                },
                 new RiskResponseData
                 {
                     Id = 3,
                     Name = "Transfer",
                     Description =  "Transferring the risk involves shifting the responsibility for managing the risk to another party. This could be achieved through insurance, outsourcing, partnerships, or contracts.",
-                    Example =  "Purchasing insurance to cover financial losses due to unforeseen events."
+                    Example = "Purchasing insurance to cover financial losses due to unforeseen events, Purchasing cybersecurity insurance or outsourcing to a secure service provider."
 
                 },
                 new RiskResponseData
