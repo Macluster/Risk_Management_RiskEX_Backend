@@ -21,6 +21,7 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
         public string RiskStatus { get; set; }
         public string RiskType { get; set; }
         public string RiskResponse { get; set; }
+        public string? IsoClauseNumber { get; set; }
         public List<RiskAssessmentResponseDTO> RiskAssessments { get; set; }
         public UserResponseDTO ResponsibleUser { get; set; }
         public DepartmentDTO Department { get; set; }

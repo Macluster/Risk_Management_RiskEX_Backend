@@ -51,6 +51,12 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
         [BsonElement("CreatedBy")]
         public int? CreatedBy { get; set; }
 
+        [BsonElement("ISOClauseNumber")]
+        public string? ISOClauseNumber { get; set; }
+
+        [BsonElement("RiskResponseId")]
+        public int? RiskResponseId { get; set; }
+
         [BsonElement("RiskAssessments")]
         public List<RiskAssessmentDraftDTO> RiskAssessments { get; set; }
     }

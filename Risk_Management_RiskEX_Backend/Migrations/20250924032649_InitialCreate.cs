@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Risk_Management_RiskEX_Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Rework : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -94,6 +94,7 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                     AssessmentFactor = table.Column<string>(type: "text", nullable: true),
                     Likelihood = table.Column<double>(type: "double precision", nullable: false),
                     Definition = table.Column<string>(type: "text", nullable: true),
+                    ChanceOfOccurance = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamptz", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "timestamptz", nullable: true)
                 },
@@ -563,10 +564,10 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "Basis", "CreatedAt", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "Confidentiality", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8967), new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8968) },
-                    { 2, "Integrity", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8969), new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8970) },
-                    { 3, "Availability", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8971), new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8971) },
-                    { 4, "Privacy", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8973), new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8973) }
+                    { 1, "Confidentiality", new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1608), new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1608) },
+                    { 2, "Integrity", new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1610), new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1611) },
+                    { 3, "Availability", new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1612), new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1613) },
+                    { 4, "Privacy", new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1614), new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1615) }
                 });
 
             migrationBuilder.InsertData(
@@ -574,21 +575,21 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "AssessmentFactor", "CreatedAt", "Definition", "Impact", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "Low", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8992), "No slight effect on business", 10.0, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8993) },
-                    { 2, "Medium", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8994), "Business objectives affected", 20.0, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8995) },
-                    { 3, "High", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8996), "Business objectives undermined", 40.0, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8997) },
-                    { 4, "Critical", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8998), "Business objectives not accomplished", 60.0, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8998) }
+                    { 1, "Low", new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1637), "The consequences of the risk are minimal, with negligible effects on the organization's operations, finances, or reputation.", 10.0, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1638) },
+                    { 2, "Medium", new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1640), "The consequences of the risk are moderate, causing some disruption or financial loss, but manageable without significant impact on key objectives.", 20.0, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1641) },
+                    { 3, "High", new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1642), "The consequences of the risk are significant, causing major disruptions, substantial financial losses, or harm to the organization’s reputation.", 40.0, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1643) },
+                    { 4, "Critical", new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1645), "The consequences of the risk are severe, potentially threatening the organization's ability to operate or causing irreparable harm.", 60.0, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1645) }
                 });
 
             migrationBuilder.InsertData(
                 table: "AssessmentsMatrixLikelihood",
-                columns: new[] { "Id", "AssessmentFactor", "CreatedAt", "Definition", "Likelihood", "UpdatedAt" },
+                columns: new[] { "Id", "AssessmentFactor", "ChanceOfOccurance", "CreatedAt", "Definition", "Likelihood", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "Low", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9020), "1-24% chance of occurrence", 0.10000000000000001, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9021) },
-                    { 2, "Medium", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9022), "25-49% chance of occurrence", 0.20000000000000001, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9023) },
-                    { 3, "High", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9024), "50-74% chance of occurrence", 0.40000000000000002, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9025) },
-                    { 4, "Critical", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9026), "75-99% chance of occurrence", 0.59999999999999998, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(9027) }
+                    { 1, "Low", "<=10%", new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1675), "The probability of the risk occurring is minimal, with little to no historical evidence or indication of occurrence.(Once in 3 Years)", 0.10000000000000001, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1676) },
+                    { 2, "Medium", "10-50%", new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1678), "There is a moderate probability of the risk occurring. It may have occurred in the past under similar circumstances(Once a year)", 0.20000000000000001, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1679) },
+                    { 3, "High", "50-90%", new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1681), "The probability of the risk occurring is significant, and it is likely to happen based on historical trends or current conditions.(Once a quarter)", 0.40000000000000002, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1681) },
+                    { 4, "Critical", ">=90%", new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1683), "The risk is almost certain to occur, with a very high probability of materializing(Once a month)", 0.59999999999999998, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1684) }
                 });
 
             migrationBuilder.InsertData(
@@ -596,20 +597,20 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "DepartmentCode", "DepartmentName", "NewName", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8729), "ACE", "Audits & Compliance", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8733) },
-                    { 2, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8734), "EMT", "EMT", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8735) },
-                    { 3, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8737), "SFM", "SFM", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8737) },
-                    { 4, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8774), "HR", "HR", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8774) },
-                    { 5, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8775), "A&D", "Admin & Purchase", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8776) },
-                    { 6, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8777), "DU1", "DU1", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8778) },
-                    { 7, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8779), "DU2", "DU2", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8780) },
-                    { 8, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8781), "DU3", "DU3", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8781) },
-                    { 9, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8782), "DU4", "DU4", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8783) },
-                    { 10, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8784), "DU5", "DU5", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8785) },
-                    { 11, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8786), "DU6", "DU6", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8786) },
-                    { 12, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8788), "MAR", "Marketing", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8788) },
-                    { 13, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8789), "L&D", "Learning & Development", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8790) },
-                    { 14, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8791), "FIN", "Finance", null, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8791) }
+                    { 1, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1295), "ACE", "Audits & Compliance", null, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1299) },
+                    { 2, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1301), "EMT", "EMT", null, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1302) },
+                    { 3, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1304), "SFM", "SFM", null, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1305) },
+                    { 4, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1306), "HR", "HR", null, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1307) },
+                    { 5, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1309), "A&D", "Admin & Purchase", null, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1309) },
+                    { 6, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1311), "DU1", "DU1", null, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1312) },
+                    { 7, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1313), "DU2", "DU2", null, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1314) },
+                    { 8, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1315), "DU3", "DU3", null, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1316) },
+                    { 9, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1318), "DU4", "DU4", null, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1319) },
+                    { 10, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1320), "DU5", "DU5", null, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1321) },
+                    { 11, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1322), "DU6", "DU6", null, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1323) },
+                    { 12, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1325), "MAR", "Marketing", null, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1325) },
+                    { 13, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1327), "L&D", "Learning & Development", null, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1328) },
+                    { 14, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1329), "FIN", "Finance", null, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1330) }
                 });
 
             migrationBuilder.InsertData(
@@ -617,9 +618,9 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "Description", "Example", "Name" },
                 values: new object[,]
                 {
-                    { 1, "This strategy aims to eliminate the risk entirely by taking actions that prevent the risk from occurring. It involves altering project plans or processes to steer clear of the risk's potential impact.", "Changing a project scope to exclude a high-risk feature that could lead to technical challenges.", "Avoid" },
-                    { 2, "Mitigation involves taking proactive steps to reduce the likelihood or impact of a risk. It focuses on minimizing the risk's negative effects while still allowing the project or function to move forward.", "Developing a backup system to reduce the impact of potential server failures.", "Mitigate" },
-                    { 3, "Transferring the risk involves shifting the responsibility for managing the risk to another party. This could be achieved through insurance, outsourcing, partnerships, or contracts.", "Purchasing insurance to cover financial losses due to unforeseen events.", "Transfer" },
+                    { 1, "This strategy aims to eliminate the risk entirely by taking actions that prevent the risk from occurring. It involves altering project plans or processes to steer clear of the risk's potential impact.", "Changing a project scope to exclude a high-risk feature that could lead to technical challenges, Discontinuing a risky process or project.", "Avoid" },
+                    { 2, "Mitigation involves taking proactive steps to reduce the likelihood or impact of a risk. It focuses on minimizing the risk's negative effects while still allowing the project or function to move forward.", "Developing a backup system to reduce the impact of potential server failures, Implementing access controls, encryption, or training.", "Mitigate" },
+                    { 3, "Transferring the risk involves shifting the responsibility for managing the risk to another party. This could be achieved through insurance, outsourcing, partnerships, or contracts.", "Purchasing insurance to cover financial losses due to unforeseen events, Purchasing cybersecurity insurance or outsourcing to a secure service provider.", "Transfer" },
                     { 4, "Accepting the risk means acknowledging its existence and choosing not to take specific actions to mitigate or avoid it.", "Deciding not to invest in additional security for a low-value system because the cost of mitigation exceeds the potential impact of the risk.", "Accept" }
                 });
 
@@ -628,8 +629,8 @@ namespace Risk_Management_RiskEX_Backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedById", "DepartmentId", "Email", "FullName", "IsActive", "Password", "UpdatedAt", "UpdatedById" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8939), null, 1, "riskex@experionglobal.com", "System Admin", true, "AQAAAAIAAYagAAAAEAaroqhRU1q5tzEl35QYww+8xRNB3KLD6rrlXLdANJ8N2kUrAXvLsEYOpWldjgmzMg==", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8939), null },
-                    { 2, new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8941), null, 1, "admin@gmail.com", "System Admin", true, "AQAAAAIAAYagAAAAEAaroqhRU1q5tzEl35QYww+8xRNB3KLD6rrlXLdANJ8N2kUrAXvLsEYOpWldjgmzMg==", new DateTime(2025, 8, 5, 10, 3, 37, 253, DateTimeKind.Utc).AddTicks(8942), null }
+                    { 1, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1562), null, 1, "riskex@experionglobal.com", "System Admin", true, "AQAAAAIAAYagAAAAEAaroqhRU1q5tzEl35QYww+8xRNB3KLD6rrlXLdANJ8N2kUrAXvLsEYOpWldjgmzMg==", new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1563), null },
+                    { 2, new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1566), null, 1, "admin@gmail.com", "System Admin", true, "AQAAAAIAAYagAAAAEAaroqhRU1q5tzEl35QYww+8xRNB3KLD6rrlXLdANJ8N2kUrAXvLsEYOpWldjgmzMg==", new DateTime(2025, 9, 24, 3, 26, 49, 316, DateTimeKind.Utc).AddTicks(1567), null }
                 });
 
             migrationBuilder.CreateIndex(
