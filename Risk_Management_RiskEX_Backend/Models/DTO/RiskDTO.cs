@@ -44,6 +44,12 @@ public class RiskDTO
     [BsonElement("ProjectId")]
     public int? ProjectId { get; set; }
 
+    [BsonElement("ISOClauseNumber")]
+     public string? ISOClauseNumber { get; set; }
+
+    [BsonElement("RiskResponseId")]
+    public int? RiskResponseId { get; set; }
+
     [BsonElement("RiskAssessments")]
     public List<RiskAssessmentDTO> RiskAssessments { get; set; }
 }

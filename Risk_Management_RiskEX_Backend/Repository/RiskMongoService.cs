@@ -82,6 +82,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     DepartmentName = department?.DepartmentName ?? "",
                     draft.ProjectId,
                     draft.CreatedBy,
+                    draft.ISOClauseNumber,
+                    draft.RiskResponseId,
                     CreatedByName = createdByUser?.FullName ?? "",
                     RiskAssessments = new List<RiskAssessmentDraftDTO>()
                 };
@@ -159,6 +161,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     DepartmentName = department?.DepartmentName ?? "",
                     draft.ProjectId,
                     draft.CreatedBy,
+                    draft.ISOClauseNumber,
+                    draft.RiskResponseId,
                     CreatedByName = createdByUser?.FullName ?? "",
                     RiskAssessments = new List<RiskAssessmentDraftDTO>()
                 };

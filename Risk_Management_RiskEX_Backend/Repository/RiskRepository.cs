@@ -74,7 +74,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     DepartmentId = riskDto.DepartmentId,
                     ProjectId = riskDto.ProjectId,
                     ClosedDate = null,
-                    RiskResponseId = null,
+                    RiskResponseId = riskDto.RiskResponseId,
+                    ISOClauseNumber = riskDto.ISOClauseNumber,
                     Remarks = null,
                     RiskStatus = RiskStatus.Open,
                     RiskAssessments = new List<RiskAssessment>()
@@ -169,6 +170,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         PlannedActionDate = riskDto.PlannedActionDate,
                         DepartmentId = riskDto.DepartmentId,
                         ProjectId = riskDto.ProjectId,
+                        RiskResponseId = riskDto.RiskResponseId,
+                        ISOClauseNumber = riskDto.ISOClauseNumber,
                         RiskStatus = RiskStatus.Open,
                         RiskAssessments = new List<RiskAssessment>()
                     };
@@ -219,8 +222,9 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 OverallRiskRatingAfter=r.OverallRiskRatingAfter.HasValue?r.OverallRiskRatingAfter.Value:0,          
                 PlannedActionDate = r.PlannedActionDate != null ? r.PlannedActionDate.ToString() : "No planned action date set.",
                 Remarks = r.Remarks != null ? r.Remarks : null,
+                IsoClauseNumber = r.ISOClauseNumber != null ? r.ISOClauseNumber : null,
                 
-                RiskResponse=r.RiskResponseData.Name,
+                RiskResponse =r.RiskResponseData.Name,
                 RiskStatus = r.RiskStatus.ToString(),
                 RiskType = r.RiskType.ToString(),
 
@@ -357,6 +361,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 existingRisk.DepartmentId = riskDto.DepartmentId;
 
                 existingRisk.ProjectId = riskDto.ProjectId;
+                existingRisk.RiskResponseId = riskDto.RiskResponseId;
+                existingRisk.ISOClauseNumber = riskDto.ISOClauseNumber;
                 // 3. Update Review (if present) 
                 var firstReviewDto = riskDto.RiskAssessments[0].Review;
                 var existingReview = existingRisk.RiskAssessments.FirstOrDefault()?.Review;
@@ -481,6 +487,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     existingRisk.PlannedActionDate = riskDto.PlannedActionDate;
                     existingRisk.DepartmentId = riskDto.DepartmentId;
                     existingRisk.ProjectId = riskDto.ProjectId;
+                    existingRisk.RiskResponseId = riskDto.RiskResponseId;
+                    existingRisk.ISOClauseNumber = riskDto.ISOClauseNumber;
                     // 3. Update Review (if present) 
                     var firstReviewDto = riskDto.RiskAssessments[0].Review;
                     var existingReview = existingRisk.RiskAssessments.FirstOrDefault()?.Review;
