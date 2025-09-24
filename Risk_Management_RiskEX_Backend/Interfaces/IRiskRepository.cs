@@ -10,10 +10,10 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         //Task<IEnumerable<Risk>> GetRisksByReviewerIdAsync(int userId);
 
         Task<Object> GetRiskById(int id);
-     
+
         //Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId);
 
-       
+
         //Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int userId);
         //Task<IEnumerable<ApprovalDTO>> GetRisksByReviewerAsync(int? userId);
 
@@ -34,7 +34,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         Task<Object> RiskApproachingDeadline(List<int> departmentIds, List<int> projectids);
         Task<Object> GetRiskWithHeighestOverallRationg(List<int> departmentIds, List<int> projectids);
         Task<ICollection<OpenRiskCountByTypeDTO>> GetOpenRiskCountByType(List<int> departmentIds, List<int> projectids);
-        Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCounts(int?id);
+        Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCounts(int? id);
         Task<object> GetAllRiskAssigned();
 
         Task<string> SetAndGetRiskIdAsync(int? departmentId, int? projectId);
@@ -50,6 +50,8 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         public Task<RiskDraftDTO> GetDraftByIdAsync(string riskId);
 
         public Task<RiskDraftDTO> UpdateDraftAsync(string id, RiskDraftDTO riskDraftDto);
+
+        public IEnumerable<RiskStatusDTO> GetRiskStatuses();
 
 
 

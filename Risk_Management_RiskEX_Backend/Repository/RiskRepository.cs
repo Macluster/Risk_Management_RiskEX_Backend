@@ -17,20 +17,20 @@ namespace Risk_Management_RiskEX_Backend.Repository
         private readonly ApplicationDBContext _db;
         private readonly IMapper _mapper;
         private readonly IReviewRepository _reviewRepository;
-        private readonly IRiskMongoService _riskMongoService;  
+        private readonly IRiskMongoService _riskMongoService;
 
-       public RiskRepository(ApplicationDBContext db, IMapper mapper, IReviewRepository reviewRepository,IRiskMongoService riskMongoService)
+        public RiskRepository(ApplicationDBContext db, IMapper mapper, IReviewRepository reviewRepository, IRiskMongoService riskMongoService)
         {
             _db = db;
             _mapper = mapper;
             _reviewRepository = reviewRepository;
-            _riskMongoService=riskMongoService;
+            _riskMongoService = riskMongoService;
         }
         public async Task<ICollection<Risk>> GetRisksByType(RiskType riskType)
         {
-                return await _db.Risks
-               .Where(r => r.RiskType == riskType)
-               .ToListAsync();
+            return await _db.Risks
+           .Where(r => r.RiskType == riskType)
+           .ToListAsync();
         }
 
         public async Task<Risk> AddQualityRiskAsync(RiskDTO riskDto)
@@ -38,7 +38,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             using IDbContextTransaction transaction = await _db.Database.BeginTransactionAsync();
             try
             {
-               // 1. First create the Review (since it's referenced by Assessment) 
+                // 1. First create the Review (since it's referenced by Assessment) 
                 var firstReview = riskDto.RiskAssessments[0].Review;
                 var review = new Review
                 {
@@ -48,10 +48,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
                 if (firstReview.UserId.HasValue)
                 {
-                   review.UserId = firstReview.UserId;
-                   review.ExternalReviewerId = null;
+                    review.UserId = firstReview.UserId;
+                    review.ExternalReviewerId = null;
                 }
-               else if (firstReview.ExternalReviewerId.HasValue)
+                else if (firstReview.ExternalReviewerId.HasValue)
                 {
                     review.ExternalReviewerId = firstReview.ExternalReviewerId;
                     review.UserId = null;
@@ -95,7 +95,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     });
                 }
                 _db.Risks.Add(risk);
-    
+
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return risk;
@@ -109,8 +109,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
                 await transaction.RollbackAsync();
 
-               
-              
+
+
 
                 // Throw a user-friendly message
                 throw new Exception("An unexpected error occurred while processing your request.Please ensure all mandatory fields are filled. If the issue persists, contact the administrator or Please try again later");
@@ -137,7 +137,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         UserId = firstReview.UserId,
                         ExternalReviewerId = firstReview.ExternalReviewerId
                     };
-                   if (review.UserId.HasValue && review.ExternalReviewerId.HasValue)
+                    if (review.UserId.HasValue && review.ExternalReviewerId.HasValue)
                     {
                         throw new ArgumentException("Only one reviewer can be assigned (either userId or externalReviewerId).");
                     }
@@ -175,9 +175,9 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         RiskStatus = RiskStatus.Open,
                         RiskAssessments = new List<RiskAssessment>()
                     };
-                   _db.Risks.Add(risk);
+                    _db.Risks.Add(risk);
                     await _db.SaveChangesAsync();
-                   // 3. Create all RiskAssessments with the same Review 
+                    // 3. Create all RiskAssessments with the same Review 
                     foreach (var assessmentDto in riskDto.RiskAssessments)
                     {
                         var riskAssessment = new RiskAssessment
@@ -192,9 +192,9 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         };
                         risk.RiskAssessments.Add(riskAssessment);
                     }
-                   await _db.SaveChangesAsync();
+                    await _db.SaveChangesAsync();
                     await transaction.CommitAsync();
-                   return risk;
+                    return risk;
                 }
                 catch (Exception ex)
                 {
@@ -218,13 +218,13 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 Mitigation = r.Mitigation,
                 Contingency = r.Contingency != null ? r.Contingency : null,
                 OverallRiskRating = r.OverallRiskRatingAfter.HasValue ? r.OverallRiskRatingAfter.Value : r.OverallRiskRatingBefore,
-                OveralRiskRatingBefore=r.OverallRiskRatingBefore,
-                OverallRiskRatingAfter=r.OverallRiskRatingAfter.HasValue?r.OverallRiskRatingAfter.Value:0,          
+                OveralRiskRatingBefore = r.OverallRiskRatingBefore,
+                OverallRiskRatingAfter = r.OverallRiskRatingAfter.HasValue ? r.OverallRiskRatingAfter.Value : 0,
                 PlannedActionDate = r.PlannedActionDate != null ? r.PlannedActionDate.ToString() : "No planned action date set.",
                 Remarks = r.Remarks != null ? r.Remarks : null,
                 IsoClauseNumber = r.ISOClauseNumber != null ? r.ISOClauseNumber : null,
-                
-                RiskResponse =r.RiskResponseData.Name,
+
+                RiskResponse = r.RiskResponseData.Name,
                 RiskStatus = r.RiskStatus.ToString(),
                 RiskType = r.RiskType.ToString(),
 
@@ -251,18 +251,18 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
                 }).ToList(),
-                ResponsibleUser = r.ResponsibleUser != null ? new UserResponseDTO { Id = r.ResponsibleUser.Id, FullName = r.ResponsibleUser.FullName,Email=r.ResponsibleUser.Email } : null,
+                ResponsibleUser = r.ResponsibleUser != null ? new UserResponseDTO { Id = r.ResponsibleUser.Id, FullName = r.ResponsibleUser.FullName, Email = r.ResponsibleUser.Email } : null,
                 Department = new DepartmentDTO { Id = r.Department.Id, Name = r.Department.DepartmentName },
                 Project = r.Project != null ? new ProjectResponseDTO { Id = r.Project.Id, ProjectName = r.Project.Name } : null,
                 ResidualRisk = r.ResidualRisk.ToString(),
                 ResidualValue = r.ResidualValue,
                 PercentageRedution = r.PercentageRedution,
-                CreatedBy =  new UserResponseDTO {  Id= r.CreatedBy!=null? r.CreatedBy.Id:0,FullName = r.CreatedBy != null ? r.CreatedBy.FullName : " " ,Email= r.CreatedBy != null ? r.CreatedBy.Email:""   },
+                CreatedBy = new UserResponseDTO { Id = r.CreatedBy != null ? r.CreatedBy.Id : 0, FullName = r.CreatedBy != null ? r.CreatedBy.FullName : " ", Email = r.CreatedBy != null ? r.CreatedBy.Email : "" },
                 CreatedAt = r.CreatedAt,
                 UpdatedBy = new UserResponseDTO { Id = r.UpdatedBy != null ? r.UpdatedBy.Id : 0, FullName = r.UpdatedBy != null ? r.UpdatedBy.FullName : " ", Email = r.UpdatedBy != null ? r.UpdatedBy.Email : "" },
 
                 UpdatedAt = r.UpdatedAt,
-                ClosedDate=r.ClosedDate!=null? r.ClosedDate.ToString() : ""
+                ClosedDate = r.ClosedDate != null ? r.ClosedDate.ToString() : ""
             })
             .FirstOrDefaultAsync();
 
@@ -285,7 +285,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             newAssessmentBeforeMitigation = newAssessmentBeforeMitigation
                 .OrderByDescending(r => r.Id)
-                .Take(risk.RiskType=="Quality"?1:4)
+                .Take(risk.RiskType == "Quality" ? 1 : 4)
                 .ToList();
 
             newAssessmentAfterMitigation = newAssessmentAfterMitigation
@@ -439,7 +439,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     .Where(ra => !assessmentIdsInDto.Contains(ra.AssessmentBasisId))
                     .ToList();
                 _db.Assessments.RemoveRange(assessmentsToRemove);
-               // 5. Save changes to the Risk 
+                // 5. Save changes to the Risk 
                 _db.Risks.Update(existingRisk);
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -580,22 +580,22 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         throw new KeyNotFoundException($"Risk with ID {riskId} not found.");
                     }
 
-                   
+
 
                     // Update Risk properties 
 
 
                     existingRisk.ClosedDate = riskUpdateDto.ClosedDate;
-                        existingRisk.RiskStatus = RiskStatus.Closed; // Set status to closed 
-                        existingRisk.RiskResponseId = riskUpdateDto.RiskResponseId;
-                        existingRisk.OverallRiskRatingAfter=riskUpdateDto.OverallRiskRatingAfter;
-                        existingRisk.PercentageRedution=riskUpdateDto.PercentageRedution;
-                        existingRisk.ResidualRisk=riskUpdateDto.ResidualRisk;
-                        existingRisk.ResidualValue=riskUpdateDto.ResidualValue;
-                        existingRisk.Remarks=riskUpdateDto.Remarks;
-                     
-                    
-                    
+                    existingRisk.RiskStatus = riskUpdateDto.RiskStatus.Value; // Set status to closed 
+                                                                 // existingRisk.RiskResponseId = riskUpdateDto.RiskResponseId;
+                    existingRisk.OverallRiskRatingAfter = riskUpdateDto.OverallRiskRatingAfter;
+                    existingRisk.PercentageRedution = riskUpdateDto.PercentageRedution;
+                    existingRisk.ResidualRisk = riskUpdateDto.ResidualRisk;
+                    existingRisk.ResidualValue = riskUpdateDto.ResidualValue;
+                    existingRisk.Remarks = riskUpdateDto.Remarks;
+
+
+
                     // Handle RiskAssessments and their Reviews 
                     foreach (var assessmentDto in riskUpdateDto.RiskAssessments)
                     {
@@ -666,8 +666,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     }
                     // Update Risk properties 
                     existingRisk.ClosedDate = riskUpdateDto.ClosedDate;
-                    existingRisk.RiskStatus = RiskStatus.Closed; // Set status to closed 
-                    existingRisk.RiskResponseId = riskUpdateDto.RiskResponseId;
+                    existingRisk.RiskStatus = riskUpdateDto.RiskStatus.Value; // Set status to closed 
+                    // existingRisk.RiskResponseId = riskUpdateDto.RiskResponseId;
                     existingRisk.OverallRiskRatingAfter = riskUpdateDto.OverallRiskRatingAfter;
                     existingRisk.PercentageRedution = riskUpdateDto.PercentageRedution;
                     existingRisk.ResidualRisk = riskUpdateDto.ResidualRisk;
@@ -740,7 +740,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             .AnyAsync(e => e.RiskId == id && e.IsMitigated);
 
 
-            var date=await _db.Assessments.Where(e=>e.RiskId==id&&e.IsMitigated) .FirstOrDefaultAsync();
+            var date = await _db.Assessments.Where(e => e.RiskId == id && e.IsMitigated).FirstOrDefaultAsync();
             if (isMitigated)
             {
                 return new
@@ -766,7 +766,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 RiskName = r.RiskName,
                 Description = r.Description,
                 DepartmentName = r.Department.DepartmentName,
-                ResponsibleUser=r.ResponsibleUser.FullName,
+                ResponsibleUser = r.ResponsibleUser.FullName,
                 RiskType = r.RiskType.ToString(),
                 OverallRiskRating = r.OverallRiskRatingAfter.HasValue ? r.OverallRiskRatingAfter.Value : r.OverallRiskRatingBefore,
                 PlannedActionDate = r.PlannedActionDate,
@@ -808,36 +808,36 @@ namespace Risk_Management_RiskEX_Backend.Repository
             return Risks;
         }
 
-        public async Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCounts(int?id)
+        public async Task<ICollection<RiskCategoryCountDTO>> GetRiskCategoryCounts(int? id)
         {
 
             if (id == null)
             {
-               var riskCategoryCounts = await _db.Set<Risk>().Where(e => e.RiskStatus == RiskStatus.Open)
-              .Select(r => new
-              {
-                  RiskType = r.RiskType.ToString(),
-                  OverallRiskRating = r.OverallRiskRatingBefore,
-                  RiskCategory = r.RiskType == RiskType.Quality
-                      ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
-                         r.OverallRiskRatingBefore >= 9 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
-                         r.OverallRiskRatingBefore >= 33 ? "Critical" : null)
-                      : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
-                      ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
-                         r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
-                         r.OverallRiskRatingBefore >= 70 ? "Critical" :null)
-                      :null
-              })
-               .Where(r => r.RiskCategory != null)  // Exclude any risk that doesn't fall into the 3 categories
-               .Where(r => r.RiskCategory == "Low" || r.RiskCategory == "Moderate" || r.RiskCategory == "Critical")  // Only include Low, Moderate, or Critical categories
+                var riskCategoryCounts = await _db.Set<Risk>().Where(e => e.RiskStatus == RiskStatus.Open)
+               .Select(r => new
+               {
+                   RiskType = r.RiskType.ToString(),
+                   OverallRiskRating = r.OverallRiskRatingBefore,
+                   RiskCategory = r.RiskType == RiskType.Quality
+                       ? (r.OverallRiskRatingBefore <= 8 ? "Low" :
+                          r.OverallRiskRatingBefore >= 9 && r.OverallRiskRatingBefore <= 32 ? "Moderate" :
+                          r.OverallRiskRatingBefore >= 33 ? "Critical" : null)
+                       : (r.RiskType == RiskType.Security || r.RiskType == RiskType.Privacy)
+                       ? (r.OverallRiskRatingBefore <= 45 ? "Low" :
+                          r.OverallRiskRatingBefore >= 46 && r.OverallRiskRatingBefore <= 69 ? "Moderate" :
+                          r.OverallRiskRatingBefore >= 70 ? "Critical" : null)
+                       : null
+               })
+                .Where(r => r.RiskCategory != null)  // Exclude any risk that doesn't fall into the 3 categories
+                .Where(r => r.RiskCategory == "Low" || r.RiskCategory == "Moderate" || r.RiskCategory == "Critical")  // Only include Low, Moderate, or Critical categories
 
-              .GroupBy(r => r.RiskCategory)
-              .Select(g => new RiskCategoryCountDTO
-              {
-                  RiskCategory = g.Key,
-                  Count = g.Count()
-              })
-              .ToListAsync();
+               .GroupBy(r => r.RiskCategory)
+               .Select(g => new RiskCategoryCountDTO
+               {
+                   RiskCategory = g.Key,
+                   Count = g.Count()
+               })
+               .ToListAsync();
                 return riskCategoryCounts;
 
             }
@@ -870,9 +870,9 @@ namespace Risk_Management_RiskEX_Backend.Repository
                   Count = g.Count()
               })
               .ToListAsync();
-               return riskCategoryCounts;              
+                return riskCategoryCounts;
             }
-           
+
 
         }
 
@@ -1317,7 +1317,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             // Optional: Check if at least one field has value (custom logic if needed)
             if (string.IsNullOrWhiteSpace(riskDraftDto.RiskName))
-               
+
             {
                 throw new ArgumentException("Draft must have at least some data.");
             }
@@ -1394,7 +1394,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
         public async Task<RiskDraftDTO> GetDraftByIdAsync(string riskId)
         {
             return await _riskMongoService.GetDraftByIdAsync(riskId);
-            
+
         }
 
 
@@ -1420,6 +1420,18 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
 
+
+public IEnumerable<RiskStatusDTO> GetRiskStatuses()
+    {
+        return Enum.GetValues(typeof(RiskStatus))
+                   .Cast<RiskStatus>()
+                   .Select(e => new RiskStatusDTO
+                   {
+                       Id = (int)e,
+                       Name = e.ToString()
+                   })
+                   .ToList();
+    }
 
 
 

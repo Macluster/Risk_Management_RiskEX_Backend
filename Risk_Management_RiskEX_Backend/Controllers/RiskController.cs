@@ -17,7 +17,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         private readonly IRiskRepository _riskRepository;
         private readonly ILogger<RiskController> _logger;
 
-       
+
 
         public RiskController(IRiskRepository riskRepository, ILogger<RiskController> logger)
         {
@@ -606,7 +606,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
         [HttpDelete("drafts/{id}")]
         public async Task<IActionResult> DeleteDraft(string id)
         {
-            var deleted = await _riskRepository.DeleteDraftByIdAsync(id); 
+            var deleted = await _riskRepository.DeleteDraftByIdAsync(id);
             if (!deleted)
                 return NotFound("Draft not found.");
 
@@ -658,6 +658,16 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             {
                 return StatusCode(500, "An error occurred while updating the draft.");
             }
+        }
+        
+
+
+
+        [HttpGet("statuses")]
+        public ActionResult<IEnumerable<RiskStatusDTO>> GetRiskStatuses()
+        {
+            var statuses = _riskRepository.GetRiskStatuses();
+            return Ok(statuses);
         }
 
 
