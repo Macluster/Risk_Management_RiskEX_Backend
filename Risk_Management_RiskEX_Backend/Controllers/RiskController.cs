@@ -659,7 +659,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return StatusCode(500, "An error occurred while updating the draft.");
             }
         }
-        
+
 
 
 
@@ -669,6 +669,33 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             var statuses = _riskRepository.GetRiskStatuses();
             return Ok(statuses);
         }
+
+
+        [HttpPut("update/status/{riskId}")]
+        public async Task<IActionResult> UpdateRiskStatus(int riskId, [FromBody] RiskStatusUpdateDTO riskUpdateDto)
+        {
+            if (riskUpdateDto == null)
+            {
+                return BadRequest("Risk update data is required.");
+            }
+
+            try
+            {
+                var updatedRisk = await _riskRepository.UpdateRiskStatusAsync(riskId, riskUpdateDto);
+                return Ok(updatedRisk); 
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while updating the risk status.", details = ex.Message });
+            }
+        }
+        
+
+
 
 
 

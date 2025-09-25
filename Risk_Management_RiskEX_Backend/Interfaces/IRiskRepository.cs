@@ -52,6 +52,7 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         public Task<RiskDraftDTO> UpdateDraftAsync(string id, RiskDraftDTO riskDraftDto);
 
         public IEnumerable<RiskStatusDTO> GetRiskStatuses();
+        public Task<Risk> UpdateRiskStatusAsync(int riskId, RiskStatusUpdateDTO riskUpdateDto);
 
 
 
