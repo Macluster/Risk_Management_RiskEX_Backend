@@ -1436,6 +1436,34 @@ public IEnumerable<RiskStatusDTO> GetRiskStatuses()
 
 
 
+public async Task<Risk> UpdateRiskStatusAsync(int riskId, RiskStatusUpdateDTO riskUpdateDto)
+        {
+            using (var transaction = await _db.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    // Retrieve the existing Risk by ID 
+                    var existingRisk = await _db.Risks.FirstOrDefaultAsync(r => r.Id == riskId);
+                    if (existingRisk == null)
+                    {
+                        throw new KeyNotFoundException($"Risk with ID {riskId} not found.");
+                    }
+                    existingRisk.ClosedDate = riskUpdateDto.ClosedDate;
+                    existingRisk.RiskStatus = riskUpdateDto.RiskStatus; 
+                    existingRisk.Remarks = riskUpdateDto.Remarks;
+                    // Initialize a shared review if provided 
+                    // Save changes to the Risk entity 
+                    await _db.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return existingRisk;
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    throw new Exception($"Error updating risk: {ex.Message}", ex);
+                }
+            }
+        }
 
 
 
