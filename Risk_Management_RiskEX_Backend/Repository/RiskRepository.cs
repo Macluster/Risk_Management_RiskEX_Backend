@@ -759,7 +759,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<object> GetAllRiskAssigned()
         {
-            var result = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open).Select(r => new GetAllRiskAssignedDTO
+            var result = await _db.Risks.Where(e => e.RiskStatus != RiskStatus.Closed).Select(r => new GetAllRiskAssignedDTO
             {
                 Id = r.Id,
                 RiskId = r.RiskId,
@@ -785,7 +785,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             var result = await _db.Risks
       .Where(e => e.ResponsibleUserId == id)
-      .Where(e => e.RiskStatus == RiskStatus.Open)
+      .Where(e => e.RiskStatus != RiskStatus.Closed)
       .Where(e => e.RiskAssessments.Any(ra => ra.Review != null && ra.Review.ReviewStatus == ReviewStatus.ReviewCompleted))
       .Include(e => e.RiskAssessments)
       .ThenInclude(e => e.Review)
