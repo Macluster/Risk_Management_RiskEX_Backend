@@ -1,4 +1,3 @@
-
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +11,6 @@ using Risk_Management_RiskEX_Backend.Models;
 using Risk_Management_RiskEX_Backend.Repository;
 using Risk_Management_RiskEX_Backend.Services;
 
-
 //Loading Env file
 DotNetEnv.Env.Load();
 
@@ -21,10 +19,6 @@ var builder = WebApplication.CreateBuilder(args);
 //Getting Connection String from Env file adding to db context
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 var jwt_Scret = Environment.GetEnvironmentVariable("API_SECRET");
-//Console.WriteLine("JWT Secret: " + Environment.GetEnvironmentVariable("API_SECRET"));
-//builder.Services.AddDbContext<ApplicationDBContext>(options =>
-//           options.UseNpgsql(connectionString));
-
 
 builder.Services.AddDbContext<ApplicationDBContext>((serviceProvider, options) =>
 {
@@ -39,10 +33,8 @@ builder.Services.AddScoped<ApplicationDBContext>((serviceProvider) =>
 });
 
 builder.Services.AddTransient<IEmailService, EmailService>();
-// Add services to the container.
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
@@ -56,40 +48,19 @@ builder.Services.AddScoped<IRiskResponseRepository, RiskResponseRepository>();
 builder.Services.AddScoped<IAssessmentMatrixImpactRepository, AssessmentMatrixImpactRepository>();
 builder.Services.AddScoped<IAssessmentMatrixLikelihoodRepository, AssessmentMatrixLikelihoodRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-
-
 builder.Services.AddScoped<IApprovalRepository, ApprovalsRepository>();
 builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
-
-
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
-
-//builder.Services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
 builder.Services.AddScoped<UserService>();
-
-
-
-
-
 
 // Configure MongoDB
 builder.Services.Configure<RiskDatabaseSettingscs>(builder.Configuration.GetSection("MongoDbSettings"));
 
-
-
-
-
-
-
-
-
 builder.Services.AddSwaggerGen(option =>
-
 {
-    
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description =
@@ -102,25 +73,22 @@ builder.Services.AddSwaggerGen(option =>
         Scheme = "Bearer"
     });
     option.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
                 {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            },
-                            Scheme = "oauth2",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header,
-
-                        },
-                        new List<string>()
-                    }
-                });
-
-
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        }
+    });
 });
 
 builder.Services.AddAuthentication(x =>
@@ -134,59 +102,61 @@ builder.Services.AddAuthentication(x =>
     x.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
-            jwt_Scret)),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwt_Scret)),
         ValidateIssuer = false,
         ValidateAudience = false
-
     };
 });
 
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-
-    options.AddPolicy("ProjectUsers", policy =>
-             policy.RequireRole("ProjectUsers"));
-
-    options.AddPolicy("DepartmentUsers", policy =>
-        policy.RequireRole("DepartmentUser"));
+    options.AddPolicy("ProjectUsers", policy => policy.RequireRole("ProjectUsers"));
+    options.AddPolicy("DepartmentUsers", policy => policy.RequireRole("DepartmentUser"));
 });
 
-
-
-
+// FIXED CORS CONFIGURATION
+var corsOrigins = builder.Configuration.GetSection("CorsOrigins").Get<string[]>() ?? new string[] { };
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        if (corsOrigins.Length > 0)
+        {
+            // Remove trailing slashes from origins
+            var cleanedOrigins = corsOrigins.Select(o => o.TrimEnd('/')).ToArray();
+
+            policy.WithOrigins(cleanedOrigins)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials(); // Important for authentication
+        }
+        else
+        {
+            // Fallback for development
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
     });
 });
 
-
-
-
-
 var app = builder.Build();
+
+// CORS must be called before Authentication and Authorization
 app.UseCors("AllowAll");
 
-
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseMiddleware<DepartmentValidationMiddleware>();
 app.UseHttpsRedirection();
-
+app.UseAuthentication(); // Add this - it was missing!
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
