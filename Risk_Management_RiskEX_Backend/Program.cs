@@ -115,7 +115,6 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("DepartmentUsers", policy => policy.RequireRole("DepartmentUser"));
 });
 
-// FIXED CORS CONFIGURATION
 var corsOrigins = builder.Configuration.GetSection("CorsOrigins").Get<string[]>() ?? new string[] { };
 
 builder.Services.AddCors(options =>
@@ -124,17 +123,15 @@ builder.Services.AddCors(options =>
     {
         if (corsOrigins.Length > 0)
         {
-            // Remove trailing slashes from origins
             var cleanedOrigins = corsOrigins.Select(o => o.TrimEnd('/')).ToArray();
 
             policy.WithOrigins(cleanedOrigins)
                   .AllowAnyHeader()
                   .AllowAnyMethod()
-                  .AllowCredentials(); // Important for authentication
+                  .AllowCredentials(); 
         }
         else
         {
-            // Fallback for development
             policy.AllowAnyOrigin()
                   .AllowAnyHeader()
                   .AllowAnyMethod();
@@ -144,7 +141,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// CORS must be called before Authentication and Authorization
 app.UseCors("AllowAll");
 
 if (app.Environment.IsDevelopment())
@@ -155,7 +151,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<DepartmentValidationMiddleware>();
 app.UseHttpsRedirection();
-app.UseAuthentication(); // Add this - it was missing!
+app.UseAuthentication(); 
 app.UseAuthorization();
 app.MapControllers();
 
