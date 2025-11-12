@@ -39,7 +39,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Email error: {ex.Message}");
-                return StatusCode(500, new { error = "Failed to send email", details = ex.Message });
+                return StatusCode(400, new { error = "Failed to send email", details = ex.Message });
             }
         }
 
