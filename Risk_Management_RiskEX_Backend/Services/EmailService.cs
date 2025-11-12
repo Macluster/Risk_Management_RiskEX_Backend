@@ -76,7 +76,7 @@ namespace Risk_Management_RiskEX_Backend.Services
                 };
 
                 // Create message
-                using var message = new MailMessage(email, receptor, subject, body)
+                using var message = new MailMessage("no-reply@riskex.mailjet.com', receptor, subject, body)
                 {
                     IsBodyHtml = true
                 };
