@@ -72,7 +72,7 @@ namespace Risk_Management_RiskEX_Backend.Services
                     UseDefaultCredentials = false,
                     Credentials = new NetworkCredential(email, password),
                     DeliveryMethod = SmtpDeliveryMethod.Network,
-                    Timeout = 30000 // 30 seconds timeout
+                    Timeout = 300000 // 5 minute timeout
                 };
 
                 // Create message
