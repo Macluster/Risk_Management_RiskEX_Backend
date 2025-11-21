@@ -107,7 +107,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             claims.Add(new Claim(ClaimTypes.Role, "ProjectUsers"));
 
                           
-                            var projectsJson = JsonSerializer.Serialize(user.Projects.Select(p => new { p.Id, p.Name }));
+                            var projectsJson = JsonSerializer.Serialize(user.Projects.Select(p => new { p.Id, p.Name, p.ProjectCode}));
                             claims.Add(new Claim("Projects", projectsJson));
                         }
                     }
