@@ -149,10 +149,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<DepartmentValidationMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication(); 
 app.UseAuthorization();
+app.UseMiddleware<DepartmentValidationMiddleware>();
 app.MapControllers();
 
 app.Run();
