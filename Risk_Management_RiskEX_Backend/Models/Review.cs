@@ -25,5 +25,6 @@ namespace Risk_Management_RiskEX_Backend.Models
 
         [JsonIgnore]
         public ICollection<RiskAssessment> RiskAssessments { get; set; }
+        public bool IsActive { get; set; } 
     }
 }
