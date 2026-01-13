@@ -160,6 +160,14 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
                 return false;
             }
+            if (review.IsActive)
+            {
+                return false;
+            }
+            else
+            {
+                review.IsActive=true;
+            }
 
             switch (approvalStatus.ToLower())
             {
@@ -223,6 +231,15 @@ namespace Risk_Management_RiskEX_Backend.Repository
             if (review == null)
             {
                 return false;
+            }
+
+            if (review.IsActive)
+            {
+                return false;
+            }
+            else
+            {
+                review.IsActive=true;
             }
 
             switch (approvalStatus.ToLower())
