@@ -43,7 +43,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 var review = new Review
                 {
                     Comments = firstReview.Comments,
-                    ReviewStatus = firstReview.ReviewStatus
+                    ReviewStatus = firstReview.ReviewStatus,
+                    IsActive = false
                 };
 
                 if (firstReview.UserId.HasValue)
@@ -135,7 +136,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         Comments = firstReview.Comments,
                         ReviewStatus = firstReview.ReviewStatus,
                         UserId = firstReview.UserId,
-                        ExternalReviewerId = firstReview.ExternalReviewerId
+                        ExternalReviewerId = firstReview.ExternalReviewerId,
+                        IsActive = false
                     };
                     if (review.UserId.HasValue && review.ExternalReviewerId.HasValue)
                     {
@@ -239,6 +241,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         ReviewStatus = ra.Review.ReviewStatus.ToString(),
                         Comments = ra.Review.Comments,
                         ReviewerName = ra.Review.ExternalReviewer == null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
+                        IsActive= ra.Review.IsActive
 
                     } : null,
                     AssessmentBasis = ra.AssessmentBasis != null ? new AssessmentBasisResponseDTO { Id = ra.AssessmentBasis.Id, Basis = ra.AssessmentBasis.Basis } : null,
@@ -500,7 +503,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             Comments = firstReviewDto.Comments,
                             ReviewStatus = firstReviewDto.ReviewStatus,
                             UserId = firstReviewDto.UserId,
-                            ExternalReviewerId = firstReviewDto.ExternalReviewerId
+                            ExternalReviewerId = firstReviewDto.ExternalReviewerId,
+                            IsActive = false
                         };
                         _db.Reviews.Add(existingReview);
                         await _db.SaveChangesAsync();
@@ -614,7 +618,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                             var newReview = new Review
                             {
                                 Comments = assessmentDto.Review.Comments,
-                                ReviewStatus = assessmentDto.Review.ReviewStatus
+                                ReviewStatus = assessmentDto.Review.ReviewStatus,
+                                IsActive = false
                             };
                             // Ensure only one of UserId or ExternalReviewerId is set 
                             if (assessmentDto.Review.UserId.HasValue)
@@ -681,7 +686,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         var newReview = new Review
                         {
                             Comments = firstReviewDto.Comments,
-                            ReviewStatus = firstReviewDto.ReviewStatus
+                            ReviewStatus = firstReviewDto.ReviewStatus,
+                            IsActive = false
                         };
                         // Ensure only one of UserId or ExternalReviewerId is set 
                         if (firstReviewDto.UserId.HasValue)
