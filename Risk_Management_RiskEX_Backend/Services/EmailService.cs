@@ -15,7 +15,7 @@ namespace Risk_Management_RiskEX_Backend.Services
             _logger = logger;
         }
 
-        public async Task SendEmail(string receptor, string subject, string body)
+        public async Task SendEmail(string receptor, string subject, string body, string[]? cc)
         {
             try
             {
@@ -80,6 +80,17 @@ namespace Risk_Management_RiskEX_Backend.Services
                 {
                     IsBodyHtml = true
                 };
+
+                if (cc != null && cc.Length > 0)
+                {
+                    foreach (var ccEmail in cc)
+                    {
+                        if (!string.IsNullOrWhiteSpace(ccEmail))
+                        {
+                            message.CC.Add(ccEmail);
+                        }
+                    }
+                }
 
                 _logger.LogInformation($"Attempting to send email to: {receptor}");
 
