@@ -204,6 +204,11 @@ namespace Risk_Management_RiskEX_Backend.Repository
             var user=await _db.Users.FirstOrDefaultAsync(u => u.Id == id);
             if(user!=null)
             {
+                if(isActive && !user.IsActive)
+                {
+                    var hashedPassword = _userService.GetHashedPassword(DEFAULT_PASSWORD);
+                    user.Password = hashedPassword;    
+                }
                 user.IsActive = isActive;
 
                 _db.Users.Update(user);

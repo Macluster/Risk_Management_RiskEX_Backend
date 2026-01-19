@@ -24,7 +24,8 @@ namespace Risk_Management_RiskEX_Backend.Controllers
              [FromQuery] string receptor,
              [FromQuery] string subject,
              [FromQuery] string body,
-             [FromQuery] bool isBodyHtml = false)
+             [FromQuery] bool isBodyHtml = false,
+             [FromQuery] string[]?cc=null)
         {
             try
             {
@@ -33,7 +34,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                     return BadRequest(new { error = "Missing required parameters" });
                 }
 
-                await _emailService.SendEmail(receptor, subject, body);
+                await _emailService.SendEmail(receptor, subject, body,cc);
                 return Ok(new { message = "Email sent successfully" });
             }
             catch (Exception ex)

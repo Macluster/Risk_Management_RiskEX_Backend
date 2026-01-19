@@ -241,7 +241,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         ReviewStatus = ra.Review.ReviewStatus.ToString(),
                         Comments = ra.Review.Comments,
                         ReviewerName = ra.Review.ExternalReviewer == null ? ra.Review.User.FullName : ra.Review.ExternalReviewer.FullName,
-                        IsActive= ra.Review.IsActive
+                        IsActive = ra.Review.IsActive
 
                     } : null,
                     AssessmentBasis = ra.AssessmentBasis != null ? new AssessmentBasisResponseDTO { Id = ra.AssessmentBasis.Id, Basis = ra.AssessmentBasis.Basis } : null,
@@ -375,7 +375,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     existingReview = new Review
                     {
                         Comments = firstReviewDto.Comments,
-                        ReviewStatus = firstReviewDto.ReviewStatus
+                        ReviewStatus = firstReviewDto.ReviewStatus,
+                        IsActive = false
                     };
                     if (firstReviewDto.UserId.HasValue)
                     {
@@ -395,6 +396,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     // Update existing review 
                     existingReview.Comments = firstReviewDto.Comments;
                     existingReview.ReviewStatus = firstReviewDto.ReviewStatus;
+                    existingReview.IsActive = false;
                     if (firstReviewDto.UserId.HasValue)
                     {
                         existingReview.UserId = firstReviewDto.UserId;
@@ -514,6 +516,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         // Update existing review without creating a new reviewer 
                         existingReview.Comments = firstReviewDto.Comments;
                         existingReview.ReviewStatus = firstReviewDto.ReviewStatus;
+                        existingReview.IsActive = false;
                         if (firstReviewDto.UserId.HasValue)
                         {
                             existingReview.UserId = firstReviewDto.UserId;
@@ -591,7 +594,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
                     existingRisk.ClosedDate = riskUpdateDto.ClosedDate;
                     existingRisk.RiskStatus = riskUpdateDto.RiskStatus.Value; // Set status to closed 
-                                                                 // existingRisk.RiskResponseId = riskUpdateDto.RiskResponseId;
+                                                                              // existingRisk.RiskResponseId = riskUpdateDto.RiskResponseId;
                     existingRisk.OverallRiskRatingAfter = riskUpdateDto.OverallRiskRatingAfter;
                     existingRisk.PercentageRedution = riskUpdateDto.PercentageRedution;
                     existingRisk.ResidualRisk = riskUpdateDto.ResidualRisk;
@@ -1168,51 +1171,34 @@ namespace Risk_Management_RiskEX_Backend.Repository
         public async Task<ICollection<OpenRiskCountByTypeDTO>> GetOpenRiskCountByType(List<int> departmentIds, List<int> projectIds)
         {
 
-            if (projectIds.Count() != 0)
+            IQueryable<Risk> query = _db.Set<Risk>();
+
+            // Scenario 1: Project filter
+            if (projectIds.Any())
             {
-
-                var riskTypeCounts = await _db.Set<Risk>()
-               .Where(e => projectIds.Contains(e.ProjectId.Value)).Where(e => e.RiskStatus == RiskStatus.Open)
-               .GroupBy(r => r.RiskType)
-               .Select(g => new OpenRiskCountByTypeDTO
-               {
-                   RiskType = g.Key.ToString(),
-                   RiskCount = g.Count()
-               })
-               .ToListAsync();
-                return riskTypeCounts;
+                query = query.Where(r =>
+                    r.ProjectId.HasValue &&
+                    projectIds.Contains(r.ProjectId.Value));
             }
-            else
+            // Scenario 2: Department filter
+            else if (departmentIds.Any())
             {
-                if (departmentIds.Count() == 0)
-                {
-                    var riskTypeCounts = await _db.Set<Risk>().Where(e => e.RiskStatus == RiskStatus.Open)
-                   .GroupBy(r => r.RiskType)
-                   .Select(g => new OpenRiskCountByTypeDTO
-                   {
-                       RiskType = g.Key.ToString(),
-                       RiskCount = g.Count()
-                   })
-                   .ToListAsync();
-                    return riskTypeCounts;
-
-                }
-                else
-                {
-
-                    var riskTypeCounts = await _db.Set<Risk>()
-                   .Where(e => departmentIds.Contains(e.DepartmentId)).Where(e => e.RiskStatus == RiskStatus.Open)
-                   .GroupBy(r => r.RiskType)
-                   .Select(g => new OpenRiskCountByTypeDTO
-                   {
-                       RiskType = g.Key.ToString(),
-                       RiskCount = g.Count()
-                   })
-                   .ToListAsync();
-                    return riskTypeCounts;
-
-                }
+                query = query.Where(r =>
+                    departmentIds.Contains(r.DepartmentId));
             }
+            // Scenario 3: No department & no project → no filter
+
+            var result = await query
+                .GroupBy(r => r.RiskType)
+                .Select(g => new OpenRiskCountByTypeDTO
+                {
+                    RiskType = g.Key.ToString(),
+                    OpenCount = g.Count(r => r.RiskStatus == RiskStatus.Open),
+                    ClosedCount = g.Count(r => r.RiskStatus == RiskStatus.Closed)
+                })
+                .ToListAsync();
+
+            return result;
 
 
         }
@@ -1427,22 +1413,22 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
 
-public IEnumerable<RiskStatusDTO> GetRiskStatuses()
-    {
-        return Enum.GetValues(typeof(RiskStatus))
-                   .Cast<RiskStatus>()
-                   .Select(e => new RiskStatusDTO
-                   {
-                       Id = (int)e,
-                       Name = e.ToString()
-                   })
-                   .ToList();
-    }
+        public IEnumerable<RiskStatusDTO> GetRiskStatuses()
+        {
+            return Enum.GetValues(typeof(RiskStatus))
+                       .Cast<RiskStatus>()
+                       .Select(e => new RiskStatusDTO
+                       {
+                           Id = (int)e,
+                           Name = e.ToString()
+                       })
+                       .ToList();
+        }
 
 
 
 
-public async Task<Risk> UpdateRiskStatusAsync(int riskId, RiskStatusUpdateDTO riskUpdateDto)
+        public async Task<Risk> UpdateRiskStatusAsync(int riskId, RiskStatusUpdateDTO riskUpdateDto)
         {
             using (var transaction = await _db.Database.BeginTransactionAsync())
             {
@@ -1455,7 +1441,7 @@ public async Task<Risk> UpdateRiskStatusAsync(int riskId, RiskStatusUpdateDTO ri
                         throw new KeyNotFoundException($"Risk with ID {riskId} not found.");
                     }
                     existingRisk.ClosedDate = riskUpdateDto.ClosedDate;
-                    existingRisk.RiskStatus = riskUpdateDto.RiskStatus; 
+                    existingRisk.RiskStatus = riskUpdateDto.RiskStatus;
                     existingRisk.Remarks = riskUpdateDto.Remarks;
                     // Initialize a shared review if provided 
                     // Save changes to the Risk entity 
