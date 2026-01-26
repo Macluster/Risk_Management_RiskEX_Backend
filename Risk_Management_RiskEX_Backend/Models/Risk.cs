@@ -51,6 +51,7 @@ namespace Risk_Management_RiskEX_Backend.Models
         public string? Remarks { get; set; }
         public int DepartmentId { get; set; }
         public int? ProjectId { get; set; }
+        public bool IsHide { get; set; }
 
 
 

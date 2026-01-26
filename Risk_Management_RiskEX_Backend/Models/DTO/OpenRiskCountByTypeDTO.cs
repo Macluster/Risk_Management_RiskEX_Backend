@@ -6,5 +6,9 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
     public string RiskType { get; set; }
     public int OpenCount  { get; set; }
     public int ClosedCount { get; set; }
+    public int DeferredCount { get; set; }
+    public int UnderTreatmentCount { get; set; }
+    public int AcceptedCount { get; set; }
+    public int MonitoringCount { get; set; }
   }
 }

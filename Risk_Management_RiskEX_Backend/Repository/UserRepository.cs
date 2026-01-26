@@ -66,6 +66,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     user.CreatedAt = DateTime.UtcNow;
                     user.UpdatedAt = DateTime.UtcNow;
                     user.IsActive = true;
+                    user.IsChangePasswordOnFirtsLogin=false;
                     var hashedPassword = _userService.GetHashedPassword(DEFAULT_PASSWORD);
                     user.Password = hashedPassword;
 
@@ -207,7 +208,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 if(isActive && !user.IsActive)
                 {
                     var hashedPassword = _userService.GetHashedPassword(DEFAULT_PASSWORD);
-                    user.Password = hashedPassword;    
+                    user.Password = hashedPassword;   
+                    user.IsChangePasswordOnFirtsLogin=false; 
                 }
                 user.IsActive = isActive;
 

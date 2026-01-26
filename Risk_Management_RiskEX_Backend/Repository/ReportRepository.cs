@@ -47,6 +47,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         DepartmentId = r.DepartmentId,
                         ProjectId = r.Project.Id,
                         ISOClauseNumber = r.ISOClauseNumber,
+                        IsHide = r.IsHide,
                         DepartmentName = r.Department.DepartmentName,
                         RiskAssessments = r.RiskAssessments.Select(ra => new RiskAssessmentReportDTO
                         {
@@ -103,6 +104,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         RiskResponse = r.RiskResponseData.Name,
                         RiskStatus = r.RiskStatus.ToString(),
                         ISOClauseNumber = r.ISOClauseNumber,
+                        IsHide = r.IsHide,
                         Remarks = r.Remarks,
                         DepartmentId = r.DepartmentId,
                         ProjectId = r.Project.Id,
@@ -143,7 +145,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 }
 
                 var reports = await _context.Risks
-                    .Where(r => r.DepartmentId == id)
+                    .Where(r => r.DepartmentId == id && r.IsHide == false)
                     .Select(r => new ReportDTO
                     {
                         Id = r.Id,
@@ -206,7 +208,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 }
                
                 var reports = await _context.Risks
-                    .Where(r => r.DepartmentId == id)
+                    .Where(r => r.DepartmentId == id && r.IsHide == false)
                     .Where(r => r.RiskStatus == status)
                     .Select(r => new ReportDTO
                     {

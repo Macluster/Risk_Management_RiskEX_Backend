@@ -79,7 +79,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     ISOClauseNumber = riskDto.ISOClauseNumber,
                     Remarks = null,
                     RiskStatus = RiskStatus.Open,
-                    RiskAssessments = new List<RiskAssessment>()
+                    RiskAssessments = new List<RiskAssessment>(),
+                    IsHide=false
                 };
                 // 3. Add Assessments based on RiskType 
                 if ((int)riskDto.RiskType == 1 || riskDto.RiskType == RiskType.Quality)
@@ -175,7 +176,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         RiskResponseId = riskDto.RiskResponseId,
                         ISOClauseNumber = riskDto.ISOClauseNumber,
                         RiskStatus = RiskStatus.Open,
-                        RiskAssessments = new List<RiskAssessment>()
+                        RiskAssessments = new List<RiskAssessment>(),
+                        IsHide=false
                     };
                     _db.Risks.Add(risk);
                     await _db.SaveChangesAsync();
@@ -768,7 +770,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
         public async Task<object> GetAllRiskAssigned()
         {
-            var result = await _db.Risks.Where(e => e.RiskStatus != RiskStatus.Closed).Select(r => new GetAllRiskAssignedDTO
+            var result = await _db.Risks.Where(e => e.RiskStatus != RiskStatus.Closed && e.IsHide == false).Select(r => new GetAllRiskAssignedDTO
             {
                 Id = r.Id,
                 RiskId = r.RiskId,
@@ -793,7 +795,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
             var result = await _db.Risks
-      .Where(e => e.ResponsibleUserId == id)
+      .Where(e => e.ResponsibleUserId == id && e.IsHide == false)
       .Where(e => e.RiskStatus != RiskStatus.Closed)
       .Where(e => e.RiskAssessments.Any(ra => ra.Review != null && ra.Review.ReviewStatus == ReviewStatus.ReviewCompleted))
       .Include(e => e.RiskAssessments)
@@ -1091,7 +1093,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
 
 
-                var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open)
+                var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open && e.IsHide == false)
                 .Where(e => projects.Contains(e.ProjectId.Value))
                 .ToListAsync();
                 var closestRisksSorted = closestRisks
@@ -1112,7 +1114,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             {
                 if (departmentIds.Count() == 0)
                 {
-                    var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open)
+                    var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open && e.IsHide == false)
                     .ToListAsync();
                     var closestRisksSorted = closestRisks
                     .OrderBy(r => Math.Abs((r.PlannedActionDate - DateTime.Now).Ticks))
@@ -1123,7 +1125,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 }
                 else
                 {
-                    var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open)
+                    var closestRisks = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open && e.IsHide == false)
                     .Where(e => departmentIds.Contains(e.DepartmentId))
                     .ToListAsync();
                     var closestRisksSorted = closestRisks
@@ -1145,7 +1147,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
             if (projectIds.Count() != 0)
             {
-                var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open).Where(e => projectIds.Contains(e.ProjectId.Value)).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
+                var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open && e.IsHide == false).Where(e => projectIds.Contains(e.ProjectId.Value)).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
                 var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
                 return data;
             }
@@ -1154,13 +1156,13 @@ namespace Risk_Management_RiskEX_Backend.Repository
 
                 if (departmentIds.Count() == 0)
                 {
-                    var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
+                    var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open && e.IsHide == false).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
                     var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
                     return data;
                 }
                 else
                 {
-                    var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open).Where(e => departmentIds.Contains(e.DepartmentId)).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
+                    var highestRatedRisk = await _db.Risks.Where(e => e.RiskStatus == RiskStatus.Open && e.IsHide == false).Where(e => departmentIds.Contains(e.DepartmentId)).OrderByDescending(r => r.OverallRiskRatingBefore).Take(3).ToListAsync();
                     var data = _mapper.Map<List<RiskMinimalInfoDTO>>(highestRatedRisk);
                     return data;
                 }
@@ -1172,6 +1174,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
         {
 
             IQueryable<Risk> query = _db.Set<Risk>();
+
+            query = query.Where(r => !r.IsHide); 
 
             // Scenario 1: Project filter
             if (projectIds.Any())
@@ -1194,7 +1198,12 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 {
                     RiskType = g.Key.ToString(),
                     OpenCount = g.Count(r => r.RiskStatus == RiskStatus.Open),
-                    ClosedCount = g.Count(r => r.RiskStatus == RiskStatus.Closed)
+                    ClosedCount = g.Count(r => r.RiskStatus == RiskStatus.Closed),
+                    DeferredCount = g.Count(r => r.RiskStatus == RiskStatus.Deferred),
+                    UnderTreatmentCount = g.Count(r => r.RiskStatus == RiskStatus.UnderTreatment),
+                    AcceptedCount = g.Count(r => r.RiskStatus == RiskStatus.Accepted),
+                    MonitoringCount = g.Count(r => r.RiskStatus == RiskStatus.Monitoring),
+
                 })
                 .ToListAsync();
 
@@ -1457,7 +1466,69 @@ namespace Risk_Management_RiskEX_Backend.Repository
             }
         }
 
+        public async Task<bool> UpdateRiskVisibilityAsync(int riskId, bool isHide)
+        {
+            var risk = await _db.Risks
+            .FirstOrDefaultAsync(r => r.Id == riskId);
+            if (risk == null)
+            return false;
 
+            risk.IsHide = isHide;
+             await _db.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteRiskAsync(int riskId)
+        {
+            using var transaction = await _db.Database.BeginTransactionAsync();
+            try
+            {
+                var risk = await _db.Risks
+            .Include(r => r.RiskAssessments)
+            .FirstOrDefaultAsync(r => r.Id == riskId);
+
+            if (risk == null)
+            return false;
+
+            var reviewIds = risk.RiskAssessments
+            .Select(ra => ra.ReviewId)
+            .Distinct()
+            .ToList();
+
+
+            _db.Assessments.RemoveRange(risk.RiskAssessments);
+            await _db.SaveChangesAsync();
+
+            foreach (var reviewId in reviewIds)
+            {
+                bool stillUsed = await _db.Assessments
+                    .AnyAsync(ra => ra.ReviewId == reviewId);
+
+                if (!stillUsed)
+                {
+                    var review = await _db.Reviews.FindAsync(reviewId);
+                    if (review != null)
+                    {
+                        _db.Reviews.Remove(review);
+                    }
+                }
+            }
+
+            _db.Risks.Remove(risk);
+            await _db.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return true;
+                
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+                
+            }
+        }
 
 
 

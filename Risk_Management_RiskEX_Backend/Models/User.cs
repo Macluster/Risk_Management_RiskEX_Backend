@@ -17,6 +17,7 @@ namespace Risk_Management_RiskEX_Backend.Models
         public string FullName { get; set; }
         public int DepartmentId { get; set; }
         public bool IsActive { get; set; }
+        public bool IsChangePasswordOnFirtsLogin { get; set; }
 
 
         [ForeignKey("DepartmentId")]

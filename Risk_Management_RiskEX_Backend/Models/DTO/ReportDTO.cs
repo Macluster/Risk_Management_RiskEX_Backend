@@ -44,6 +44,7 @@ namespace Risk_Management_RiskEX_Backend.Models.DTO
         public string CreatedAt { get; set; }
         public string UpdatedAt { get; set; }
         public string? ISOClauseNumber { get; set; }
+        public bool IsHide { get; set; }
 
 
     }
