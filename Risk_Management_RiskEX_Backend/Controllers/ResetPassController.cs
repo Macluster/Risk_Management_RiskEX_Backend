@@ -11,9 +11,9 @@ namespace Risk_Management_RiskEX_Backend.Controllers
     public class ResetPassController : ControllerBase
     {
         private readonly IAuthRepository _authRepository;
-        private readonly PasswordService _passwordService;
+        private readonly IPasswordService _passwordService;
 
-        public ResetPassController(IAuthRepository authRepository, PasswordService passwordService)
+        public ResetPassController(IAuthRepository authRepository, IPasswordService passwordService)
         {
             _authRepository = authRepository;
             _passwordService = passwordService;
