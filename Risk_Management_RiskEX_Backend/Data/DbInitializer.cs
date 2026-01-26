@@ -38,6 +38,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     FullName = "System Admin",
                     DepartmentId = 1,
                     IsActive = true,
+                    IsChangePasswordOnFirtsLogin=true,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -49,6 +50,7 @@ namespace Risk_Management_RiskEX_Backend.Data
                     FullName = "System Admin",
                     DepartmentId = 1,
                     IsActive = true,
+                    IsChangePasswordOnFirtsLogin=true,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }

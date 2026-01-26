@@ -289,7 +289,7 @@ namespace RiskManagement
     // Simple implementation of IEmailService for testing
     public class SimpleEmailService : IEmailService
     {
-        public Task SendEmail(string to, string subject, string body)
+        public Task SendEmail(string to, string subject, string body,string[]? cc = null)
         {
             return Task.CompletedTask;
         }

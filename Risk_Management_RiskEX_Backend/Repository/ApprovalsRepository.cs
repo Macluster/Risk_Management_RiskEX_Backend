@@ -50,7 +50,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     .ThenInclude(ra => ra.Risk)
                         .ThenInclude(risk => risk.Department)
                 .Where(r => r.ReviewStatus == ReviewStatus.ReviewPending || r.ReviewStatus == ReviewStatus.ApprovalPending)
-                .SelectMany(r => r.RiskAssessments.Select(ra => new
+                .SelectMany(r => r.RiskAssessments.Where(ra => !ra.Risk.IsHide).Select(ra => new
                 {
                     Id = ra.Risk.Id,
                     RiskId = ra.Risk.RiskId,
@@ -124,7 +124,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
             Console.WriteLine($"Found {risks.Count} unique risks.");
 
             // Create a list of ApprovalDTOs from the unique risks
-            var approvalDTOs = risks.Select(risk => new ApprovalDTO
+            var approvalDTOs = risks.Where(r=>r.IsHide==false).Select(risk => new ApprovalDTO
             {
                 Id = risk.Id,
                 RiskId = risk.RiskId,

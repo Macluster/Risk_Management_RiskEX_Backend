@@ -693,6 +693,38 @@ namespace Risk_Management_RiskEX_Backend.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while updating the risk status.", details = ex.Message });
             }
         }
+
+        [HttpPut("{id}/visibility")]
+        public async Task<IActionResult> UpdateRiskVisibility(int id,[FromBody]bool isHide)
+        {
+            var updated = await _riskRepository.UpdateRiskVisibilityAsync(id, isHide);
+            if (!updated)
+            return NotFound("Risk not found");
+
+            return Ok(new
+        {
+            RiskId = id,
+            IsHide = isHide,
+            Message = isHide
+                ? "Risk has been hidden successfully"
+                : "Risk is now visible to all users"
+        });
+            
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRisk(int id)
+        {
+            var deleted = await _riskRepository.DeleteRiskAsync(id);
+            
+            if (!deleted)
+            return NotFound("Risk not found");
+
+             return Ok(new
+            {
+                Message = "Risk deleted successfully"
+            });
+        }
         
 
 

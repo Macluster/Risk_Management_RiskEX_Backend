@@ -43,6 +43,7 @@ namespace Risk_Management_RiskEX_Backend.Controllers
             }
 
             user.Password=_passwordService.HashPassword(request.NewPassword) ;
+            user.IsChangePasswordOnFirtsLogin=true;
             await _accountRepository.UpdateUserPasswordAsync(user);
 
             return Ok(new { message = "Password changed successfully." });

@@ -54,6 +54,9 @@ namespace Risk_Management_RiskEX_Backend.Interfaces
         public IEnumerable<RiskStatusDTO> GetRiskStatuses();
         public Task<Risk> UpdateRiskStatusAsync(int riskId, RiskStatusUpdateDTO riskUpdateDto);
 
+        public Task<bool> UpdateRiskVisibilityAsync(int riskId, bool isHide);
+        public Task<bool> DeleteRiskAsync(int riskId);
+
 
 
 
