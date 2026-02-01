@@ -59,7 +59,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     Description = ra.Risk.Description,
                     RiskType = ra.Risk.RiskType,
                     PlannedActionDate = ra.Risk.PlannedActionDate,
-                    OverallRiskRating = ra.Risk.OverallRiskRatingAfter ?? ra.Risk.OverallRiskRatingBefore,
+                    OverallRiskRating = ra.Risk.OverallRiskRatingBefore,
+                    OverallRiskRatingAfter = ra.Risk.OverallRiskRatingAfter,
                     RiskStatus = ra.Risk.RiskStatus,
                     ReviewerName = r.UserId.HasValue ? r.User.FullName : r.ExternalReviewer.FullName,
                     ReviewerDepartment = r.UserId.HasValue ? r.User.Department.DepartmentName : r.ExternalReviewer.Department.DepartmentName
@@ -79,6 +80,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 RiskType = Enum.GetName(typeof(RiskType), r.RiskType),
                 PlannedActionDate = r.PlannedActionDate,
                 OverallRiskRating = (int)r.OverallRiskRating,
+                OverallRiskRatingAfter= r.OverallRiskRatingAfter ?? 0,
                 RiskStatus = Enum.GetName(typeof(RiskStatus), r.RiskStatus),
                 ReviewerName = r.ReviewerName,
                 ReviewerDepartment = r.ReviewerDepartment
@@ -131,7 +133,8 @@ namespace Risk_Management_RiskEX_Backend.Repository
                 RiskName = risk.RiskName,
                 Description = risk.Description,
                 RiskType = Enum.GetName(typeof(RiskType), risk.RiskType) ?? "Unknown",
-                OverallRiskRating = risk.OverallRiskRatingAfter ?? risk.OverallRiskRatingBefore,
+                OverallRiskRating = risk.OverallRiskRatingBefore,
+                OverallRiskRatingAfter = risk.OverallRiskRatingAfter,
                 PlannedActionDate = risk.PlannedActionDate,
                 RiskStatus = Enum.GetName(typeof(RiskStatus), risk.RiskStatus) ?? "Unknown",
                 DepartmentName = risk.Department?.DepartmentName ?? "No Department"
