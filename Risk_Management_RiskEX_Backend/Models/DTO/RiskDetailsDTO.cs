@@ -10,6 +10,7 @@
         public string RiskType { get; set; }
         public DateTime PlannedActionDate { get; set; }
         public int OverallRiskRating { get; set; }
+        public int? OverallRiskRatingAfter { get; set; }
         public string RiskStatus { get; set; }
         public string ReviewerName { get; set; }
         public string ReviewerDepartment { get; set; }

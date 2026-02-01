@@ -80,7 +80,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                     Remarks = null,
                     RiskStatus = RiskStatus.Open,
                     RiskAssessments = new List<RiskAssessment>(),
-                    IsHide=false
+                    IsHide = false
                 };
                 // 3. Add Assessments based on RiskType 
                 if ((int)riskDto.RiskType == 1 || riskDto.RiskType == RiskType.Quality)
@@ -177,7 +177,7 @@ namespace Risk_Management_RiskEX_Backend.Repository
                         ISOClauseNumber = riskDto.ISOClauseNumber,
                         RiskStatus = RiskStatus.Open,
                         RiskAssessments = new List<RiskAssessment>(),
-                        IsHide=false
+                        IsHide = false
                     };
                     _db.Risks.Add(risk);
                     await _db.SaveChangesAsync();
@@ -1173,39 +1173,69 @@ namespace Risk_Management_RiskEX_Backend.Repository
         public async Task<ICollection<OpenRiskCountByTypeDTO>> GetOpenRiskCountByType(List<int> departmentIds, List<int> projectIds)
         {
 
-            IQueryable<Risk> query = _db.Set<Risk>();
+           IQueryable<Risk> query = _db.Set<Risk>()
+    .Where(r => !r.IsHide);
 
-            query = query.Where(r => !r.IsHide); 
+// Project filter
+if (projectIds.Any())
+{
+    query = query.Where(r =>
+        r.ProjectId.HasValue &&
+        projectIds.Contains(r.ProjectId.Value));
+}
+// Department filter
+else if (departmentIds.Any())
+{
+    query = query.Where(r =>
+        departmentIds.Contains(r.DepartmentId));
+}
 
-            // Scenario 1: Project filter
-            if (projectIds.Any())
+var result = await query
+    .Where(r => !r.IsHide)
+    .Select(r => new
+    {
+        r.RiskType,
+        r.RiskStatus,
+
+        LatestReview = r.RiskAssessments
+            .OrderByDescending(a => a.Review.CreatedAt)   // 🔴 IMPORTANT
+            .Select(a => new
             {
-                query = query.Where(r =>
-                    r.ProjectId.HasValue &&
-                    projectIds.Contains(r.ProjectId.Value));
-            }
-            // Scenario 2: Department filter
-            else if (departmentIds.Any())
-            {
-                query = query.Where(r =>
-                    departmentIds.Contains(r.DepartmentId));
-            }
-            // Scenario 3: No department & no project → no filter
+                a.Review.ReviewStatus,
+                a.IsMitigated
+            })
+            .FirstOrDefault()
+    })
+    .Select(x => new
+    {
+        x.RiskType,
 
-            var result = await query
-                .GroupBy(r => r.RiskType)
-                .Select(g => new OpenRiskCountByTypeDTO
-                {
-                    RiskType = g.Key.ToString(),
-                    OpenCount = g.Count(r => r.RiskStatus == RiskStatus.Open),
-                    ClosedCount = g.Count(r => r.RiskStatus == RiskStatus.Closed),
-                    DeferredCount = g.Count(r => r.RiskStatus == RiskStatus.Deferred),
-                    UnderTreatmentCount = g.Count(r => r.RiskStatus == RiskStatus.UnderTreatment),
-                    AcceptedCount = g.Count(r => r.RiskStatus == RiskStatus.Accepted),
-                    MonitoringCount = g.Count(r => r.RiskStatus == RiskStatus.Monitoring),
+        FinalStatus =
+            x.LatestReview == null
+                ? RiskStatus.Open
+                : (x.LatestReview.ReviewStatus != ReviewStatus.ReviewCompleted
+                   && x.LatestReview.ReviewStatus != ReviewStatus.ApprovalCompleted)
+                    ? RiskStatus.Open
+                    : x.RiskStatus != null
+                        ? x.RiskStatus
+                        : x.LatestReview.IsMitigated
+                            ? RiskStatus.Closed
+                            : RiskStatus.Open
+    })
+    .GroupBy(x => x.RiskType)
+    .Select(g => new OpenRiskCountByTypeDTO
+    {
+        RiskType = g.Key.ToString(),
+        OpenCount = g.Count(x => x.FinalStatus == RiskStatus.Open),
+        ClosedCount = g.Count(x => x.FinalStatus == RiskStatus.Closed),
+        DeferredCount = g.Count(x => x.FinalStatus == RiskStatus.Deferred),
+        UnderTreatmentCount = g.Count(x => x.FinalStatus == RiskStatus.UnderTreatment),
+        AcceptedCount = g.Count(x => x.FinalStatus == RiskStatus.Accepted),
+        MonitoringCount = g.Count(x => x.FinalStatus == RiskStatus.Monitoring)
+    })
+    .ToListAsync();
 
-                })
-                .ToListAsync();
+
 
             return result;
 
@@ -1471,10 +1501,10 @@ namespace Risk_Management_RiskEX_Backend.Repository
             var risk = await _db.Risks
             .FirstOrDefaultAsync(r => r.Id == riskId);
             if (risk == null)
-            return false;
+                return false;
 
             risk.IsHide = isHide;
-             await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
 
             return true;
         }
@@ -1488,45 +1518,45 @@ namespace Risk_Management_RiskEX_Backend.Repository
             .Include(r => r.RiskAssessments)
             .FirstOrDefaultAsync(r => r.Id == riskId);
 
-            if (risk == null)
-            return false;
+                if (risk == null)
+                    return false;
 
-            var reviewIds = risk.RiskAssessments
-            .Select(ra => ra.ReviewId)
-            .Distinct()
-            .ToList();
+                var reviewIds = risk.RiskAssessments
+                .Select(ra => ra.ReviewId)
+                .Distinct()
+                .ToList();
 
 
-            _db.Assessments.RemoveRange(risk.RiskAssessments);
-            await _db.SaveChangesAsync();
+                _db.Assessments.RemoveRange(risk.RiskAssessments);
+                await _db.SaveChangesAsync();
 
-            foreach (var reviewId in reviewIds)
-            {
-                bool stillUsed = await _db.Assessments
-                    .AnyAsync(ra => ra.ReviewId == reviewId);
-
-                if (!stillUsed)
+                foreach (var reviewId in reviewIds)
                 {
-                    var review = await _db.Reviews.FindAsync(reviewId);
-                    if (review != null)
+                    bool stillUsed = await _db.Assessments
+                        .AnyAsync(ra => ra.ReviewId == reviewId);
+
+                    if (!stillUsed)
                     {
-                        _db.Reviews.Remove(review);
+                        var review = await _db.Reviews.FindAsync(reviewId);
+                        if (review != null)
+                        {
+                            _db.Reviews.Remove(review);
+                        }
                     }
                 }
-            }
 
-            _db.Risks.Remove(risk);
-            await _db.SaveChangesAsync();
-            await transaction.CommitAsync();
+                _db.Risks.Remove(risk);
+                await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
 
-            return true;
-                
+                return true;
+
             }
             catch
             {
                 await transaction.RollbackAsync();
                 throw;
-                
+
             }
         }
 
